@@ -90,8 +90,8 @@ export default function AdminContacts() {
           <span className="text-[10px] uppercase tracking-[0.25em] text-editorial-accent font-bold block mb-1">
             Inbox & Communications
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold italic tracking-tight">Contact Messages.</h1>
-          <p className="text-editorial-text font-serif italic text-sm mt-1">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">Contact Messages.</h1>
+          <p className="text-editorial-text font-serif text-sm mt-1">
             Inquiries received from the public website contact form.
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function AdminContacts() {
                 <Loader2 className="w-6 h-6 animate-spin text-editorial-accent" />
               </div>
             ) : messages.length === 0 ? (
-              <div className="text-center p-12 text-editorial-muted text-sm font-serif italic">
+              <div className="text-center p-12 text-editorial-muted text-sm font-serif">
                 No contact messages found.
               </div>
             ) : (
@@ -148,7 +148,7 @@ export default function AdminContacts() {
                       <h4 className="font-sans font-bold text-xs text-editorial-dark truncate">{msg.subject}</h4>
                     </div>
 
-                    <p className="text-xs text-editorial-text font-serif italic truncate">
+                    <p className="text-xs text-editorial-text font-serif truncate">
                       {msg.message}
                     </p>
 
@@ -276,7 +276,7 @@ export default function AdminContacts() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-editorial-muted">
               <Mail className="w-16 h-16 mb-4 opacity-20" />
-              <h3 className="text-xl font-serif italic mb-2">No Message Selected</h3>
+              <h3 className="text-xl font-serif mb-2">No Message Selected</h3>
               <p className="text-sm font-serif">Select a message from the inbox to view details.</p>
             </div>
           )}

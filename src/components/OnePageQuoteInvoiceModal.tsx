@@ -826,7 +826,7 @@ export default function OnePageQuoteInvoiceModal({
                     Consignee in Malawi: <strong className="text-editorial-dark">{consigneeName || 'Consignee on Arrival'}</strong>
                     {consigneePhone && ` (${consigneePhone})`}
                   </p>
-                  <p className="text-[9px] text-editorial-muted italic">Est. Transit: {transitTime}</p>
+                  <p className="text-[9px] text-editorial-muted">Est. Transit: {transitTime}</p>
                 </div>
               </div>
 
@@ -919,7 +919,7 @@ export default function OnePageQuoteInvoiceModal({
                     <p><strong>Bank Wire (Ireland):</strong> Bank of Ireland • IBAN: <span className="font-mono">IE29 BOFI 9000 1234 5678 90</span> • BIC: <span className="font-mono">BOFIIE2D</span></p>
                     <p><strong>Revolut Business / Card:</strong> @jrlogistics • Phone: <span className="font-mono">+353 87 123 4567</span></p>
                     <p><strong>Malawi Kwacha Mobile Money:</strong> Airtel Money / TNM Mpamba: <span className="font-mono">+265 99 123 4567</span></p>
-                    <p className="text-[8px] text-editorial-muted italic mt-0.5">Please quote reference: <strong>{docNumber}</strong> with your transfer.</p>
+                    <p className="text-[8px] text-editorial-muted mt-0.5">Please quote reference: <strong>{docNumber}</strong> with your transfer.</p>
                   </div>
                 </div>
 
@@ -929,14 +929,14 @@ export default function OnePageQuoteInvoiceModal({
                     <strong className="block uppercase tracking-widest text-[9px] font-bold text-editorial-dark mb-1">
                       Terms of Carriage & Liability
                     </strong>
-                    <p className="text-editorial-text font-serif italic text-[8.5px]">
+                    <p className="text-editorial-text font-serif text-[8.5px]">
                       {notes}
                     </p>
                   </div>
 
                   <div className="flex justify-between items-end pt-3 border-t border-editorial-dark/20 mt-2">
                     <div>
-                      <div className="font-serif italic text-xs font-bold text-editorial-dark">JR Logistics Connection</div>
+                      <div className="font-serif text-xs font-bold text-editorial-dark">JR Logistics Connection</div>
                       <span className="text-[8px] text-editorial-muted uppercase tracking-wider block">Authorized Logistics Dispatch</span>
                     </div>
                     <div className="border border-editorial-dark px-2.5 py-1 text-center bg-white">

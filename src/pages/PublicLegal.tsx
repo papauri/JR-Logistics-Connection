@@ -63,7 +63,7 @@ export default function PublicLegal() {
       <div className="min-h-[60vh] flex items-center justify-center bg-editorial-bg">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-editorial-dark border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="font-serif italic text-sm text-editorial-text">Loading regulatory agreements...</p>
+          <p className="font-serif text-sm text-editorial-text">Loading regulatory agreements...</p>
         </div>
       </div>
     );
@@ -163,7 +163,7 @@ export default function PublicLegal() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-[11px] text-editorial-muted font-serif italic flex items-center gap-1.5">
+                    <span className="text-[11px] text-editorial-muted font-serif flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" /> Effective: {activeDoc.lastUpdated}
                     </span>
                     <button
@@ -179,7 +179,7 @@ export default function PublicLegal() {
                 <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-editorial-dark mb-2">
                   {activeDoc.title}
                 </h2>
-                <p className="text-editorial-text font-serif italic text-base">
+                <p className="text-editorial-text font-serif text-base">
                   {activeDoc.subtitle}
                 </p>
 
@@ -210,7 +210,7 @@ export default function PublicLegal() {
 
               {/* Footer acknowledgement */}
               <div className="p-6 bg-editorial-bg border-t border-editorial-dark flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-                <span className="text-editorial-muted font-serif italic">
+                <span className="text-editorial-muted font-serif">
                   By engaging JR Logistics Connection services, shippers and consignees consent to these conditions.
                 </span>
                 <Link

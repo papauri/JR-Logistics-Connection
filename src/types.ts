@@ -13,6 +13,7 @@ export interface Review {
   author: string;
   location: string;
   text: string;
+  imageUrl?: string;
   published?: boolean;
 }
 

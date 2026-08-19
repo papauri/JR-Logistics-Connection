@@ -393,7 +393,7 @@ export default function TrackShipment() {
                   </button>
                 </form>
                 {verificationError && (
-                  <p className="text-xs text-red-600 font-serif italic mt-2 flex items-center gap-1">
+                  <p className="text-xs text-red-600 font-serif mt-2 flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                     {verificationError}
                   </p>

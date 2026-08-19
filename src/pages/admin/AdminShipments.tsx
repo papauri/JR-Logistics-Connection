@@ -431,7 +431,7 @@ export default function AdminShipments() {
               <p className="text-xs uppercase tracking-widest font-bold">
                 {selectedIds.length} Shipment{selectedIds.length > 1 ? 's' : ''} Selected
               </p>
-              <p className="text-[11px] text-zinc-300 font-serif italic">
+              <p className="text-[11px] text-zinc-300 font-serif">
                 Ready for synchronized group status update
               </p>
             </div>
@@ -514,10 +514,10 @@ export default function AdminShipments() {
             {loading ? (
               <div className="flex flex-col items-center justify-center p-12 text-editorial-muted">
                 <Loader2 className="w-6 h-6 animate-spin mb-3 text-editorial-accent" />
-                <span className="text-xs font-serif italic">Loading live shipments...</span>
+                <span className="text-xs font-serif">Loading live shipments...</span>
               </div>
             ) : filteredShipments.length === 0 ? (
-              <div className="text-center p-12 text-editorial-muted text-sm font-serif italic">
+              <div className="text-center p-12 text-editorial-muted text-sm font-serif">
                 No shipments matching your filter criteria.
               </div>
             ) : (
@@ -558,7 +558,7 @@ export default function AdminShipments() {
                         </span>
                       </div>
 
-                      <div className="text-xs text-editorial-text font-serif italic mb-2 truncate">
+                      <div className="text-xs text-editorial-text font-serif mb-2 truncate">
                         {ship.origin} → <strong className="text-editorial-dark not-italic">{ship.destination}</strong>
                       </div>
 
@@ -834,7 +834,7 @@ export default function AdminShipments() {
                   <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-dark/20">
                     <div>
                       <span className="text-[10px] uppercase tracking-widest text-editorial-accent font-bold block mb-1">Event Dispatcher</span>
-                      <h3 className="font-serif font-bold italic text-2xl">Add Tracking Milestone</h3>
+                      <h3 className="font-serif font-bold text-2xl">Add Tracking Milestone</h3>
                     </div>
                     <button
                       type="button"
@@ -930,7 +930,7 @@ export default function AdminShipments() {
                 {/* Tracking History Timeline */}
                 <div className="bg-white border border-editorial-dark p-6 lg:p-8 shadow-sm">
                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-editorial-dark/20">
-                    <h3 className="font-serif font-bold italic text-2xl">Milestone History</h3>
+                    <h3 className="font-serif font-bold text-2xl">Milestone History</h3>
                     <span className="text-[10px] uppercase tracking-widest text-editorial-muted font-bold">
                       {selectedShipment.events?.length || 0} Recorded
                     </span>
@@ -944,8 +944,8 @@ export default function AdminShipments() {
             /* EMPTY STATE */
             <div className="flex-1 flex flex-col items-center justify-center text-editorial-muted p-12">
               <Truck className="w-16 h-16 mb-4 opacity-20 text-editorial-dark" />
-              <h3 className="font-serif font-bold italic text-2xl text-editorial-dark mb-2">No Shipment Selected</h3>
-              <p className="font-serif italic text-sm max-w-sm text-center text-editorial-text mb-6">
+              <h3 className="font-serif font-bold text-2xl text-editorial-dark mb-2">No Shipment Selected</h3>
+              <p className="font-serif text-sm max-w-sm text-center text-editorial-text mb-6">
                 Choose a shipment from the list on the left to review its events, or select multiple shipments to post a group update.
               </p>
               <button
@@ -972,7 +972,7 @@ export default function AdminShipments() {
                 <Layers className="w-5 h-5 text-editorial-accent" />
                 <div>
                   <h3 className="font-serif font-bold text-xl">Group Tracking Update</h3>
-                  <p className="text-xs text-zinc-300 font-serif italic">
+                  <p className="text-xs text-zinc-300 font-serif">
                     Updating <strong className="text-white">{selectedIds.length}</strong> selected shipments simultaneously
                   </p>
                 </div>
@@ -993,7 +993,7 @@ export default function AdminShipments() {
                   <span className="text-[10px] uppercase tracking-widest text-editorial-dark font-bold flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-editorial-accent" /> Choose Pre-Set Template
                   </span>
-                  <span className="text-[10px] text-editorial-muted font-serif italic">Auto-fills all fields</span>
+                  <span className="text-[10px] text-editorial-muted font-serif">Auto-fills all fields</span>
                 </div>
                 <select
                   onChange={(e) => {
@@ -1100,7 +1100,7 @@ export default function AdminShipments() {
                 <BookOpen className="w-5 h-5 text-editorial-accent" />
                 <div>
                   <h3 className="font-serif font-bold text-xl">Tracking Template Library</h3>
-                  <p className="text-xs text-zinc-300 font-serif italic">
+                  <p className="text-xs text-zinc-300 font-serif">
                     Persisted in Firestore Data Store • {templates.length} Active Templates
                   </p>
                 </div>

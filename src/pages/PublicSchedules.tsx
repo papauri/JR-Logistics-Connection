@@ -115,7 +115,7 @@ export default function PublicSchedules() {
                       </div>
                       
                       {schedule.notes && (
-                        <p className="mt-4 text-sm text-zinc-600 italic border-l-2 border-zinc-200 pl-3">
+                        <p className="mt-4 text-sm text-zinc-600 border-l-2 border-zinc-200 pl-3">
                           {schedule.notes}
                         </p>
                       )}

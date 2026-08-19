@@ -113,8 +113,8 @@ export default function AdminClients() {
           <span className="text-[10px] uppercase tracking-[0.25em] text-editorial-accent font-bold block mb-1">
             Customer Directory & Accounts
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold italic tracking-tight">Our Clients.</h1>
-          <p className="text-editorial-text font-serif italic text-sm mt-1">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">Our Clients.</h1>
+          <p className="text-editorial-text font-serif text-sm mt-1">
             Comprehensive client dossiers showing all associated freight shipments, live milestones, and quote enquiries.
           </p>
         </div>
@@ -142,7 +142,7 @@ export default function AdminClients() {
             <Users className="w-4 h-4 text-editorial-accent group-hover:scale-110 transition-transform" />
           </div>
           <div className="text-3xl font-serif font-bold">{clients.length}</div>
-          <span className="text-[11px] text-editorial-muted font-serif italic mt-1 block">Click to view all clients</span>
+          <span className="text-[11px] text-editorial-muted font-serif mt-1 block">Click to view all clients</span>
         </button>
 
         <button
@@ -160,7 +160,7 @@ export default function AdminClients() {
             <Truck className="w-4 h-4 text-editorial-dark group-hover:scale-110 transition-transform" />
           </div>
           <div className="text-3xl font-serif font-bold text-editorial-accent">{activeCargoClients}</div>
-          <span className="text-[11px] text-editorial-muted font-serif italic mt-1 block">With cargo in transit</span>
+          <span className="text-[11px] text-editorial-muted font-serif mt-1 block">With cargo in transit</span>
         </button>
 
         <Link
@@ -172,7 +172,7 @@ export default function AdminClients() {
             <Package className="w-4 h-4 text-editorial-dark group-hover:scale-110 transition-transform" />
           </div>
           <div className="text-3xl font-serif font-bold">{totalShipments}</div>
-          <span className="text-[11px] text-editorial-muted font-serif italic mt-1 block group-hover:text-editorial-accent transition-colors">Manage freight shipments →</span>
+          <span className="text-[11px] text-editorial-muted font-serif mt-1 block group-hover:text-editorial-accent transition-colors">Manage freight shipments →</span>
         </Link>
 
         <Link
@@ -184,7 +184,7 @@ export default function AdminClients() {
             <Receipt className="w-4 h-4 text-editorial-dark group-hover:scale-110 transition-transform" />
           </div>
           <div className="text-3xl font-serif font-bold">{totalQuotes}</div>
-          <span className="text-[11px] text-editorial-muted font-serif italic mt-1 block group-hover:text-editorial-accent transition-colors">Manage quotes & invoices →</span>
+          <span className="text-[11px] text-editorial-muted font-serif mt-1 block group-hover:text-editorial-accent transition-colors">Manage quotes & invoices →</span>
         </Link>
       </div>
 
@@ -216,10 +216,10 @@ export default function AdminClients() {
             {loading ? (
               <div className="p-12 text-center text-editorial-muted">
                 <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-editorial-accent" />
-                <p className="text-xs font-serif italic">Loading client accounts...</p>
+                <p className="text-xs font-serif">Loading client accounts...</p>
               </div>
             ) : filteredClients.length === 0 ? (
-              <div className="p-12 text-center text-editorial-muted font-serif italic text-sm">
+              <div className="p-12 text-center text-editorial-muted font-serif text-sm">
                 No clients matching criteria.
               </div>
             ) : (
@@ -311,7 +311,7 @@ export default function AdminClients() {
                         )}
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-serif font-bold text-editorial-dark">{selectedClient.name}</h2>
-                      <p className="text-xs text-editorial-muted font-serif italic mt-0.5">
+                      <p className="text-xs text-editorial-muted font-serif mt-0.5">
                         Last Active: {format(selectedClient.lastActivity, 'MMMM d, yyyy - HH:mm')}
                       </p>
                     </div>
@@ -435,7 +435,7 @@ export default function AdminClients() {
                   </div>
 
                   {filteredClientShipments.length === 0 ? (
-                    <div className="p-12 text-center bg-white border border-editorial-dark text-editorial-muted font-serif italic">
+                    <div className="p-12 text-center bg-white border border-editorial-dark text-editorial-muted font-serif">
                       <Truck className="w-10 h-10 opacity-30 mx-auto mb-2" />
                       <p className="text-sm">No shipments found matching filter for {selectedClient.name}.</p>
                     </div>
@@ -476,7 +476,7 @@ export default function AdminClients() {
                                   <span className="text-editorial-text">{ship.origin}</span> → <strong>{ship.destination}</strong>
                                 </div>
 
-                                <p className="text-xs text-editorial-text font-serif italic">
+                                <p className="text-xs text-editorial-text font-serif">
                                   {ship.cargoType} • {ship.description}
                                 </p>
 
@@ -519,7 +519,7 @@ export default function AdminClients() {
                             {/* Consignee details bar if present */}
                             {(ship.consigneeName || ship.consigneePhone) && (
                               <div className="px-5 py-2.5 bg-editorial-bg/40 border-t border-editorial-dark/10 text-xs flex flex-wrap items-center justify-between gap-2">
-                                <span className="font-serif italic text-editorial-text">
+                                <span className="font-serif text-editorial-text">
                                   Consignee: <strong className="text-editorial-dark not-italic">{ship.consigneeName}</strong>
                                   {ship.consigneePhone && ` (${ship.consigneePhone})`}
                                   {ship.consigneeEmail && ` • ${ship.consigneeEmail}`}
@@ -537,7 +537,7 @@ export default function AdminClients() {
                                 {hasEvents ? (
                                   <ShipmentHistory events={ship.events || []} isPublicView={false} />
                                 ) : (
-                                  <p className="text-xs text-editorial-muted font-serif italic">No milestones logged yet for this consignment.</p>
+                                  <p className="text-xs text-editorial-muted font-serif">No milestones logged yet for this consignment.</p>
                                 )}
                               </div>
                             )}
@@ -553,7 +553,7 @@ export default function AdminClients() {
               {activeTab === 'quotes_invoices' && (
                 <div className="space-y-4">
                   {selectedClient.requests.length === 0 ? (
-                    <div className="p-12 text-center bg-white border border-editorial-dark text-editorial-muted font-serif italic">
+                    <div className="p-12 text-center bg-white border border-editorial-dark text-editorial-muted font-serif">
                       <Receipt className="w-10 h-10 opacity-30 mx-auto mb-2" />
                       <p className="text-sm">No quote enquiries or invoices logged for {selectedClient.name}.</p>
                     </div>
@@ -613,8 +613,8 @@ export default function AdminClients() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-editorial-muted">
               <Users className="w-12 h-12 opacity-30 mb-3 text-editorial-dark" />
-              <h3 className="font-serif font-bold italic text-xl text-editorial-dark">Select a Client</h3>
-              <p className="font-serif italic text-xs text-editorial-text mt-1">
+              <h3 className="font-serif font-bold text-xl text-editorial-dark">Select a Client</h3>
+              <p className="font-serif text-xs text-editorial-text mt-1">
                 Choose a customer from the left list to review their complete cargo history and contact coordinates.
               </p>
             </div>

@@ -4,6 +4,7 @@ import { ArrowRight, MapPin, Truck, Package, MessageSquare, Star, Loader2 } from
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import type { SiteSettings } from '../types';
+import regeneratedImage1 from '../assets/images/regenerated_image_1787151742954.jpg';
 
 const defaultSettings: SiteSettings = {
   companyName: 'JR Logistics Connection',
@@ -19,7 +20,7 @@ const defaultSettings: SiteSettings = {
   heroSubtitle: 'We collect your goods in Dublin, prepare them for shipment and help get your cargo to destinations across Africa, including Malawi.',
   aboutText: '',
   galleryImages: [
-    'https://images.unsplash.com/photo-1586528116311-ad8ed7450951?auto=format&fit=crop&q=80&w=800',
+    regeneratedImage1,
     'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=800',
     'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800',
     'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800'
@@ -49,7 +50,11 @@ export default function PublicHome() {
         const docRef = doc(db, 'settings', 'global');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setSettings({ ...defaultSettings, ...docSnap.data() } as SiteSettings);
+          const data = docSnap.data() as SiteSettings;
+          if (data.galleryImages && data.galleryImages[0] === 'https://images.unsplash.com/photo-1586528116311-ad8ed7450951?auto=format&fit=crop&q=80&w=800') {
+             data.galleryImages[0] = regeneratedImage1;
+          }
+          setSettings({ ...defaultSettings, ...data } as SiteSettings);
         }
       } catch (error) {
         console.error('Failed to fetch settings:', error);
@@ -228,19 +233,38 @@ export default function PublicHome() {
           <span className="text-[10px] uppercase tracking-widest text-editorial-muted mb-4 block">Client Reviews</span>
           <h2 className="text-5xl font-serif font-bold tracking-tight leading-tight">Trusted by<br/>Families &<br/>Businesses.</h2>
         </div>
-        <div className="flex-1 grid sm:grid-cols-2">
-          {settings.reviews.filter(r => r.published !== false).slice(0, 4).map((review, idx) => (
-            <div key={idx} className={`p-10 lg:p-12 border-editorial-dark ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
-              <div className="flex gap-1 text-editorial-accent mb-6">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+        <div className="flex-1 p-6 md:p-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {settings.reviews.filter(r => r.published !== false).slice(0, 4).map((review, idx) => (
+              <div 
+                key={idx} 
+                className={`border border-editorial-dark bg-white overflow-hidden flex flex-col ${
+                  // Make the first item span 2 columns if there's an image, or just vary the span for a bento feel
+                  idx === 0 && review.imageUrl ? 'md:col-span-2 md:flex-row' : ''
+                }`}
+              >
+                {review.imageUrl && (
+                  <div className={`border-b border-editorial-dark ${idx === 0 && review.imageUrl ? 'md:border-b-0 md:border-r md:w-1/2' : ''}`}>
+                    <img 
+                      src={review.imageUrl} 
+                      alt={`Review by ${review.author}`} 
+                      className="w-full h-48 md:h-full object-cover grayscale opacity-90"
+                    />
+                  </div>
+                )}
+                <div className={`p-8 md:p-10 flex flex-col justify-center ${idx === 0 && review.imageUrl ? 'md:w-1/2' : 'flex-1'}`}>
+                  <div className="flex gap-1 text-editorial-accent mb-6">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                  </div>
+                  <p className="text-editorial-dark text-lg font-serif mb-8 leading-relaxed">"{review.text}"</p>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-editorial-dark mb-1">{review.author}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-editorial-muted">{review.location}</p>
+                  </div>
+                </div>
               </div>
-              <p className="text-editorial-dark text-lg font-serif mb-8 leading-relaxed">"{review.text}"</p>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-editorial-dark mb-1">{review.author}</p>
-                <p className="text-[10px] uppercase tracking-widest text-editorial-muted">{review.location}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

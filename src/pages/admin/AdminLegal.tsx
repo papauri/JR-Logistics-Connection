@@ -376,7 +376,7 @@ export default function AdminLegal() {
                     <div className="border-b border-zinc-200 pb-4">
                       <span className="text-xs uppercase font-bold text-zinc-500">{category} • {version}</span>
                       <h2 className="text-2xl font-serif font-bold text-zinc-900 mt-1">{title}</h2>
-                      <p className="text-zinc-600 italic text-sm">{subtitle}</p>
+                      <p className="text-zinc-600 text-sm">{subtitle}</p>
                     </div>
 
                     {summaryPoints.length > 0 && (

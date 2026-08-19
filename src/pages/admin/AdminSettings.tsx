@@ -6,6 +6,7 @@ import { Save, Loader2, Info, Plus, Trash2, Package, Building2, MessageSquare, S
 import toast from 'react-hot-toast';
 import type { SiteSettings, Review } from '../../types';
 import AdminFreightPricingManager from '../../components/AdminFreightPricingManager';
+import GoogleDriveUploader from '../../components/GoogleDriveUploader';
 
 const defaultSettings: SiteSettings = {
   companyName: 'JR Logistics Connection',
@@ -325,7 +326,10 @@ export default function AdminSettings() {
                     <div key={idx} className="flex gap-4 items-start p-3 border border-editorial-dark bg-editorial-bg/10">
                       <img src={img} alt={`Gallery ${idx + 1}`} className="w-16 h-16 object-cover border border-editorial-dark bg-zinc-100" />
                       <div className="flex-1">
-                        <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Image URL #{idx + 1}</label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted">Image URL #{idx + 1}</label>
+                          <GoogleDriveUploader onUploadSuccess={(url) => handleUpdateGalleryImage(idx, url)} label="Upload to Drive" />
+                        </div>
                         <input 
                           type="url" 
                           value={img} 
@@ -366,9 +370,16 @@ export default function AdminSettings() {
                           <input value={review.location} onChange={(e) => handleUpdateReview(idx, 'location', e.target.value)} className="w-full border border-editorial-dark py-1.5 px-2 text-xs bg-white" />
                         </div>
                       </div>
+                      <div className="pr-8">
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted">Optional Image URL</label>
+                          <GoogleDriveUploader onUploadSuccess={(url) => handleUpdateReview(idx, 'imageUrl', url)} label="Upload to Drive" />
+                        </div>
+                        <input value={review.imageUrl || ''} onChange={(e) => handleUpdateReview(idx, 'imageUrl', e.target.value)} className="w-full border border-editorial-dark py-1.5 px-2 text-xs bg-white" placeholder="https://..." />
+                      </div>
                       <div>
                         <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Review Statement</label>
-                        <textarea value={review.text} onChange={(e) => handleUpdateReview(idx, 'text', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-serif bg-white resize-none"></textarea>
+                        <textarea value={review.text} onChange={(e) => handleUpdateReview(idx, 'text', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-sans bg-white resize-none"></textarea>
                       </div>
                     </div>
                   ))}

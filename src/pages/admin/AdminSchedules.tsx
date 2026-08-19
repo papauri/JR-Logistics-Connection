@@ -108,7 +108,7 @@ export default function AdminSchedules() {
       <div className="bg-white border border-editorial-dark shadow-sm">
         <div className="grid grid-cols-1 divide-y divide-editorial-dark/10">
           {schedules.length === 0 ? (
-            <div className="p-8 text-center text-zinc-500 text-sm font-serif italic">
+            <div className="p-8 text-center text-zinc-500 text-sm font-serif">
               No schedules found. Click "Add Schedule" to create one.
             </div>
           ) : (
@@ -141,7 +141,7 @@ export default function AdminSchedules() {
                       </span>
                     </div>
                     {schedule.notes && (
-                      <p className="mt-2 text-sm text-zinc-500 italic">"{schedule.notes}"</p>
+                      <p className="mt-2 text-sm text-zinc-500">"{schedule.notes}"</p>
                     )}
                   </div>
                 </div>

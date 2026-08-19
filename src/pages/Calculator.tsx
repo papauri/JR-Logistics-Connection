@@ -563,7 +563,7 @@ export default function Calculator() {
                 <span className="text-4xl md:text-5xl font-mono font-bold text-white tracking-tight block">
                   €{calculations.totalEur.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
-                <span className="text-xs font-serif italic text-zinc-300 mt-1 block">
+                <span className="text-xs font-serif text-zinc-300 mt-1 block">
                   EUR (Euro Base Currency)
                 </span>
 
