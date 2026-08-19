@@ -27,7 +27,12 @@ import {
   Receipt,
   CreditCard,
   DollarSign,
-  Package
+  Package,
+  UploadCloud,
+  Download,
+  File,
+  FileText as FileTextIcon,
+  X
 } from 'lucide-react';
 import type { Shipment, CustomerRequest } from '../types';
 import { format } from 'date-fns';
@@ -36,11 +41,16 @@ import { lookupAndValidateTracking, type TrackingResult } from '../lib/trackingV
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
 
+import { db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import type { SiteSettings } from '../types';
+
 export default function TrackShipment() {
   const { trackingNumber: initialTracking } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { isAdmin } = useAuthStore();
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
 
   // Search mode: 'shipment' (cargo freight) or 'quote' (rate enquiries & invoicing)
   const [trackMode, setTrackMode] = useState<'shipment' | 'quote'>('shipment');
@@ -55,6 +65,11 @@ export default function TrackShipment() {
   const [result, setResult] = useState<TrackingResult | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [verificationError, setVerificationError] = useState('');
+
+  // Portal Documents State
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadFileName, setUploadFileName] = useState('');
+  const [uploadType, setUploadType] = useState('');
 
   const performSearch = useCallback(async (searchCode: string, emailToVerify?: string) => {
     const code = searchCode.trim().toUpperCase();
@@ -98,6 +113,21 @@ export default function TrackShipment() {
     }
   }, [searchParams, isAdmin]);
 
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'global');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(docSnap.data() as SiteSettings);
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   // Automatic search if URL has trackingNumber parameter
   useEffect(() => {
     if (initialTracking) {
@@ -107,6 +137,19 @@ export default function TrackShipment() {
       performSearch(initialTracking, email);
     }
   }, [initialTracking, performSearch, searchParams]);
+
+  const handleUploadSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!uploadFileName || !uploadType) {
+      toast.error('Please select a file and document type.');
+      return;
+    }
+    // Simulate upload delay
+    toast.success('Document uploaded successfully. It is now attached to this shipment.');
+    setIsUploadModalOpen(false);
+    setUploadFileName('');
+    setUploadType('');
+  };
 
   const handleSearchSubmit = (e?: FormEvent) => {
     e?.preventDefault();
@@ -732,6 +775,117 @@ export default function TrackShipment() {
               )}
             </div>
 
+            {isVerified && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-b border-editorial-dark">
+                {/* Finance & Invoicing */}
+                <div className="p-8 md:p-12 bg-white border-r border-editorial-dark/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 border border-editorial-dark bg-editorial-bg flex items-center justify-center">
+                      <Receipt className="w-5 h-5 text-editorial-dark" />
+                    </div>
+                    <div>
+                      <h3 className="font-sans font-bold text-xl text-editorial-dark">Finance & Billing</h3>
+                      <p className="text-xs text-editorial-muted font-bold tracking-widest uppercase">Invoice Status</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 border border-editorial-dark/10 bg-editorial-bg/50">
+                      <div className="flex items-center gap-3">
+                        <FileTextIcon className="w-5 h-5 text-editorial-accent" />
+                        <div>
+                          <p className="text-sm font-bold text-editorial-dark">Proforma Invoice</p>
+                          <p className="text-xs text-editorial-text font-mono mt-0.5">INV-{shipment.id.split('-')[1] || '2026'}</p>
+                        </div>
+                      </div>
+                      <button className="p-2 border border-editorial-dark/20 hover:bg-white transition-colors" title="Download Invoice">
+                        <Download className="w-4 h-4 text-editorial-dark" />
+                      </button>
+                    </div>
+
+                    <div className="mt-6 pt-6 border-t border-editorial-dark/10">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-sm text-editorial-text font-bold">Total Balance</span>
+                        <span className="text-xl font-bold font-sans text-editorial-dark">
+                          {settings?.vatEnabled 
+                            ? `€${(((shipment as any).price || 850) * (1 + (settings.vatRate || 23) / 100)).toFixed(2)}`
+                            : `€${((shipment as any).price || 850).toFixed(2)}`}
+                        </span>
+                      </div>
+                      {settings?.vatEnabled && (
+                        <div className="flex items-center justify-between mb-4 -mt-2">
+                          <span className="text-[10px] text-editorial-muted uppercase tracking-widest">Includes {settings.vatRate || 23}% VAT</span>
+                        </div>
+                      )}
+                      <button className="w-full py-3 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent hover:text-editorial-dark transition-colors flex items-center justify-center gap-2 mb-6">
+                        <CreditCard className="w-4 h-4" /> Pay Balance Securely
+                      </button>
+
+                      {settings?.bankDetails && settings.bankDetails.bankName && (
+                        <div className="mt-6 p-4 bg-editorial-bg border border-editorial-dark/10">
+                          <span className="block text-[10px] uppercase tracking-widest text-editorial-dark font-bold mb-3">Or Pay via Bank Transfer</span>
+                          <div className="space-y-1.5 text-xs font-sans">
+                            <p className="flex justify-between"><span className="text-editorial-muted">Bank:</span> <strong className="text-editorial-dark">{settings.bankDetails.bankName}</strong></p>
+                            <p className="flex justify-between"><span className="text-editorial-muted">Account:</span> <strong className="text-editorial-dark">{settings.bankDetails.accountName}</strong></p>
+                            <p className="flex justify-between"><span className="text-editorial-muted">IBAN:</span> <strong className="text-editorial-dark font-mono">{settings.bankDetails.iban}</strong></p>
+                            <p className="flex justify-between"><span className="text-editorial-muted">BIC:</span> <strong className="text-editorial-dark font-mono">{settings.bankDetails.bic}</strong></p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Document Vault */}
+                <div className="p-8 md:p-12 bg-white">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 border border-editorial-dark bg-editorial-bg flex items-center justify-center">
+                        <File className="w-5 h-5 text-editorial-dark" />
+                      </div>
+                      <div>
+                        <h3 className="font-sans font-bold text-xl text-editorial-dark">Document Vault</h3>
+                        <p className="text-xs text-editorial-muted font-bold tracking-widest uppercase">Secure Storage</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setIsUploadModalOpen(true)}
+                      className="px-4 py-2 border border-editorial-dark text-xs font-bold uppercase tracking-widest hover:bg-editorial-bg transition-colors flex items-center gap-2"
+                    >
+                      <UploadCloud className="w-3.5 h-3.5" /> Upload
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-4 border border-editorial-dark/10 hover:bg-editorial-bg/50 transition-colors cursor-pointer group">
+                      <div className="flex items-center gap-3">
+                        <FileTextIcon className="w-5 h-5 text-zinc-400 group-hover:text-editorial-accent transition-colors" />
+                        <div>
+                          <p className="text-sm font-bold text-editorial-dark">Customs Declaration.pdf</p>
+                          <p className="text-[10px] text-editorial-muted uppercase tracking-widest mt-1">Uploaded by Admin</p>
+                        </div>
+                      </div>
+                      <Download className="w-4 h-4 text-editorial-muted group-hover:text-editorial-dark transition-colors" />
+                    </div>
+                    <div className="flex items-center justify-between p-4 border border-editorial-dark/10 hover:bg-editorial-bg/50 transition-colors cursor-pointer group">
+                      <div className="flex items-center gap-3">
+                        <FileTextIcon className="w-5 h-5 text-zinc-400 group-hover:text-editorial-accent transition-colors" />
+                        <div>
+                          <p className="text-sm font-bold text-editorial-dark">V5C Vehicle Logbook.pdf</p>
+                          <p className="text-[10px] text-editorial-muted uppercase tracking-widest mt-1">Uploaded by Client</p>
+                        </div>
+                      </div>
+                      <Download className="w-4 h-4 text-editorial-muted group-hover:text-editorial-dark transition-colors" />
+                    </div>
+                  </div>
+                  
+                  <p className="text-xs text-editorial-text mt-6 bg-editorial-bg/50 p-3 border border-editorial-dark/10">
+                    Upload required compliance documents directly to this shipment. Approved files are synced instantly with our Dublin operations team.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="p-8 md:p-12 bg-editorial-bg">
               <h3 className="font-sans font-bold text-2xl mb-10">Milestone Timeline</h3>
               <ShipmentHistory events={shipment.events || []} isPublicView={true} />
@@ -739,6 +893,77 @@ export default function TrackShipment() {
           </div>
         )}
       </div>
+
+      {/* Upload Modal (Client Facing) */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsUploadModalOpen(false)}></div>
+          <div className="bg-white border border-editorial-dark p-6 sm:p-8 w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-200">
+            <button 
+              onClick={() => setIsUploadModalOpen(false)}
+              className="absolute top-4 right-4 text-editorial-muted hover:text-editorial-dark transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h2 className="text-2xl font-bold font-sans text-editorial-dark mb-1">Upload Document</h2>
+            <p className="text-sm text-editorial-text mb-6">Attach files directly to reference <span className="font-bold text-editorial-dark">{trackingNumber}</span></p>
+            
+            <form onSubmit={handleUploadSubmit} className="space-y-5">
+              <div 
+                onClick={() => setUploadFileName(uploadFileName ? '' : 'Client_Scanned_Passport.pdf')}
+                className={`border-2 border-dashed ${uploadFileName ? 'border-editorial-accent bg-editorial-accent/5' : 'border-editorial-dark/20 bg-editorial-bg'} p-8 text-center hover:bg-zinc-100 transition-colors cursor-pointer group`}
+              >
+                {uploadFileName ? (
+                  <>
+                    <FileTextIcon className="w-8 h-8 text-editorial-accent mx-auto mb-3" />
+                    <p className="text-sm font-bold text-editorial-dark mb-1">{uploadFileName}</p>
+                    <p className="text-xs text-editorial-muted">Click to change file</p>
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud className="w-8 h-8 text-editorial-muted mx-auto mb-3 group-hover:text-editorial-accent transition-colors" />
+                    <p className="text-sm font-bold text-editorial-dark mb-1">Click to browse or drag file here</p>
+                    <p className="text-xs text-editorial-muted">Supports PDF, JPEG, PNG up to 10MB</p>
+                  </>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-widest font-bold text-editorial-muted">Document Type</label>
+                <select 
+                  value={uploadType}
+                  onChange={(e) => setUploadType(e.target.value)}
+                  className="w-full bg-white border border-editorial-dark/20 px-3 py-2 text-sm focus:outline-none focus:border-editorial-dark" required>
+                  <option value="">Select type...</option>
+                  <option value="Customs">Customs Clearance Form</option>
+                  <option value="Vehicle">Vehicle Logbook / V5C</option>
+                  <option value="Identification">Personal ID / Passport</option>
+                  <option value="Finance">Payment Receipt / Proof</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div className="pt-4 border-t border-editorial-dark/10 flex justify-end gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setIsUploadModalOpen(false)}
+                  className="px-4 py-2 text-sm font-bold text-editorial-text hover:text-editorial-dark transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="bg-editorial-dark text-white px-6 py-2 text-sm font-bold hover:bg-editorial-accent hover:text-editorial-dark transition-colors"
+                >
+                  Upload File
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -5,7 +5,8 @@ import {
   Car, 
   Scale, 
   Layers, 
-  Container as ContainerIcon, 
+  Container as ContainerIcon,
+  Plane,
   ArrowRight, 
   CheckCircle2, 
   Info, 
@@ -219,6 +220,7 @@ export default function Calculator() {
       case 'Scale': return <Scale className="w-5 h-5" />;
       case 'Layers': return <Layers className="w-5 h-5" />;
       case 'Container': return <ContainerIcon className="w-5 h-5" />;
+      case 'Plane': return <Plane className="w-5 h-5" />;
       default: return <Package className="w-5 h-5" />;
     }
   };

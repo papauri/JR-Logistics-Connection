@@ -40,6 +40,8 @@ export function formatCurrency(
     ? '£'
     : currency === 'MWK' || currency === 'MK'
     ? 'MK'
+    : currency === 'ZAR' || currency === 'R'
+    ? 'R'
     : currency;
 
   if (amount === undefined || amount === null || amount === '') {

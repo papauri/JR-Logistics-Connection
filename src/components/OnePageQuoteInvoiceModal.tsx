@@ -29,6 +29,8 @@ import { db } from '../lib/firebase';
 import { doc, updateDoc, setDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { usePricing } from '../lib/usePricing';
+import { getDoc } from 'firebase/firestore';
+import type { SiteSettings } from '../types';
 
 export interface InvoiceLineItem {
   id: string;
@@ -67,6 +69,28 @@ export default function OnePageQuoteInvoiceModal({
   const [issueDate, setIssueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [validUntil, setValidUntil] = useState(format(new Date(Date.now() + 14 * 86400000), 'yyyy-MM-dd'));
   const [currency, setCurrency] = useState('EUR');
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'global');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const loadedSettings = docSnap.data() as SiteSettings;
+          setSettings(loadedSettings);
+          if (loadedSettings.vatEnabled && loadedSettings.vatRate) {
+            setVatRate(loadedSettings.vatRate);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    };
+    if (isOpen) {
+      fetchSettings();
+    }
+  }, [isOpen]);
 
   // Parties
   const [customerName, setCustomerName] = useState('');
@@ -175,7 +199,7 @@ export default function OnePageQuoteInvoiceModal({
   const totalAmount = discountedSubtotal + vatAmount;
   const balanceDue = Math.max(0, totalAmount - (Number(depositPaid) || 0));
 
-  const currencySymbol = currency === 'EUR' ? '€' : currency === 'USD' ? '$' : currency === 'GBP' ? '£' : 'MWK ';
+  const currencySymbol = currency === 'EUR' ? '€' : currency === 'USD' ? '$' : currency === 'GBP' ? '£' : currency === 'ZAR' ? 'R' : 'MWK ';
 
   // Line item handlers
   const handleItemChange = (id: string, field: keyof InvoiceLineItem, value: any) => {
@@ -457,6 +481,7 @@ export default function OnePageQuoteInvoiceModal({
                     <option value="EUR">EUR (€)</option>
                     <option value="USD">USD ($)</option>
                     <option value="GBP">GBP (£)</option>
+                    <option value="ZAR">ZAR (R)</option>
                     <option value="MWK">MWK (Kwacha)</option>
                   </select>
                 </div>
@@ -916,7 +941,11 @@ export default function OnePageQuoteInvoiceModal({
                     <Receipt className="w-3 h-3 text-editorial-accent" /> Official Payment Channels
                   </strong>
                   <div className="space-y-1 text-editorial-text">
-                    <p><strong>Bank Wire (Ireland):</strong> Bank of Ireland • IBAN: <span className="font-mono">IE29 BOFI 9000 1234 5678 90</span> • BIC: <span className="font-mono">BOFIIE2D</span></p>
+                    {settings?.bankDetails && settings.bankDetails.bankName ? (
+                      <p><strong>Bank Wire (Ireland):</strong> {settings.bankDetails.bankName} • Account: <span className="font-mono">{settings.bankDetails.accountName}</span> • IBAN: <span className="font-mono">{settings.bankDetails.iban}</span> • BIC: <span className="font-mono">{settings.bankDetails.bic}</span></p>
+                    ) : (
+                      <p><strong>Bank Wire (Ireland):</strong> Bank of Ireland • IBAN: <span className="font-mono">IE29 BOFI 9000 1234 5678 90</span> • BIC: <span className="font-mono">BOFIIE2D</span></p>
+                    )}
                     <p><strong>Revolut Business / Card:</strong> @jrlogistics • Phone: <span className="font-mono">+353 87 123 4567</span></p>
                     <p><strong>Malawi Kwacha Mobile Money:</strong> Airtel Money / TNM Mpamba: <span className="font-mono">+265 99 123 4567</span></p>
                     <p className="text-[8px] text-editorial-muted mt-0.5">Please quote reference: <strong>{docNumber}</strong> with your transfer.</p>

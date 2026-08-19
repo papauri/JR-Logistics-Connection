@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import { db } from '../../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { Save, Loader2, Info, Plus, Trash2, Package, Building2, MessageSquare, Search, Tag, Sparkles } from 'lucide-react';
+import { Save, Loader2, Info, Plus, Trash2, Package, Building2, MessageSquare, Search, Tag, Sparkles, Receipt } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { SiteSettings, Review } from '../../types';
 import AdminFreightPricingManager from '../../components/AdminFreightPricingManager';
@@ -47,11 +47,19 @@ const defaultSettings: SiteSettings = {
   seoTitle: 'JR Logistics Connection | Shipping from Ireland to Africa',
   seoDescription: 'Delivering your cargo with care and precision. Specializing in secure, reliable transport from Ireland to destinations across Africa.',
   seoKeywords: 'shipping, logistics, ireland, africa, malawi, transport, cargo, freight',
+  bankDetails: {
+    bankName: 'Bank of Ireland',
+    accountName: 'JR Logistics Connection Ltd',
+    iban: 'IE00 BOFI 0000 0000 0000 00',
+    bic: 'BOFIIE2D'
+  },
+  vatEnabled: true,
+  vatRate: 23,
   updatedAt: Date.now()
 };
 
 export default function AdminSettings() {
-  const [activeTab, setActiveTab] = useState<'pricing' | 'company' | 'content' | 'seo'>('pricing');
+  const [activeTab, setActiveTab] = useState<'pricing' | 'company' | 'content' | 'seo' | 'finance'>('pricing');
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -201,6 +209,18 @@ export default function AdminSettings() {
           <span>Reviews & Gallery</span>
         </button>
 
+        <button
+          type="button"
+          onClick={() => setActiveTab('finance')}
+          className={`px-6 py-3 text-xs uppercase font-bold tracking-widest border-r border-editorial-dark flex items-center gap-2 transition-colors ${
+            activeTab === 'finance'
+              ? 'bg-editorial-dark text-white'
+              : 'text-editorial-dark hover:bg-editorial-bg'
+          }`}
+        >
+          <Receipt className="w-4 h-4" />
+          <span>Finance & Billing</span>
+        </button>
         <button
           type="button"
           onClick={() => setActiveTab('seo')}
@@ -462,6 +482,97 @@ export default function AdminSettings() {
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {saving ? 'Saving SEO...' : 'Save SEO Configuration'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* TAB 5: FINANCE & BILLING */}
+      {activeTab === 'finance' && (
+        <form onSubmit={handleSave} className="space-y-6">
+          <div className="bg-white border border-editorial-dark shadow-sm">
+            <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">Bank Details for Invoicing</h2>
+            </div>
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">Bank Name</label>
+                <input 
+                  value={settings.bankDetails?.bankName || ''} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, bankDetails: { ...(prev.bankDetails || { bankName: '', accountName: '', iban: '', bic: '' }), bankName: e.target.value } }))} 
+                  className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white font-sans" 
+                  placeholder="e.g. Bank of Ireland" 
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">Account Name</label>
+                <input 
+                  value={settings.bankDetails?.accountName || ''} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, bankDetails: { ...(prev.bankDetails || { bankName: '', accountName: '', iban: '', bic: '' }), accountName: e.target.value } }))} 
+                  className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white font-sans" 
+                  placeholder="e.g. JR Logistics Connection Ltd" 
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">IBAN</label>
+                <input 
+                  value={settings.bankDetails?.iban || ''} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, bankDetails: { ...(prev.bankDetails || { bankName: '', accountName: '', iban: '', bic: '' }), iban: e.target.value } }))} 
+                  className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white font-mono uppercase" 
+                  placeholder="IE00 BOFI 0000 0000 0000 00" 
+                />
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">BIC / SWIFT</label>
+                <input 
+                  value={settings.bankDetails?.bic || ''} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, bankDetails: { ...(prev.bankDetails || { bankName: '', accountName: '', iban: '', bic: '' }), bic: e.target.value } }))} 
+                  className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white font-mono uppercase" 
+                  placeholder="BOFIIE2D" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border border-editorial-dark shadow-sm">
+            <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">VAT Configuration</h2>
+            </div>
+            <div className="p-6 space-y-6">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={settings.vatEnabled || false} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, vatEnabled: e.target.checked }))}
+                  className="w-4 h-4 text-editorial-dark focus:ring-0 border-editorial-dark rounded-none"
+                />
+                <span className="text-sm font-bold text-editorial-dark uppercase tracking-widest">Apply VAT to Quotes & Invoices</span>
+              </label>
+
+              {settings.vatEnabled && (
+                <div className="w-1/3">
+                  <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">VAT Percentage (%)</label>
+                  <input 
+                    type="number"
+                    value={settings.vatRate || 23} 
+                    onChange={(e) => setSettings(prev => ({ ...prev, vatRate: Number(e.target.value) }))}
+                    className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white font-mono" 
+                    placeholder="23"
+                  />
+                  <p className="text-xs text-editorial-text mt-2">Standard IE VAT rate is 23%. This will be applied as a line item on generation.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={saving}
+              className="bg-editorial-dark text-white px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent disabled:opacity-50 transition-colors flex items-center gap-2"
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {saving ? 'Saving Finance Settings...' : 'Save Finance Settings'}
             </button>
           </div>
         </form>

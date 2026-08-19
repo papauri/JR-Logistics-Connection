@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { Package, LayoutDashboard, Receipt, Truck, Users, Settings, LogOut, FileText, Menu, X, ExternalLink, Mail } from 'lucide-react';
+import { Package, LayoutDashboard, Receipt, Truck, Users, Settings, LogOut, FileText, Menu, X, ExternalLink, Mail, CreditCard, FolderOpen } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { auth } from '../lib/firebase';
@@ -34,9 +34,11 @@ export default function AdminLayout() {
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Inbox & Contacts', href: '/admin/contacts', icon: Mail },
     { name: 'Quotes & Invoices', href: '/admin/requests', icon: Receipt },
+    { name: 'Finance & Collections', href: '/admin/finance', icon: CreditCard },
     { name: 'Freight Shipments', href: '/admin/shipments', icon: Truck },
     { name: 'Clients Directory', href: '/admin/clients', icon: Users },
     { name: 'Manage Schedules', href: '/admin/schedules', icon: Package },
+    { name: 'Document Center', href: '/admin/documents', icon: FolderOpen },
     { name: 'Legal & Terms', href: '/admin/legal', icon: FileText },
     { name: 'Settings & Tariffs', href: '/admin/settings', icon: Settings },
   ];

@@ -83,6 +83,14 @@ export interface SiteSettings {
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;
+  bankDetails?: {
+    bankName: string;
+    accountName: string;
+    iban: string;
+    bic: string;
+  };
+  vatEnabled?: boolean;
+  vatRate?: number;
   updatedAt: number;
 }
 

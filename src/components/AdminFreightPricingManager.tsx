@@ -5,6 +5,7 @@ import {
   Scale, 
   Layers, 
   Container as ContainerIcon, 
+  Plane,
   Plus, 
   Trash2, 
   Save, 
@@ -34,7 +35,8 @@ const ICON_OPTIONS = [
   { value: 'Car', label: 'Car (Vehicles)', icon: Car },
   { value: 'Scale', label: 'Scale (Weight/KG)', icon: Scale },
   { value: 'Layers', label: 'Layers (Pallets)', icon: Layers },
-  { value: 'Container', label: 'Container (FCL/LCL)', icon: ContainerIcon }
+  { value: 'Container', label: 'Container (FCL/LCL)', icon: ContainerIcon },
+  { value: 'Plane', label: 'Plane (Air Freight)', icon: Plane }
 ];
 
 export default function AdminFreightPricingManager() {

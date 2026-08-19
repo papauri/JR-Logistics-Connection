@@ -507,8 +507,9 @@ export default function AdminRequests() {
                         >
                           <option value="EUR">EUR (€)</option>
                           <option value="USD">USD ($)</option>
-                          <option value="MWK">MWK (Malawian Kwacha)</option>
                           <option value="GBP">GBP (£)</option>
+                          <option value="ZAR">ZAR (R)</option>
+                          <option value="MWK">MWK (Kwacha)</option>
                         </select>
                       </div>
 

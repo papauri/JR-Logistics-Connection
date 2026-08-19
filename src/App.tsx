@@ -21,6 +21,8 @@ import AdminSettings from './pages/admin/AdminSettings';
 import AdminLegal from './pages/admin/AdminLegal';
 import AdminSchedules from './pages/admin/AdminSchedules';
 import AdminContacts from './pages/admin/AdminContacts';
+import AdminFinance from './pages/admin/AdminFinance';
+import AdminDocuments from './pages/admin/AdminDocuments';
 import PublicLayout from './components/PublicLayout';
 import AdminLayout from './components/AdminLayout';
 import ScrollToTop from './components/ScrollToTop';
@@ -79,8 +81,10 @@ export default function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="requests" element={<AdminRequests />} />
+          <Route path="finance" element={<AdminFinance />} />
           <Route path="shipments" element={<AdminShipments />} />
           <Route path="clients" element={<AdminClients />} />
+          <Route path="documents" element={<AdminDocuments />} />
           <Route path="schedules" element={<AdminSchedules />} />
           <Route path="contacts" element={<AdminContacts />} />
           <Route path="legal" element={<AdminLegal />} />

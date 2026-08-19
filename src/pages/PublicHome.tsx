@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Truck, Package, MessageSquare, Star, Loader2, FileText } from 'lucide-react';
+import { ArrowRight, MapPin, Truck, Package, MessageSquare, Star, Loader2, FileText, ChevronDown } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import type { SiteSettings } from '../types';
@@ -37,14 +37,42 @@ const defaultSettings: SiteSettings = {
     { id: '3', question: 'Are customs duties included in the quote?', answer: 'The quotes provided cover freight charges. Destination customs duties and taxes are payable by the receiver unless stated otherwise.', published: true },
     { id: '4', question: 'Can I track my cargo?', answer: 'Yes, once your cargo is loaded and departs, we provide a tracking number you can use on our website.', published: true }
   ],
+  bankDetails: {
+    bankName: 'Bank of Ireland',
+    accountName: 'JR Logistics Connection Ltd',
+    iban: 'IE00 BOFI 0000 0000 0000 00',
+    bic: 'BOFIIE2D'
+  },
+  vatEnabled: true,
+  vatRate: 23,
   updatedAt: Date.now()
 };
 
 import customsImage from '../assets/images/regenerated_image_1787154413181.jpg';
 
+const faqs = [
+  {
+    question: "How does the MRA calculate vehicle import duty?",
+    answer: "The Malawi Revenue Authority (MRA) bases vehicle import duty on several factors: the engine capacity (CC), the vehicle's year of manufacture, and the CIF value (Cost, Insurance, and Freight). Generally, newer vehicles and those with smaller engine capacities attract lower excise duties. Standard calculations typically include Import Duty (around 25%), Excise Duty (ranging from 0% to 110% depending on engine size and age), and VAT (16.5%). We provide a preliminary estimate based on your vehicle's specific details before shipping."
+  },
+  {
+    question: "What documents are required for clearing at Songwe or Mchinji?",
+    answer: "To ensure smooth clearance, you must provide the original vehicle registration documents (V5C for UK cars), a commercial invoice or bill of sale, the Bill of Lading (if shipped by sea first), and your identification (passport or national ID). Our agents will help prepare the customs declaration forms accurately."
+  },
+  {
+    question: "Are there age restrictions on vehicles imported to Malawi?",
+    answer: "Unlike some neighboring countries, Malawi does not currently have a strict age limit banning older vehicles. However, the MRA applies a penalty or higher excise duty on older vehicles to discourage their importation. Vehicles over 8-12 years old typically face significantly higher tax brackets."
+  },
+  {
+    question: "Do you deliver directly to Lilongwe or Blantyre after clearance?",
+    answer: "Yes. Once the customs clearance process is fully completed at the border (Songwe or Mchinji), our logistics team can securely drive or transport the vehicle to your specified destination in Lilongwe or Blantyre, saving you the trip."
+  }
+];
+
 export default function PublicHome() {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -139,7 +167,7 @@ export default function PublicHome() {
           <div>
             <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Standard Cargo Categories</span>
             <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight">What We<br/>Ship</h2>
-            <p className="mt-6 text-editorial-text font-sans leading-relaxed">From personal boxes and 200L drums to cars and container freight, we handle all cargo with professional care.</p>
+            <p className="mt-6 text-editorial-text font-sans leading-relaxed">From personal boxes and 200L drums to cars, container freight, and rapid air cargo, we handle all freight with professional care.</p>
           </div>
           <div className="mt-8 pt-6 border-t border-editorial-dark/20">
             <Link
@@ -155,10 +183,12 @@ export default function PublicHome() {
             { title: 'Boxes & 200L Barrels', desc: 'Standard 20kg cartons, 35kg heavy boxes, and 200L shipping drums with door collection.', link: '/calculator' },
             { title: 'Cars & Motor Vehicles', desc: 'Secure Roll-on/Roll-off & container transport for Saloons, SUVs, 4x4s, and Pickups.', link: '/calculator' },
             { title: 'By Weight (Per KG)', desc: 'Flexible per-kg rates (€5.50/kg) for personal effects, dry foods, and commercial goods.', link: '/calculator' },
-            { title: 'Pallets & Full Containers', desc: 'Euro pallets, commercial machinery crates, and dedicated 20ft / 40ft FCL shipping.', link: '/calculator' },
+            { title: 'Pallets & Containers', desc: 'Euro pallets, commercial machinery crates, and dedicated 20ft / 40ft FCL shipping.', link: '/calculator' },
+            { title: 'Express Air Freight', desc: 'Fast, direct air cargo straight into Kamuzu (LLW) or Chileka (Blantyre) airports.', link: '/calculator' },
+            { title: 'Documents & Electronics', desc: 'Secure, priority air courier for urgent passports, documents, and high-value laptops.', link: '/calculator' }
           ].map((item, idx) => (
             <Link key={item.title} to={item.link} className={`p-10 border-editorial-dark block group hover:bg-white transition-colors ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
-              <div className="w-12 h-12 border border-editorial-dark flex items-center justify-center mb-6 rounded-full relative group-hover:bg-editorial-dark transition-colors">
+              <div className="w-12 h-12 border border-editorial-dark flex items-center justify-center mb-6 rounded-full relative group-hover:bg-editorial-dark transition-colors"> 
                  <div className="absolute inset-1 border border-dashed border-editorial-dark rounded-full"></div>
                  <Package className="w-4 h-4 text-editorial-dark group-hover:text-editorial-accent transition-colors" />
               </div>
@@ -227,7 +257,7 @@ export default function PublicHome() {
           />
           <div className="absolute inset-0 bg-editorial-dark/30 mix-blend-multiply"></div>
           <div className="absolute bottom-6 left-6 bg-editorial-dark text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5">
-            Border Operations: Songwe / Mchinji
+            Operations: Songwe / Mchinji / LLW / BLZ
           </div>
         </div>
         <div className="w-full md:w-1/2 p-12 lg:p-16 flex flex-col justify-center">
@@ -250,12 +280,49 @@ export default function PublicHome() {
             <div className="pt-8 border-t border-editorial-dark/10">
               <h3 className="text-xl font-sans font-bold mb-3 flex items-center gap-2 text-editorial-dark">
                 <MapPin className="w-5 h-5 text-editorial-accent" />
-                Direct Vehicle Delivery in Malawi
+                Air Freight & Vehicle Deliveries
               </h3>
               <p className="text-editorial-text text-sm leading-relaxed">
-                For clients shipping cars and motor vehicles, we don't just stop at the border. We offer exclusive vehicle delivery directly to the consignee's final destination in any of the two major cities: <strong className="text-editorial-dark">Lilongwe</strong> and <strong className="text-editorial-dark">Blantyre</strong>. Skip the hassle of border pickups—we will bring the vehicle straight to you.
+                Whether you're clearing air freight at <strong className="text-editorial-dark">Kamuzu International (LLW)</strong> or <strong className="text-editorial-dark">Chileka International (Blantyre)</strong>, or receiving a vehicle from the border, we ensure it reaches you. We handle both airport cargo clearance and direct-to-door delivery within the major cities. Skip the hassle of customs terminals—we bring the cargo straight to you.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Customs & Clearance FAQ */}
+      <section className="bg-zinc-50 border-b border-editorial-dark py-20 px-6 lg:px-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Expert Knowledge</span>
+            <h2 className="text-3xl md:text-4xl font-sans font-bold tracking-tight text-editorial-dark">
+              Malawi Customs & Clearance FAQ
+            </h2>
+          </div>
+          <div className="space-y-4">
+            {faqs.map((faq, idx) => (
+              <div 
+                key={idx} 
+                className="bg-white border border-editorial-dark transition-all duration-300"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
+                >
+                  <span className="font-sans font-bold text-editorial-dark pr-8">{faq.question}</span>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-editorial-accent shrink-0 transition-transform duration-300 ${openFaq === idx ? 'rotate-180' : ''}`} 
+                  />
+                </button>
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === idx ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+                >
+                  <div className="px-6 pb-6 text-sm text-editorial-text leading-relaxed border-t border-editorial-dark/10 pt-4">
+                    {faq.answer}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

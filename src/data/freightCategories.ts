@@ -85,6 +85,45 @@ export const FREIGHT_MAIN_CATEGORIES: FreightMainCategory[] = [
     ]
   },
   {
+    id: 'air_freight',
+    label: 'Express Air Freight (Direct)',
+    iconName: 'Plane',
+    shortDesc: 'Fast direct air freight into Lilongwe (LLW) or Blantyre (BLZ)',
+    applicableAddons: ['dublinCollection', 'marineInsurance', 'customsDocumentation'],
+    options: [
+      {
+        id: 'air_general_cargo',
+        name: 'General Air Cargo (Per KG)',
+        description: 'Standard air freight rates for general goods direct to Lilongwe or Blantyre',
+        defaultUnit: 'kg',
+        rateEur: 12.50,
+        rateUsd: 13.80,
+        rateMwk: 23000,
+        pricingType: 'per_kg'
+      },
+      {
+        id: 'air_electronics',
+        name: 'Electronics & High-Value (Per KG)',
+        description: 'Secure air freight for laptops, phones, and sensitive equipment',
+        defaultUnit: 'kg',
+        rateEur: 15.00,
+        rateUsd: 16.50,
+        rateMwk: 27500,
+        pricingType: 'per_kg'
+      },
+      {
+        id: 'air_documents',
+        name: 'Document Courier (Envelope)',
+        description: 'Urgent document and passport delivery service to Malawi',
+        defaultUnit: 'envelope',
+        rateEur: 65,
+        rateUsd: 70,
+        rateMwk: 120000,
+        pricingType: 'per_item'
+      }
+    ]
+  },
+  {
     id: 'cars_vehicles',
     label: 'Cars & Motor Vehicles',
     iconName: 'Car',
