@@ -304,11 +304,11 @@ export default function OnePageQuoteInvoiceModal({
         {/* Top Control Bar (Hidden during print) */}
         <div className="print:hidden p-4 bg-editorial-bg border-b border-editorial-dark flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-editorial-dark text-white flex items-center justify-center font-bold font-serif text-sm">
+            <div className="w-8 h-8 bg-editorial-dark text-white flex items-center justify-center font-bold font-sans text-sm">
               JR
             </div>
             <div>
-              <h2 className="font-serif font-bold text-base text-editorial-dark leading-tight">
+              <h2 className="font-sans font-bold text-base text-editorial-dark leading-tight">
                 One-Page Document Generator
               </h2>
               <span className="text-[10px] uppercase tracking-widest text-editorial-muted font-bold block">
@@ -433,7 +433,7 @@ export default function OnePageQuoteInvoiceModal({
           {/* EDIT FORM MODE */}
           {viewMode === 'edit' && (
             <div className="bg-white border border-editorial-dark p-6 space-y-6 shadow-sm">
-              <h3 className="font-serif font-bold text-xl pb-3 border-b border-editorial-dark/20">
+              <h3 className="font-sans font-bold text-xl pb-3 border-b border-editorial-dark/20">
                 Document Details & Line Items Editor
               </h3>
 
@@ -722,7 +722,7 @@ export default function OnePageQuoteInvoiceModal({
                   rows={2}
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  className="w-full border border-editorial-dark py-1.5 px-2 text-xs bg-white resize-none font-serif"
+                  className="w-full border border-editorial-dark py-1.5 px-2 text-xs bg-white resize-none font-sans"
                 />
               </div>
 
@@ -752,10 +752,10 @@ export default function OnePageQuoteInvoiceModal({
               <div className="flex justify-between items-start pb-6 border-b-2 border-editorial-dark">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-8 h-8 bg-editorial-dark text-white flex items-center justify-center font-serif font-black text-sm">
+                    <div className="w-8 h-8 bg-editorial-dark text-white flex items-center justify-center font-sans font-black text-sm">
                       JR
                     </div>
-                    <h1 className="text-2xl font-serif font-black tracking-tight text-editorial-dark">
+                    <h1 className="text-2xl font-sans font-black tracking-tight text-editorial-dark">
                       JR LOGISTICS CONNECTION
                     </h1>
                   </div>
@@ -774,8 +774,8 @@ export default function OnePageQuoteInvoiceModal({
                     {docType === 'QUOTATION' ? 'OFFICIAL FREIGHT QUOTE' : docType === 'PROFORMA_INVOICE' ? 'PRO-FORMA INVOICE' : docType === 'RECEIPT' ? 'OFFICIAL RECEIPT' : 'COMMERCIAL INVOICE'}
                   </span>
                   <div className="text-sm font-mono font-bold text-editorial-dark">{docNumber}</div>
-                  <div className="text-[10px] text-editorial-muted font-serif">Issue Date: <strong>{issueDate}</strong></div>
-                  <div className="text-[10px] text-editorial-muted font-serif">Valid / Due: <strong>{validUntil}</strong></div>
+                  <div className="text-[10px] text-editorial-muted font-sans">Issue Date: <strong>{issueDate}</strong></div>
+                  <div className="text-[10px] text-editorial-muted font-sans">Valid / Due: <strong>{validUntil}</strong></div>
                 </div>
               </div>
 
@@ -802,7 +802,7 @@ export default function OnePageQuoteInvoiceModal({
                   <span className="text-[9px] uppercase tracking-widest font-bold text-editorial-muted block">
                     Shipper / Client (Bill To)
                   </span>
-                  <h4 className="font-serif font-bold text-sm text-editorial-dark">{customerName || 'Registered Shipper'}</h4>
+                  <h4 className="font-sans font-bold text-sm text-editorial-dark">{customerName || 'Registered Shipper'}</h4>
                   {customerAddress && <p className="text-editorial-text">{customerAddress}</p>}
                   <p className="font-mono text-[11px] text-editorial-dark">
                     {customerPhone && `Tel: ${customerPhone}`} {customerEmail && `• ${customerEmail}`}
@@ -822,7 +822,7 @@ export default function OnePageQuoteInvoiceModal({
                   <div className="font-bold text-xs text-editorial-dark">
                     {origin} <span className="text-editorial-accent">➔</span> {destination}
                   </div>
-                  <p className="text-[10px] text-editorial-muted font-serif">
+                  <p className="text-[10px] text-editorial-muted font-sans">
                     Consignee in Malawi: <strong className="text-editorial-dark">{consigneeName || 'Consignee on Arrival'}</strong>
                     {consigneePhone && ` (${consigneePhone})`}
                   </p>
@@ -844,7 +844,7 @@ export default function OnePageQuoteInvoiceModal({
                   <tbody className="divide-y divide-editorial-dark/15">
                     {lineItems.map((item, idx) => (
                       <tr key={item.id} className={idx % 2 === 1 ? 'bg-zinc-50' : 'bg-white'}>
-                        <td className="py-2 px-3 font-serif text-editorial-dark font-medium">
+                        <td className="py-2 px-3 font-sans text-editorial-dark font-medium">
                           {item.description}
                         </td>
                         <td className="py-2 px-3 text-center font-mono text-[11px] text-editorial-text">
@@ -929,19 +929,19 @@ export default function OnePageQuoteInvoiceModal({
                     <strong className="block uppercase tracking-widest text-[9px] font-bold text-editorial-dark mb-1">
                       Terms of Carriage & Liability
                     </strong>
-                    <p className="text-editorial-text font-serif text-[8.5px]">
+                    <p className="text-editorial-text font-sans text-[8.5px]">
                       {notes}
                     </p>
                   </div>
 
                   <div className="flex justify-between items-end pt-3 border-t border-editorial-dark/20 mt-2">
                     <div>
-                      <div className="font-serif text-xs font-bold text-editorial-dark">JR Logistics Connection</div>
+                      <div className="font-sans text-xs font-bold text-editorial-dark">JR Logistics Connection</div>
                       <span className="text-[8px] text-editorial-muted uppercase tracking-wider block">Authorized Logistics Dispatch</span>
                     </div>
                     <div className="border border-editorial-dark px-2.5 py-1 text-center bg-white">
                       <span className="text-[7px] uppercase tracking-widest text-emerald-800 font-bold block">Official Seal</span>
-                      <span className="text-[9px] font-serif font-black text-editorial-dark">APPROVED</span>
+                      <span className="text-[9px] font-sans font-black text-editorial-dark">APPROVED</span>
                     </div>
                   </div>
                 </div>

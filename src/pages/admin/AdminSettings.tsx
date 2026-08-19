@@ -154,8 +154,8 @@ export default function AdminSettings() {
         <span className="text-[10px] uppercase tracking-widest font-bold text-editorial-accent block mb-1">
           System Administration
         </span>
-        <h1 className="text-3xl font-serif font-bold text-editorial-dark">Business Settings & Pricing Engine</h1>
-        <p className="text-editorial-muted text-sm font-serif mt-1">
+        <h1 className="text-3xl font-sans font-bold text-editorial-dark">Business Settings & Pricing Engine</h1>
+        <p className="text-editorial-muted text-sm font-sans mt-1">
           Configure live tariffs, customer add-on services, exchange rates, and business details.
         </p>
       </div>
@@ -225,7 +225,7 @@ export default function AdminSettings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
-              <h2 className="font-serif font-bold text-lg text-editorial-dark">Company Information & Contact Coordinates</h2>
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">Company Information & Contact Coordinates</h2>
             </div>
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -290,7 +290,7 @@ export default function AdminSettings() {
                   value={settings.address} 
                   onChange={handleChange} 
                   rows={2} 
-                  className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white resize-none font-serif"
+                  className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white resize-none font-sans"
                 ></textarea>
               </div>
             </div>
@@ -314,7 +314,7 @@ export default function AdminSettings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
-              <h2 className="font-serif font-bold text-lg text-editorial-dark">Website Gallery & Client Testimonials</h2>
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">Website Gallery & Client Testimonials</h2>
             </div>
             <div className="p-6 space-y-8">
               <div>
@@ -409,7 +409,7 @@ export default function AdminSettings() {
                       </div>
                       <div>
                         <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Answer</label>
-                        <textarea value={faq.answer} onChange={(e) => handleUpdateFaq(idx, 'answer', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-serif bg-white resize-none" placeholder="Provide a detailed answer..."></textarea>
+                        <textarea value={faq.answer} onChange={(e) => handleUpdateFaq(idx, 'answer', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-sans bg-white resize-none" placeholder="Provide a detailed answer..."></textarea>
                       </div>
                     </div>
                   ))}
@@ -436,7 +436,7 @@ export default function AdminSettings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
-              <h2 className="font-serif font-bold text-lg text-editorial-dark">Search Engine Optimization (SEO)</h2>
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">Search Engine Optimization (SEO)</h2>
             </div>
             <div className="p-6 grid grid-cols-1 gap-6">
               <div>
@@ -445,7 +445,7 @@ export default function AdminSettings() {
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">SEO Meta Description</label>
-                <textarea name="seoDescription" value={settings.seoDescription || ''} onChange={handleChange} rows={3} className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white resize-none font-serif" placeholder="Brief description for Google search results..."></textarea>
+                <textarea name="seoDescription" value={settings.seoDescription || ''} onChange={handleChange} rows={3} className="w-full border border-editorial-dark py-2 px-3 text-sm bg-white resize-none font-sans" placeholder="Brief description for Google search results..."></textarea>
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-widest font-bold text-editorial-dark mb-1">SEO Keywords (Comma-separated)</label>

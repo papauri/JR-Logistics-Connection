@@ -57,7 +57,7 @@ export default function AdminDashboard() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 font-serif">Operations Dashboard</h1>
+          <h1 className="text-2xl font-bold text-zinc-900 font-sans">Operations Dashboard</h1>
           <p className="text-zinc-500 mt-1 text-sm">Real-time dispatch overview of cargo requests, freight consignments, and customer invoices.</p>
         </div>
         <div className="flex items-center gap-2">

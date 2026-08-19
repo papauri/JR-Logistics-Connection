@@ -178,10 +178,10 @@ export default function TrackShipment() {
           <span className="text-[10px] uppercase tracking-[0.3em] text-editorial-accent block mb-3 font-bold">
             Real-Time Logistics Status & Commercial Verification
           </span>
-          <h1 className="text-4xl sm:text-5xl font-serif font-bold tracking-tight mb-3">
+          <h1 className="text-4xl sm:text-5xl font-sans font-bold tracking-tight mb-3">
             Track Status.
           </h1>
-          <p className="text-base sm:text-lg text-editorial-text font-serif max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-editorial-text font-sans max-w-2xl mx-auto">
             Track physical cargo freight consignments moving between Ireland & Africa, or check quote enquiries and pro-forma invoice settlements.
           </p>
         </div>
@@ -351,7 +351,7 @@ export default function TrackShipment() {
                       <span className="px-1.5 py-0.2 text-[9px] bg-zinc-900 text-white font-mono uppercase font-bold">Admin Active</span>
                     )}
                   </div>
-                  <h3 className="font-serif font-bold text-base text-editorial-dark">
+                  <h3 className="font-sans font-bold text-base text-editorial-dark">
                     {isVerified 
                       ? 'Full Consignment Dossier & Direct Contact Coordinates Unlocked' 
                       : 'Milestone Progress View (Contact Coordinates Redacted)'}
@@ -393,7 +393,7 @@ export default function TrackShipment() {
                   </button>
                 </form>
                 {verificationError && (
-                  <p className="text-xs text-red-600 font-serif mt-2 flex items-center gap-1">
+                  <p className="text-xs text-red-600 font-sans mt-2 flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                     {verificationError}
                   </p>
@@ -408,9 +408,9 @@ export default function TrackShipment() {
           <div className="p-6 border border-editorial-dark bg-white mb-8 shadow-sm">
             <div className="flex items-center gap-3 text-editorial-accent mb-2">
               <AlertCircle className="w-5 h-5" />
-              <h3 className="font-serif font-bold text-lg text-editorial-dark">Tracking Reference Not Found</h3>
+              <h3 className="font-sans font-bold text-lg text-editorial-dark">Tracking Reference Not Found</h3>
             </div>
-            <p className="text-sm text-editorial-text font-serif leading-relaxed">{error}</p>
+            <p className="text-sm text-editorial-text font-sans leading-relaxed">{error}</p>
             <div className="mt-4 pt-4 border-t border-editorial-dark/10 flex items-center justify-between text-xs text-editorial-muted">
               <span>Looking for a new shipment quote instead?</span>
               <Link to="/request" className="text-editorial-accent font-bold uppercase tracking-wider hover:underline">
@@ -431,8 +431,8 @@ export default function TrackShipment() {
                   <span className="text-[10px] uppercase tracking-widest block text-editorial-accent mb-1 font-bold">
                     Freight Quote & Invoice Tracking
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">{request.reference}</h2>
-                  <p className="text-editorial-text font-serif mt-1 text-base">
+                  <h2 className="text-3xl sm:text-4xl font-sans font-bold tracking-tight">{request.reference}</h2>
+                  <p className="text-editorial-text font-sans mt-1 text-base">
                     Route: <strong className="text-editorial-dark">{request.pickupLocation}</strong> → <strong className="text-editorial-dark">{request.destination}</strong>
                   </p>
                 </div>
@@ -469,7 +469,7 @@ export default function TrackShipment() {
                               {isDone && <CheckCircle2 className={`w-3.5 h-3.5 ${isCurrent ? 'text-editorial-accent' : 'text-emerald-700'}`} />}
                             </div>
                             <h4 className="text-xs font-bold uppercase tracking-wider leading-tight">{st.label}</h4>
-                            <p className={`text-[10px] font-serif mt-1 ${isCurrent ? 'text-zinc-300' : 'text-editorial-muted'}`}>
+                            <p className={`text-[10px] font-sans mt-1 ${isCurrent ? 'text-zinc-300' : 'text-editorial-muted'}`}>
                               {st.desc}
                             </p>
                           </div>
@@ -483,7 +483,7 @@ export default function TrackShipment() {
 
             {/* Financial Quotation & Invoice Card */}
             <div className="p-8 md:p-12 bg-editorial-bg/30 border-b border-editorial-dark">
-              <h3 className="font-serif font-bold text-2xl mb-6 flex items-center gap-2">
+              <h3 className="font-sans font-bold text-2xl mb-6 flex items-center gap-2">
                 <Receipt className="w-5 h-5 text-editorial-accent" />
                 Pricing Quotation & Invoice Status
               </h3>
@@ -494,7 +494,7 @@ export default function TrackShipment() {
                   <span className="text-2xl font-mono font-bold text-editorial-dark">
                     {request.quotedAmount ? `${request.currency || '€'} ${request.quotedAmount.toLocaleString()}` : 'Pricing Under Review'}
                   </span>
-                  <span className="text-[10px] text-editorial-muted font-serif block mt-1">Includes sea/air freight & port charges</span>
+                  <span className="text-[10px] text-editorial-muted font-sans block mt-1">Includes sea/air freight & port charges</span>
                 </div>
 
                 <div className="p-5 bg-white border border-editorial-dark shadow-sm">
@@ -502,7 +502,7 @@ export default function TrackShipment() {
                   <span className="text-base font-mono font-semibold text-editorial-dark block">
                     {request.invoiceNumber || 'Pending Confirmation'}
                   </span>
-                  <span className="text-[10px] text-editorial-muted font-serif block mt-1">Commercial Billing Reference</span>
+                  <span className="text-[10px] text-editorial-muted font-sans block mt-1">Commercial Billing Reference</span>
                 </div>
 
                 <div className="p-5 bg-white border border-editorial-dark shadow-sm">
@@ -519,12 +519,12 @@ export default function TrackShipment() {
                   <span className="text-base font-mono font-semibold text-editorial-dark block">
                     {request.depositPaid ? `${request.currency || '€'} ${request.depositPaid.toLocaleString()}` : '€ 0.00'}
                   </span>
-                  <span className="text-[10px] text-editorial-muted font-serif block mt-1">Confirmed received</span>
+                  <span className="text-[10px] text-editorial-muted font-sans block mt-1">Confirmed received</span>
                 </div>
               </div>
 
               {request.quoteNotes && (
-                <div className="p-4 bg-white border border-editorial-dark text-xs font-serif text-editorial-dark leading-relaxed">
+                <div className="p-4 bg-white border border-editorial-dark text-xs font-sans text-editorial-dark leading-relaxed">
                   <strong className="block text-[9px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Quotation Terms & Inclusions:</strong>
                   {request.quoteNotes}
                 </div>
@@ -540,10 +540,10 @@ export default function TrackShipment() {
                   </div>
                   <div>
                     <span className="text-[10px] uppercase tracking-widest text-editorial-accent font-bold block mb-1">Live Freight Shipment Generated</span>
-                    <h3 className="text-xl font-serif font-bold text-white tracking-wide">
+                    <h3 className="text-xl font-sans font-bold text-white tracking-wide">
                       Waybill ID: {linkedShipment?.id || request.linkedShipmentId}
                     </h3>
-                    <p className="text-xs text-zinc-300 font-serif">
+                    <p className="text-xs text-zinc-300 font-sans">
                       Current Physical Transit Status: <strong className="text-white">{linkedShipment?.currentStatus || 'Booking Received'}</strong>
                     </p>
                   </div>
@@ -565,7 +565,7 @@ export default function TrackShipment() {
 
             {/* Request Summary Details */}
             <div className="p-8 md:p-12 bg-white">
-              <h3 className="font-serif font-bold text-2xl mb-8">Cargo Specifications</h3>
+              <h3 className="font-sans font-bold text-2xl mb-8">Cargo Specifications</h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10 pb-10 border-b border-editorial-dark/10">
                 <div>
@@ -619,7 +619,7 @@ export default function TrackShipment() {
                   <h4 className="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
                     <Truck className="w-4 h-4 text-editorial-accent" /> Collection Service
                   </h4>
-                  <p className="text-sm font-serif text-editorial-text leading-relaxed">
+                  <p className="text-sm font-sans text-editorial-text leading-relaxed">
                     {request.collectionRequired ? (
                       <>
                         <strong className="text-editorial-dark">Door collection requested</strong> in Ireland.
@@ -635,7 +635,7 @@ export default function TrackShipment() {
                   <h4 className="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-editorial-accent" /> Cargo Notes
                   </h4>
-                  <p className="text-sm font-serif text-editorial-text leading-relaxed">
+                  <p className="text-sm font-sans text-editorial-text leading-relaxed">
                     {request.cargoDescription || 'No additional cargo specifications specified.'}
                   </p>
                 </div>
@@ -645,7 +645,7 @@ export default function TrackShipment() {
               <div className="p-6 border border-editorial-dark bg-editorial-bg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div>
                   <h4 className="text-sm font-bold uppercase tracking-wider text-editorial-dark mb-1">Confirm Rate & Booking</h4>
-                  <p className="text-xs text-editorial-text font-serif leading-relaxed max-w-xl">
+                  <p className="text-xs text-editorial-text font-sans leading-relaxed max-w-xl">
                     To finalize collection or make a booking payment against reference <strong>{request.reference}</strong>, reach our Dublin logistics coordinator directly.
                   </p>
                 </div>
@@ -673,8 +673,8 @@ export default function TrackShipment() {
                   <span className="text-[10px] uppercase tracking-widest block text-editorial-accent mb-2 font-bold">
                     Cargo Freight Waybill
                   </span>
-                  <h2 className="text-4xl font-serif font-bold tracking-tight">{shipment.id}</h2>
-                  <p className="text-editorial-text font-serif mt-2 text-lg">{shipment.cargoType} • {shipment.description}</p>
+                  <h2 className="text-4xl font-sans font-bold tracking-tight">{shipment.id}</h2>
+                  <p className="text-editorial-text font-sans mt-2 text-lg">{shipment.cargoType} • {shipment.description}</p>
                 </div>
                 <div className="inline-flex items-center px-4 py-2 border border-editorial-dark bg-editorial-bg text-editorial-dark text-xs uppercase tracking-widest font-bold">
                   {shipment.currentStatus}
@@ -733,7 +733,7 @@ export default function TrackShipment() {
             </div>
 
             <div className="p-8 md:p-12 bg-editorial-bg">
-              <h3 className="font-serif font-bold text-2xl mb-10">Milestone Timeline</h3>
+              <h3 className="font-sans font-bold text-2xl mb-10">Milestone Timeline</h3>
               <ShipmentHistory events={shipment.events || []} isPublicView={true} />
             </div>
           </div>

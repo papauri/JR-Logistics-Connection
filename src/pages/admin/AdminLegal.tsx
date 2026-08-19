@@ -147,8 +147,8 @@ export default function AdminLegal() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-6">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-zinc-900">Legal Documents & Terms Manager</h1>
-          <p className="text-zinc-500 font-serif text-sm mt-1">
+          <h1 className="text-3xl font-sans font-bold text-zinc-900">Legal Documents & Terms Manager</h1>
+          <p className="text-zinc-500 font-sans text-sm mt-1">
             Manage shipping terms of carriage, customs compliance policies, liability limits, and GDPR agreements.
           </p>
         </div>
@@ -375,7 +375,7 @@ export default function AdminLegal() {
                   <div className="bg-zinc-50 p-8 border border-zinc-200 rounded-xl space-y-6">
                     <div className="border-b border-zinc-200 pb-4">
                       <span className="text-xs uppercase font-bold text-zinc-500">{category} • {version}</span>
-                      <h2 className="text-2xl font-serif font-bold text-zinc-900 mt-1">{title}</h2>
+                      <h2 className="text-2xl font-sans font-bold text-zinc-900 mt-1">{title}</h2>
                       <p className="text-zinc-600 text-sm">{subtitle}</p>
                     </div>
 

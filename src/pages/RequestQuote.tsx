@@ -203,14 +203,14 @@ export default function RequestQuote() {
             <CheckCircle2 className="w-6 h-6 text-emerald-700" />
           </div>
           <span className="text-[10px] uppercase tracking-widest text-editorial-accent font-bold block mb-2">Enquiry Logged</span>
-          <h2 className="text-3xl font-serif font-bold text-editorial-dark mb-4">Request Received</h2>
-          <p className="text-editorial-text mb-6 leading-relaxed font-serif text-sm">
+          <h2 className="text-3xl font-sans font-bold text-editorial-dark mb-4">Request Received</h2>
+          <p className="text-editorial-text mb-6 leading-relaxed font-sans text-sm">
             Thank you for choosing <strong>JR Logistics Connection</strong>. Your official quote reference number is:
           </p>
           <div className="p-4 bg-editorial-bg border border-editorial-dark font-mono font-bold text-lg text-editorial-dark tracking-wider mb-6 select-all">
             {reference}
           </div>
-          <p className="text-xs text-editorial-muted font-serif mb-8">
+          <p className="text-xs text-editorial-muted font-sans mb-8">
             Our operations team is reviewing your cargo specifications and will issue your formal quotation and collection schedule shortly via email and WhatsApp.
           </p>
           <div className="space-y-3">
@@ -237,8 +237,8 @@ export default function RequestQuote() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span className="text-[10px] uppercase tracking-[0.3em] text-editorial-accent font-bold block mb-3">JR Logistics Connection</span>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tight mb-4">Request a Formal Quote</h1>
-          <p className="text-base text-editorial-text font-serif max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-sans font-bold tracking-tight mb-4">Request a Formal Quote</h1>
+          <p className="text-base text-editorial-text font-sans max-w-2xl mx-auto">
             Categorized cargo quotation service from Dublin, Ireland to Malawi & Africa. Fill out your shipment details below for a tailored, guaranteed freight rate.
           </p>
         </div>
@@ -248,7 +248,7 @@ export default function RequestQuote() {
             
             {/* SECTION 01: CONTACT INFORMATION */}
             <div className="p-8 md:p-12 border-b border-editorial-dark">
-              <h3 className="text-xl font-serif font-bold mb-8 flex items-center gap-4 text-editorial-dark">
+              <h3 className="text-xl font-sans font-bold mb-8 flex items-center gap-4 text-editorial-dark">
                 <span className="text-[10px] uppercase tracking-widest bg-editorial-dark text-white px-2.5 py-1 font-mono">01</span>
                 Contact & Shipper Coordinates
               </h3>
@@ -260,7 +260,7 @@ export default function RequestQuote() {
                   <input 
                     {...register('customerName')} 
                     placeholder="e.g. Chimwemwe Banda" 
-                    className="w-full rounded-none border-0 border-b border-editorial-dark py-3 px-0 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors font-serif" 
+                    className="w-full rounded-none border-0 border-b border-editorial-dark py-3 px-0 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors font-sans" 
                   />
                   {errors.customerName && <p className="text-editorial-accent text-xs mt-2">{errors.customerName.message}</p>}
                 </div>
@@ -273,7 +273,7 @@ export default function RequestQuote() {
                     type="email" 
                     {...register('email')} 
                     placeholder="e.g. client@example.com" 
-                    className="w-full rounded-none border-0 border-b border-editorial-dark py-3 px-0 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors font-serif" 
+                    className="w-full rounded-none border-0 border-b border-editorial-dark py-3 px-0 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors font-sans" 
                   />
                   {errors.email && <p className="text-editorial-accent text-xs mt-2">{errors.email.message}</p>}
                 </div>
@@ -295,7 +295,7 @@ export default function RequestQuote() {
 
             {/* SECTION 02: CATEGORIZED CARGO SPECIFICATION */}
             <div className="p-8 md:p-12 border-b border-editorial-dark">
-              <h3 className="text-xl font-serif font-bold mb-8 flex items-center gap-4 text-editorial-dark">
+              <h3 className="text-xl font-sans font-bold mb-8 flex items-center gap-4 text-editorial-dark">
                 <span className="text-[10px] uppercase tracking-widest bg-editorial-dark text-white px-2.5 py-1 font-mono">02</span>
                 Cargo Classification & Dropdowns
               </h3>
@@ -375,7 +375,7 @@ export default function RequestQuote() {
                     <input 
                       {...register('quantity')} 
                       placeholder="e.g. 2 barrels, 1 SUV, 50 kg" 
-                      className="w-full rounded-none border-0 border-b border-editorial-dark py-3 px-0 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors font-serif" 
+                      className="w-full rounded-none border-0 border-b border-editorial-dark py-3 px-0 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors font-sans" 
                     />
                     {errors.quantity && <p className="text-editorial-accent text-xs mt-2">{errors.quantity.message}</p>}
                   </div>
@@ -401,7 +401,7 @@ export default function RequestQuote() {
                     {...register('cargoDescription')} 
                     rows={3} 
                     placeholder="Describe the items you are shipping (e.g. 2 x 200L plastic drums with clothes and canned foods, or 2018 Toyota RAV4 Automatic)."
-                    className="w-full rounded-none border border-editorial-dark py-3 px-4 text-editorial-dark bg-editorial-bg/30 focus:ring-0 focus:border-editorial-accent transition-colors resize-none font-serif text-sm"
+                    className="w-full rounded-none border border-editorial-dark py-3 px-4 text-editorial-dark bg-editorial-bg/30 focus:ring-0 focus:border-editorial-accent transition-colors resize-none font-sans text-sm"
                   ></textarea>
                   {errors.cargoDescription && <p className="text-editorial-accent text-xs mt-2">{errors.cargoDescription.message}</p>}
                 </div>
@@ -411,7 +411,7 @@ export default function RequestQuote() {
             {/* SECTION 03: LOGISTICS ADD-ONS & SCHEDULE */}
             {activeAddonList.length > 0 && (
               <div className="p-8 md:p-12 border-b border-editorial-dark bg-editorial-bg/60">
-                <h3 className="text-xl font-serif font-bold mb-6 flex items-center gap-4 text-editorial-dark">
+                <h3 className="text-xl font-sans font-bold mb-6 flex items-center gap-4 text-editorial-dark">
                   <span className="text-[10px] uppercase tracking-widest bg-editorial-dark text-white px-2.5 py-1 font-mono">03</span>
                   Logistics & Service Add-Ons
                 </h3>
@@ -437,10 +437,12 @@ export default function RequestQuote() {
                               <span className="text-editorial-accent ml-2">
                                 {isInsurance 
                                   ? `(From €${addon.minRateEur || 40})` 
-                                  : `(+€${addon.rateEur || 0})`}
+                                  : (addonKey === 'dublinCollection' || addonKey === 'vehicleTowing' || addonKey === 'containerHaulage') 
+                                    ? `(From €${addon.rateEur || 0})`
+                                    : `(+€${addon.rateEur || 0})`}
                               </span>
                             </label>
-                            <p className="text-xs text-editorial-text mt-1 font-serif">
+                            <p className="text-xs text-editorial-text mt-1 font-sans">
                               {addon.description}
                             </p>
                           </div>
@@ -492,10 +494,10 @@ export default function RequestQuote() {
                 {...register('message')} 
                 rows={2} 
                 placeholder="e.g. Need assistance with loading heavy crate, or prefer Lilongwe depot collection."
-                className="w-full rounded-none border border-editorial-dark py-3 px-4 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors resize-none text-sm font-serif"
+                className="w-full rounded-none border border-editorial-dark py-3 px-4 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors resize-none text-sm font-sans"
               ></textarea>
               
-              <div className="mt-6 p-4 bg-editorial-bg border border-editorial-dark/10 text-xs font-serif text-editorial-text leading-relaxed">
+              <div className="mt-6 p-4 bg-editorial-bg border border-editorial-dark/10 text-xs font-sans text-editorial-text leading-relaxed">
                 By submitting this quotation request, you acknowledge our{' '}
                 <a href="/legal/shipping-terms" target="_blank" rel="noopener noreferrer" className="text-editorial-dark font-bold underline hover:text-editorial-accent">
                   Terms of Carriage
@@ -513,7 +515,7 @@ export default function RequestQuote() {
                 <span className="text-[10px] uppercase tracking-widest text-editorial-accent font-bold block mb-1">
                   Ready to Submit
                 </span>
-                <p className="text-xs text-zinc-300 font-serif">
+                <p className="text-xs text-zinc-300 font-sans">
                   We will draft your binding rate quote and send tracking credentials.
                 </p>
               </div>

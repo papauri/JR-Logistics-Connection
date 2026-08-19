@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Truck, Package, MessageSquare, Star, Loader2 } from 'lucide-react';
+import { ArrowRight, MapPin, Truck, Package, MessageSquare, Star, Loader2, FileText } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import type { SiteSettings } from '../types';
@@ -39,6 +39,8 @@ const defaultSettings: SiteSettings = {
   ],
   updatedAt: Date.now()
 };
+
+import customsImage from '../assets/images/regenerated_image_1787154413181.jpg';
 
 export default function PublicHome() {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
@@ -113,17 +115,17 @@ export default function PublicHome() {
             <div className="space-y-10">
               <div className="relative pl-6 border-l border-editorial-accent">
                 <span className="text-[10px] uppercase tracking-widest block text-editorial-accent mb-1">Route</span>
-                <h3 className="text-lg font-serif">Ireland → Africa</h3>
+                <h3 className="text-lg font-sans">Ireland → Africa</h3>
                 <p className="text-xs text-editorial-muted mt-1">Direct shipping lines.</p>
               </div>
               <div className="relative pl-6 border-l border-[#444]">
                 <span className="text-[10px] uppercase tracking-widest block mb-1 text-white">Coverage</span>
-                <h3 className="text-lg font-serif">Dublin Collection</h3>
+                <h3 className="text-lg font-sans">Dublin Collection</h3>
                 <p className="text-xs text-editorial-muted mt-1">Starting from {settings.currency}{settings.collectionStartingPrice}.</p>
               </div>
               <div className="relative pl-6 border-l border-[#444]">
                 <span className="text-[10px] uppercase tracking-widest block mb-1 text-white">Security</span>
-                <h3 className="text-lg font-serif">Real-time Tracking</h3>
+                <h3 className="text-lg font-sans">Real-time Tracking</h3>
                 <p className="text-xs text-editorial-muted mt-1">Know where your cargo is.</p>
               </div>
             </div>
@@ -136,8 +138,8 @@ export default function PublicHome() {
         <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-editorial-dark p-12 flex flex-col justify-between">
           <div>
             <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Standard Cargo Categories</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight">What We<br/>Ship</h2>
-            <p className="mt-6 text-editorial-text font-serif leading-relaxed">From personal boxes and 200L drums to cars and container freight, we handle all cargo with professional care.</p>
+            <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight">What We<br/>Ship</h2>
+            <p className="mt-6 text-editorial-text font-sans leading-relaxed">From personal boxes and 200L drums to cars and container freight, we handle all cargo with professional care.</p>
           </div>
           <div className="mt-8 pt-6 border-t border-editorial-dark/20">
             <Link
@@ -160,7 +162,7 @@ export default function PublicHome() {
                  <div className="absolute inset-1 border border-dashed border-editorial-dark rounded-full"></div>
                  <Package className="w-4 h-4 text-editorial-dark group-hover:text-editorial-accent transition-colors" />
               </div>
-              <h3 className="text-xl font-serif font-bold mb-3 group-hover:text-editorial-accent transition-colors flex items-center justify-between">
+              <h3 className="text-xl font-sans font-bold mb-3 group-hover:text-editorial-accent transition-colors flex items-center justify-between">
                 {item.title}
                 <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
               </h3>
@@ -174,16 +176,16 @@ export default function PublicHome() {
       <section className="flex flex-col lg:flex-row">
         <div className="flex-1 p-12 lg:p-16 border-b lg:border-b-0 lg:border-r border-editorial-dark flex flex-col justify-center">
           <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block">Door-to-Door Convenience</span>
-          <h2 className="text-5xl font-serif font-bold tracking-tight mb-8">
+          <h2 className="text-5xl font-sans font-bold tracking-tight mb-8">
             Need us to collect it? We can.
           </h2>
-          <p className="text-lg text-editorial-text font-serif mb-12 max-w-xl leading-relaxed">
+          <p className="text-lg text-editorial-text font-sans mb-12 max-w-xl leading-relaxed">
             Save time and hassle. Our Dublin-based collection team can come directly to your home or business, load your goods securely, and bring them to our warehouse for onward shipping.
           </p>
           <div className="flex items-end gap-12">
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-[0.3em] opacity-50 mb-2">Starting From</span>
-              <span className="text-6xl font-serif font-bold">{settings.currency}{settings.collectionStartingPrice}</span>
+              <span className="text-6xl font-sans font-bold">{settings.currency}{settings.collectionStartingPrice}</span>
             </div>
             <div className="flex-1 h-[1px] bg-editorial-dark mb-4 relative">
               <div className="absolute top-[-4px] left-[15%] w-2 h-2 bg-editorial-accent rounded-full shadow-[0_0_10px_#E03E2D]"></div>
@@ -191,7 +193,7 @@ export default function PublicHome() {
           </div>
         </div>
         <div className="w-full lg:w-1/3 p-12 flex flex-col bg-white justify-center">
-          <h3 className="text-xl font-serif font-bold mb-8">How It Works</h3>
+          <h3 className="text-xl font-sans font-bold mb-8">How It Works</h3>
           <ul className="space-y-8">
             {[
               'Tell us what you are shipping and where you are.',
@@ -215,6 +217,49 @@ export default function PublicHome() {
         </div>
       </section>
 
+      {/* Destination Services & Customs */}
+      <section className="flex flex-col md:flex-row border-b border-editorial-dark bg-white">
+        <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-editorial-dark relative min-h-[400px]">
+          <img 
+            src={customsImage} 
+            alt="Mchinji and Songwe Border Customs Clearing" 
+            className="absolute inset-0 w-full h-full object-cover grayscale opacity-90"
+          />
+          <div className="absolute inset-0 bg-editorial-dark/30 mix-blend-multiply"></div>
+          <div className="absolute bottom-6 left-6 bg-editorial-dark text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5">
+            Border Operations: Songwe / Mchinji
+          </div>
+        </div>
+        <div className="w-full md:w-1/2 p-12 lg:p-16 flex flex-col justify-center">
+          <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Destination Support</span>
+          <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight mb-8">
+            Customs Clearance & Delivery.
+          </h2>
+          
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-sans font-bold mb-3 flex items-center gap-2 text-editorial-dark">
+                <FileText className="w-5 h-5 text-editorial-accent" />
+                Comprehensive Customs Assistance
+              </h3>
+              <p className="text-editorial-text text-sm leading-relaxed">
+                Navigating border regulations can be complex. We offer complete customs clearing assistance where required. While official customs duties and destination fees vary based on your specific cargo and regulations, our dedicated agents will help you handle the paperwork, navigate inspections, and resolve anything customs-related at borders like Mchinji or Songwe to ensure your freight is released smoothly.
+              </p>
+            </div>
+            
+            <div className="pt-8 border-t border-editorial-dark/10">
+              <h3 className="text-xl font-sans font-bold mb-3 flex items-center gap-2 text-editorial-dark">
+                <MapPin className="w-5 h-5 text-editorial-accent" />
+                Direct Vehicle Delivery in Malawi
+              </h3>
+              <p className="text-editorial-text text-sm leading-relaxed">
+                For clients shipping cars and motor vehicles, we don't just stop at the border. We offer exclusive vehicle delivery directly to the consignee's final destination in any of the two major cities: <strong className="text-editorial-dark">Lilongwe</strong> and <strong className="text-editorial-dark">Blantyre</strong>. Skip the hassle of border pickups—we will bring the vehicle straight to you.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Shipping Gallery */}
       <section className="border-b border-editorial-dark">
         <div className="grid grid-cols-2 md:grid-cols-4">
@@ -231,7 +276,7 @@ export default function PublicHome() {
       <section className="flex flex-col md:flex-row border-b border-editorial-dark">
         <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-editorial-dark p-12 lg:p-16 flex flex-col justify-center bg-editorial-dark text-white">
           <span className="text-[10px] uppercase tracking-widest text-editorial-muted mb-4 block">Client Reviews</span>
-          <h2 className="text-5xl font-serif font-bold tracking-tight leading-tight">Trusted by<br/>Families &<br/>Businesses.</h2>
+          <h2 className="text-5xl font-sans font-bold tracking-tight leading-tight">Trusted by<br/>Families &<br/>Businesses.</h2>
         </div>
         <div className="flex-1 p-6 md:p-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -256,7 +301,7 @@ export default function PublicHome() {
                   <div className="flex gap-1 text-editorial-accent mb-6">
                     {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
                   </div>
-                  <p className="text-editorial-dark text-lg font-serif mb-8 leading-relaxed">"{review.text}"</p>
+                  <p className="text-editorial-dark text-lg font-sans mb-8 leading-relaxed">"{review.text}"</p>
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest text-editorial-dark mb-1">{review.author}</p>
                     <p className="text-[10px] uppercase tracking-widest text-editorial-muted">{review.location}</p>
@@ -273,13 +318,13 @@ export default function PublicHome() {
         <section className="border-b border-editorial-dark flex flex-col md:flex-row">
           <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-editorial-dark p-12 lg:p-16 flex flex-col justify-center">
             <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Information</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight">Common<br/>Questions</h2>
-            <p className="mt-6 text-editorial-text font-serif leading-relaxed">Everything you need to know about our shipping and logistics services.</p>
+            <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight">Common<br/>Questions</h2>
+            <p className="mt-6 text-editorial-text font-sans leading-relaxed">Everything you need to know about our shipping and logistics services.</p>
           </div>
           <div className="flex-1 grid sm:grid-cols-2">
             {settings.faqs.filter(f => f.published !== false).map((faq, idx) => (
               <div key={faq.id || idx} className={`p-10 lg:p-12 border-editorial-dark hover:bg-white transition-colors ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
-                <h3 className="text-lg font-serif font-bold mb-4 text-editorial-dark">
+                <h3 className="text-lg font-sans font-bold mb-4 text-editorial-dark">
                   {faq.question}
                 </h3>
                 <p className="text-editorial-text text-sm leading-relaxed">
@@ -295,10 +340,10 @@ export default function PublicHome() {
       <section className="py-24 px-6 text-center bg-editorial-bg">
         <div className="max-w-3xl mx-auto">
           <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-6 block font-bold">Need assistance?</span>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight mb-8">
+          <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight mb-8">
             Let's talk logistics.
           </h2>
-          <p className="text-lg text-editorial-text font-serif leading-relaxed mb-10 max-w-2xl mx-auto">
+          <p className="text-lg text-editorial-text font-sans leading-relaxed mb-10 max-w-2xl mx-auto">
             Our dispatch team is ready to answer your questions, assist with active shipments, and provide customized freight solutions for your specific needs.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

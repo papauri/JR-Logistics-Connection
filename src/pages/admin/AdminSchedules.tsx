@@ -94,8 +94,8 @@ export default function AdminSchedules() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-zinc-900">Shipment Schedules</h1>
-          <p className="text-zinc-500 font-serif text-sm mt-1">Manage upcoming shipment dates and cutoff times for collection.</p>
+          <h1 className="text-3xl font-sans font-bold text-zinc-900">Shipment Schedules</h1>
+          <p className="text-zinc-500 font-sans text-sm mt-1">Manage upcoming shipment dates and cutoff times for collection.</p>
         </div>
         <button
           onClick={() => openEditModal()}
@@ -108,7 +108,7 @@ export default function AdminSchedules() {
       <div className="bg-white border border-editorial-dark shadow-sm">
         <div className="grid grid-cols-1 divide-y divide-editorial-dark/10">
           {schedules.length === 0 ? (
-            <div className="p-8 text-center text-zinc-500 text-sm font-serif">
+            <div className="p-8 text-center text-zinc-500 text-sm font-sans">
               No schedules found. Click "Add Schedule" to create one.
             </div>
           ) : (
@@ -119,7 +119,7 @@ export default function AdminSchedules() {
                     <Calendar className="w-5 h-5 text-editorial-dark" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold font-serif text-zinc-900 mb-1 flex items-center gap-2">
+                    <h3 className="text-lg font-bold font-sans text-zinc-900 mb-1 flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-editorial-accent" />
                       {schedule.destination}
                     </h3>
@@ -170,7 +170,7 @@ export default function AdminSchedules() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white max-w-lg w-full shadow-2xl border border-editorial-dark animate-in slide-in-from-bottom-4 duration-200">
             <div className="p-5 border-b border-zinc-100 flex items-center justify-between bg-editorial-bg">
-              <h2 className="text-lg font-bold font-serif flex items-center gap-2">
+              <h2 className="text-lg font-bold font-sans flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-editorial-accent" />
                 {editingSchedule ? 'Edit Schedule' : 'New Schedule'}
               </h2>

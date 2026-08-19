@@ -63,7 +63,7 @@ export default function PublicLegal() {
       <div className="min-h-[60vh] flex items-center justify-center bg-editorial-bg">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-editorial-dark border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="font-serif text-sm text-editorial-text">Loading regulatory agreements...</p>
+          <p className="font-sans text-sm text-editorial-text">Loading regulatory agreements...</p>
         </div>
       </div>
     );
@@ -80,10 +80,10 @@ export default function PublicLegal() {
           <span className="text-[10px] uppercase tracking-[0.3em] text-editorial-accent font-bold block mb-2">
             Governance & Regulatory Agreements
           </span>
-          <h1 className="text-4xl sm:text-5xl font-serif font-bold tracking-tight mb-3">
+          <h1 className="text-4xl sm:text-5xl font-sans font-bold tracking-tight mb-3">
             Legal & Shipping Terms.
           </h1>
-          <p className="text-editorial-text font-serif text-lg max-w-3xl">
+          <p className="text-editorial-text font-sans text-lg max-w-3xl">
             Official carriage terms, customs compliance, carrier liability limitations, and data protection standards governing Ireland to Africa maritime and overland freight.
           </p>
         </div>
@@ -134,8 +134,8 @@ export default function PublicLegal() {
               <span className="text-[9px] uppercase tracking-widest text-editorial-accent font-bold block mb-1">
                 Legal & Compliance Inquiries
               </span>
-              <h4 className="font-serif font-bold text-lg mb-2">Need Contract Clarification?</h4>
-              <p className="text-xs text-zinc-300 font-serif leading-relaxed mb-4">
+              <h4 className="font-sans font-bold text-lg mb-2">Need Contract Clarification?</h4>
+              <p className="text-xs text-zinc-300 font-sans leading-relaxed mb-4">
                 For questions regarding high-value marine insurance, dangerous goods declaration, or commercial charters, contact our compliance desk.
               </p>
               <a 
@@ -163,7 +163,7 @@ export default function PublicLegal() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-[11px] text-editorial-muted font-serif flex items-center gap-1.5">
+                    <span className="text-[11px] text-editorial-muted font-sans flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" /> Effective: {activeDoc.lastUpdated}
                     </span>
                     <button
@@ -176,10 +176,10 @@ export default function PublicLegal() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-editorial-dark mb-2">
+                <h2 className="text-3xl sm:text-4xl font-sans font-bold tracking-tight text-editorial-dark mb-2">
                   {activeDoc.title}
                 </h2>
-                <p className="text-editorial-text font-serif text-base">
+                <p className="text-editorial-text font-sans text-base">
                   {activeDoc.subtitle}
                 </p>
 
@@ -202,15 +202,15 @@ export default function PublicLegal() {
               </div>
 
               {/* Full Markdown Body */}
-              <div className="p-8 lg:p-12 text-editorial-dark leading-relaxed font-serif text-base">
-                <div className="prose prose-zinc max-w-none prose-headings:font-serif prose-headings:font-bold prose-h2:text-2xl prose-h2:border-b prose-h2:border-editorial-dark/10 prose-h2:pb-2 prose-h2:mt-8 prose-h2:mb-4 prose-p:text-editorial-text prose-p:mb-4 prose-li:text-editorial-text prose-li:mb-1">
+              <div className="p-8 lg:p-12 text-editorial-dark leading-relaxed font-sans text-base">
+                <div className="prose prose-zinc max-w-none prose-headings:font-sans prose-headings:font-bold prose-h2:text-2xl prose-h2:border-b prose-h2:border-editorial-dark/10 prose-h2:pb-2 prose-h2:mt-8 prose-h2:mb-4 prose-p:text-editorial-text prose-p:mb-4 prose-li:text-editorial-text prose-li:mb-1">
                   <Markdown>{activeDoc.content}</Markdown>
                 </div>
               </div>
 
               {/* Footer acknowledgement */}
               <div className="p-6 bg-editorial-bg border-t border-editorial-dark flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-                <span className="text-editorial-muted font-serif">
+                <span className="text-editorial-muted font-sans">
                   By engaging JR Logistics Connection services, shippers and consignees consent to these conditions.
                 </span>
                 <Link

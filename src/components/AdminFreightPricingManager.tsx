@@ -348,10 +348,10 @@ export default function AdminFreightPricingManager() {
               </span>
             )}
           </div>
-          <h2 className="text-2xl md:text-3xl font-serif font-bold">
+          <h2 className="text-2xl md:text-3xl font-sans font-bold">
             Freight Pricing & Add-on Controls
           </h2>
-          <p className="text-editorial-muted text-xs md:text-sm font-serif mt-1 max-w-2xl">
+          <p className="text-editorial-muted text-xs md:text-sm font-sans mt-1 max-w-2xl">
             Toggle optional customer add-on services on/off and easily edit all prices across boxes, cars, weight-based rates, pallets, and full container freight.
           </p>
         </div>
@@ -390,10 +390,10 @@ export default function AdminFreightPricingManager() {
         <div className="p-6 border-b border-editorial-dark flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-editorial-bg/40">
           <div>
             <span className="text-[10px] uppercase tracking-widest font-bold text-editorial-accent">Section 1</span>
-            <h3 className="text-lg font-serif font-bold text-editorial-dark flex items-center gap-2">
+            <h3 className="text-lg font-sans font-bold text-editorial-dark flex items-center gap-2">
               <Truck className="w-5 h-5 text-editorial-accent" /> Customer Add-on Services (Toggle On/Off)
             </h3>
-            <p className="text-xs text-editorial-muted font-serif mt-0.5">
+            <p className="text-xs text-editorial-muted font-sans mt-0.5">
               Turn services on or off. Disabled add-ons will be hidden or deactivated in the client calculator and quote request flows.
             </p>
           </div>
@@ -428,7 +428,7 @@ export default function AdminFreightPricingManager() {
                         <span className="text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 bg-editorial-dark/5 text-editorial-dark">
                           {addon.calculationType === 'percentage' ? 'Percentage Based' : 'Flat Fee'}
                         </span>
-                        <h4 className="text-sm font-serif font-bold text-editorial-dark mt-1">
+                        <h4 className="text-sm font-sans font-bold text-editorial-dark mt-1">
                           {addon.name}
                         </h4>
                       </div>
@@ -487,7 +487,7 @@ export default function AdminFreightPricingManager() {
                           rows={2}
                           value={addon.description}
                           onChange={(e) => handleUpdateAddonField(addonKey, 'description', e.target.value)}
-                          className="w-full border border-editorial-dark py-1 px-2 text-xs font-serif bg-white resize-none"
+                          className="w-full border border-editorial-dark py-1 px-2 text-xs font-sans bg-white resize-none"
                         />
                       </div>
                     </div>
@@ -508,7 +508,7 @@ export default function AdminFreightPricingManager() {
                               className="w-24 border border-editorial-dark py-1 px-2 text-xs font-mono font-bold bg-white text-right"
                             />
                             <span className="text-xs font-bold font-mono">%</span>
-                            <span className="text-[10px] text-editorial-muted font-serif">(default: 3.5%)</span>
+                            <span className="text-[10px] text-editorial-muted font-sans">(default: 3.5%)</span>
                           </div>
                         </div>
 
@@ -622,10 +622,10 @@ export default function AdminFreightPricingManager() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-editorial-dark/10">
           <div>
             <span className="text-[10px] uppercase tracking-widest font-bold text-editorial-accent">Section 2</span>
-            <h3 className="text-lg font-serif font-bold text-editorial-dark flex items-center gap-2">
+            <h3 className="text-lg font-sans font-bold text-editorial-dark flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-editorial-accent" /> Currency Multipliers & Exchange Rates
             </h3>
-            <p className="text-xs text-editorial-muted font-serif mt-0.5">
+            <p className="text-xs text-editorial-muted font-sans mt-0.5">
               Set the base exchange rates per 1 Euro (€). You can click "Auto-calculate All Rates" to instantly update every freight item and add-on in the catalog.
             </p>
           </div>
@@ -642,8 +642,8 @@ export default function AdminFreightPricingManager() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-4">
           <div className="p-4 border border-editorial-dark bg-editorial-bg/20">
             <label className="block text-[10px] uppercase tracking-widest font-bold mb-1">Base Currency</label>
-            <div className="text-xl font-serif font-bold text-editorial-dark">1.00 EUR (€)</div>
-            <span className="text-[10px] text-editorial-muted font-serif">Euro is the primary pricing standard</span>
+            <div className="text-xl font-sans font-bold text-editorial-dark">1.00 EUR (€)</div>
+            <span className="text-[10px] text-editorial-muted font-sans">Euro is the primary pricing standard</span>
           </div>
 
           <div className="p-4 border border-editorial-dark bg-white">
@@ -664,7 +664,7 @@ export default function AdminFreightPricingManager() {
                 className="w-full border border-editorial-dark py-1.5 px-2 text-sm font-mono font-bold bg-white"
               />
             </div>
-            <span className="text-[10px] text-editorial-muted font-serif">Standard rate: ~1.10 USD</span>
+            <span className="text-[10px] text-editorial-muted font-sans">Standard rate: ~1.10 USD</span>
           </div>
 
           <div className="p-4 border border-editorial-dark bg-white">
@@ -685,7 +685,7 @@ export default function AdminFreightPricingManager() {
                 className="w-full border border-editorial-dark py-1.5 px-2 text-sm font-mono font-bold bg-white"
               />
             </div>
-            <span className="text-[10px] text-editorial-muted font-serif">Standard rate: ~1,850 MWK</span>
+            <span className="text-[10px] text-editorial-muted font-sans">Standard rate: ~1,850 MWK</span>
           </div>
         </div>
       </div>
@@ -695,10 +695,10 @@ export default function AdminFreightPricingManager() {
         <div className="p-6 border-b border-editorial-dark flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-editorial-bg/40">
           <div>
             <span className="text-[10px] uppercase tracking-widest font-bold text-editorial-accent">Section 3</span>
-            <h3 className="text-lg font-serif font-bold text-editorial-dark flex items-center gap-2">
+            <h3 className="text-lg font-sans font-bold text-editorial-dark flex items-center gap-2">
               <Package className="w-5 h-5 text-editorial-accent" /> Freight Cargo Categories & Itemized Tariffs
             </h3>
-            <p className="text-xs text-editorial-muted font-serif mt-0.5">
+            <p className="text-xs text-editorial-muted font-sans mt-0.5">
               Select a category tab below to edit individual prices for boxes, barrels, vehicle models, per-kg rates, pallets, and container tariffs.
             </p>
           </div>
@@ -759,7 +759,7 @@ export default function AdminFreightPricingManager() {
                   type="text"
                   value={currentCategory.shortDesc}
                   onChange={(e) => handleUpdateCategoryMeta('shortDesc', e.target.value)}
-                  className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-serif bg-white"
+                  className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-sans bg-white"
                 />
               </div>
 
@@ -903,7 +903,7 @@ export default function AdminFreightPricingManager() {
                         type="text"
                         value={opt.description}
                         onChange={(e) => handleUpdateSubOption(optIdx, 'description', e.target.value)}
-                        className="w-full border border-editorial-dark py-1 px-2 text-xs font-serif bg-white"
+                        className="w-full border border-editorial-dark py-1 px-2 text-xs font-sans bg-white"
                         placeholder="e.g. 200 Litre heavy drum or Toyota Land Cruiser / Prado"
                       />
                     </div>
@@ -1024,9 +1024,9 @@ export default function AdminFreightPricingManager() {
           <div className="bg-white border-2 border-editorial-dark max-w-md w-full p-6 space-y-4 shadow-2xl">
             <div className="flex items-center gap-3 text-red-600">
               <RotateCcw className="w-6 h-6" />
-              <h3 className="text-lg font-serif font-bold text-editorial-dark">Reset All Tariffs to Defaults?</h3>
+              <h3 className="text-lg font-sans font-bold text-editorial-dark">Reset All Tariffs to Defaults?</h3>
             </div>
-            <p className="text-xs text-editorial-muted font-serif leading-relaxed">
+            <p className="text-xs text-editorial-muted font-sans leading-relaxed">
               This will restore all default freight pricing for boxes (€65-€160), cars (€1,450-€2,650), per-kg rates (€5.50-€8.00), pallets (€480-€780), and containers (€3,850-€6,400), as well as re-enable all 3 standard service add-ons.
             </p>
             <div className="flex items-center justify-end gap-3 pt-3 border-t border-editorial-dark/10">

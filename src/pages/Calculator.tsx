@@ -256,10 +256,10 @@ export default function Calculator() {
             <CalcIcon className="w-3.5 h-3.5 text-editorial-accent" />
             <span>Official Tariff Calculator</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-serif font-bold text-editorial-dark tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-sans font-bold text-editorial-dark tracking-tight">
             Calculate Your Shipment
           </h1>
-          <p className="mt-3 text-sm md:text-base text-editorial-muted font-serif">
+          <p className="mt-3 text-sm md:text-base text-editorial-muted font-sans">
             Select your specific cargo type—from individual 200L shipping drums and boxes to motor vehicles, per-kg dry goods, and container freight from Dublin to Malawi.
           </p>
         </div>
@@ -301,7 +301,7 @@ export default function Calculator() {
                         {isSelected && <span className="w-2 h-2 rounded-full bg-editorial-accent" />}
                       </div>
                       <div>
-                        <span className="text-xs font-bold font-serif block leading-tight">
+                        <span className="text-xs font-bold font-sans block leading-tight">
                           {cat.label}
                         </span>
                         <span className={`text-[10px] line-clamp-1 mt-0.5 ${isSelected ? 'text-zinc-300' : 'text-editorial-muted'}`}>
@@ -347,10 +347,10 @@ export default function Calculator() {
                 <div className="p-3.5 bg-editorial-bg/70 border border-editorial-dark/20 text-xs flex items-start gap-3">
                   <Info className="w-4 h-4 text-editorial-accent shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-editorial-dark block font-serif">
+                    <span className="font-bold text-editorial-dark block font-sans">
                       {currentSubOption.name}
                     </span>
-                    <p className="text-editorial-muted font-serif mt-0.5">
+                    <p className="text-editorial-muted font-sans mt-0.5">
                       {currentSubOption.description}
                     </p>
                     {currentSubOption.suggestedWeightKg && (
@@ -500,7 +500,7 @@ export default function Calculator() {
                                 )}
                                 {addon.name}
                               </span>
-                              <p className="text-xs text-editorial-muted font-serif mt-0.5">
+                              <p className="text-xs text-editorial-muted font-sans mt-0.5">
                                 {addon.description}
                               </p>
                             </div>
@@ -511,7 +511,9 @@ export default function Calculator() {
                               ? (isSelected 
                                   ? `+€${Math.max(addon.minRateEur || 40, goodsValueEur * (addon.percentage || 0.035)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
                                   : `From €${(addon.minRateEur || 40).toLocaleString()}`)
-                              : `+€${(addon.rateEur || 0).toLocaleString()}`
+                              : (addonKey === 'dublinCollection' || addonKey === 'vehicleTowing' || addonKey === 'containerHaulage')
+                                ? (isSelected ? `+€${(addon.rateEur || 0).toLocaleString()}` : `From €${(addon.rateEur || 0).toLocaleString()}`)
+                                : `+€${(addon.rateEur || 0).toLocaleString()}`
                             }
                           </span>
                         </div>
@@ -533,7 +535,7 @@ export default function Calculator() {
                                 className="w-full py-1.5 px-3 font-mono text-xs border-0 focus:ring-0"
                               />
                             </div>
-                            <span className="text-[10px] text-editorial-muted font-serif mt-1 block">
+                            <span className="text-[10px] text-editorial-muted font-sans mt-1 block">
                               Calculated at {((addon.percentage || 0.035) * 100).toFixed(1)}% of declared value (min. €{(addon.minRateEur || 40).toLocaleString()})
                             </span>
                           </div>
@@ -563,7 +565,7 @@ export default function Calculator() {
                 <span className="text-4xl md:text-5xl font-mono font-bold text-white tracking-tight block">
                   €{calculations.totalEur.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
-                <span className="text-xs font-serif text-zinc-300 mt-1 block">
+                <span className="text-xs font-sans text-zinc-300 mt-1 block">
                   EUR (Euro Base Currency)
                 </span>
 
@@ -609,7 +611,7 @@ export default function Calculator() {
                 <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
               </button>
 
-              <p className="text-[10px] text-zinc-400 font-serif text-center mt-3">
+              <p className="text-[10px] text-zinc-400 font-sans text-center mt-3">
                 Tariffs include ocean freight, warehouse export staging in Dublin, and arrival processing at destination hub. Final quotes are confirmed by JR Logistics dispatch.
               </p>
             </div>
@@ -619,10 +621,10 @@ export default function Calculator() {
               <span className="text-[10px] uppercase tracking-widest font-bold text-editorial-accent block mb-1">
                 Transparency Guarantee
               </span>
-              <h3 className="text-sm font-serif font-bold text-editorial-dark">
+              <h3 className="text-sm font-sans font-bold text-editorial-dark">
                 No Hidden Surcharges
               </h3>
-              <p className="text-xs text-editorial-muted font-serif mt-1 leading-relaxed">
+              <p className="text-xs text-editorial-muted font-sans mt-1 leading-relaxed">
                 Our rates are all-inclusive of standard port handling, sea-freight transit, and bill of lading documentation. Additional insurance is fully optional.
               </p>
               <div className="mt-4 pt-3 border-t border-editorial-dark/10 flex items-center justify-between text-xs font-mono font-bold text-editorial-dark">

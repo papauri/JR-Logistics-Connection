@@ -12,7 +12,7 @@ export default function ShipmentHistory({ events, isPublicView = true }: Shipmen
   const sortedEvents = [...displayEvents].sort((a, b) => b.timestamp - a.timestamp);
 
   if (sortedEvents.length === 0) {
-    return <p className="text-editorial-muted font-serif">No tracking events available yet.</p>;
+    return <p className="text-editorial-muted font-sans">No tracking events available yet.</p>;
   }
 
   return (
@@ -32,7 +32,7 @@ export default function ShipmentHistory({ events, isPublicView = true }: Shipmen
           <span className={`text-[10px] uppercase tracking-widest block mb-2 ${index === 0 ? 'text-editorial-accent' : 'text-editorial-dark'}`}>
             {format(event.timestamp, 'MMM d, yyyy - HH:mm')}
           </span>
-          <h4 className="text-lg font-serif font-bold mb-2 text-editorial-dark">{event.status}</h4>
+          <h4 className="text-lg font-sans font-bold mb-2 text-editorial-dark">{event.status}</h4>
           <p className="text-sm text-editorial-text leading-relaxed mb-3">{event.description}</p>
           
           {event.location && (

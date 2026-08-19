@@ -70,8 +70,8 @@ export default function PublicContact() {
       <div className="bg-editorial-dark text-white py-16 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 tracking-tight">Contact Us</h1>
-          <p className="text-zinc-300 max-w-2xl mx-auto font-serif text-lg leading-relaxed">
+          <h1 className="text-4xl md:text-5xl font-sans font-bold mb-4 tracking-tight">Contact Us</h1>
+          <p className="text-zinc-300 max-w-2xl mx-auto font-sans text-lg leading-relaxed">
             Have questions about our shipping services? Get in touch with our team for personalized logistics solutions.
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function PublicContact() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-serif font-bold text-zinc-900 mb-6">Get In Touch</h2>
+              <h2 className="text-2xl font-sans font-bold text-zinc-900 mb-6">Get In Touch</h2>
               <p className="text-zinc-600 mb-8 leading-relaxed">
                 Whether you need a custom quote, have a question about an existing shipment, or want to learn more about our services, we're here to help. Our logistics experts aim to respond to all inquiries within 24 hours.
               </p>
@@ -134,7 +134,7 @@ export default function PublicContact() {
 
           {/* Contact Form */}
           <div className="bg-white border border-editorial-dark p-8 shadow-md">
-            <h3 className="text-xl font-serif font-bold text-zinc-900 mb-6">Send a Message</h3>
+            <h3 className="text-xl font-sans font-bold text-zinc-900 mb-6">Send a Message</h3>
             
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

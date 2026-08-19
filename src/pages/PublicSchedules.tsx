@@ -56,8 +56,8 @@ export default function PublicSchedules() {
       <div className="bg-editorial-dark text-white py-16 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 tracking-tight">Upcoming Shipments</h1>
-          <p className="text-zinc-300 max-w-2xl mx-auto font-serif text-lg leading-relaxed">
+          <h1 className="text-4xl md:text-5xl font-sans font-bold mb-4 tracking-tight">Upcoming Shipments</h1>
+          <p className="text-zinc-300 max-w-2xl mx-auto font-sans text-lg leading-relaxed">
             Plan your cargo deliveries. View our schedule for upcoming departures from Ireland to Africa and note the collection cut-off dates to ensure your freight departs on time.
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function PublicSchedules() {
         ) : schedules.length === 0 ? (
           <div className="bg-white border border-zinc-200 p-12 text-center shadow-sm">
             <Calendar className="w-12 h-12 text-zinc-300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold font-serif text-zinc-900 mb-2">No active schedules right now</h3>
+            <h3 className="text-xl font-bold font-sans text-zinc-900 mb-2">No active schedules right now</h3>
             <p className="text-zinc-500 mb-6">We are currently updating our shipping calendar. Please check back shortly or request a quote directly.</p>
             <Link to="/quote" className="inline-flex items-center gap-2 bg-editorial-dark text-white px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors">
               <FileText className="w-4 h-4" /> Request Quote
@@ -92,7 +92,7 @@ export default function PublicSchedules() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-3">
                         <MapPin className="w-5 h-5 text-editorial-accent" />
-                        <h2 className="text-2xl font-serif font-bold text-zinc-900">{schedule.destination}</h2>
+                        <h2 className="text-2xl font-sans font-bold text-zinc-900">{schedule.destination}</h2>
                       </div>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
@@ -142,7 +142,7 @@ export default function PublicSchedules() {
         
         <div className="mt-12 bg-zinc-900 text-white p-8 sm:p-12 text-center flex flex-col items-center">
           <ShieldCheck className="w-12 h-12 text-editorial-accent mb-4" />
-          <h3 className="text-2xl font-serif font-bold mb-3">Don't see your destination?</h3>
+          <h3 className="text-2xl font-sans font-bold mb-3">Don't see your destination?</h3>
           <p className="text-zinc-400 max-w-lg mb-6">We arrange custom freight handling and special routing upon request. Contact our dispatch team directly for customized solutions.</p>
           <Link to="/quote" className="px-6 py-3 border border-white text-white text-xs uppercase tracking-widest font-bold hover:bg-white hover:text-zinc-900 transition-colors">
             Request Custom Quote

@@ -391,12 +391,12 @@ export default function AdminShipments() {
       <div className="mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-serif font-bold">Shipments & Live Tracking</h1>
+            <h1 className="text-3xl font-sans font-bold">Shipments & Live Tracking</h1>
             <span className="bg-editorial-dark text-white text-[10px] uppercase font-bold tracking-widest px-2.5 py-1">
               {shipments.length} Active
             </span>
           </div>
-          <p className="text-editorial-text mt-1 font-serif text-sm">
+          <p className="text-editorial-text mt-1 font-sans text-sm">
             Manage tracking milestones individually or in groups with pre-stored templates.
           </p>
         </div>
@@ -431,7 +431,7 @@ export default function AdminShipments() {
               <p className="text-xs uppercase tracking-widest font-bold">
                 {selectedIds.length} Shipment{selectedIds.length > 1 ? 's' : ''} Selected
               </p>
-              <p className="text-[11px] text-zinc-300 font-serif">
+              <p className="text-[11px] text-zinc-300 font-sans">
                 Ready for synchronized group status update
               </p>
             </div>
@@ -514,10 +514,10 @@ export default function AdminShipments() {
             {loading ? (
               <div className="flex flex-col items-center justify-center p-12 text-editorial-muted">
                 <Loader2 className="w-6 h-6 animate-spin mb-3 text-editorial-accent" />
-                <span className="text-xs font-serif">Loading live shipments...</span>
+                <span className="text-xs font-sans">Loading live shipments...</span>
               </div>
             ) : filteredShipments.length === 0 ? (
-              <div className="text-center p-12 text-editorial-muted text-sm font-serif">
+              <div className="text-center p-12 text-editorial-muted text-sm font-sans">
                 No shipments matching your filter criteria.
               </div>
             ) : (
@@ -558,7 +558,7 @@ export default function AdminShipments() {
                         </span>
                       </div>
 
-                      <div className="text-xs text-editorial-text font-serif mb-2 truncate">
+                      <div className="text-xs text-editorial-text font-sans mb-2 truncate">
                         {ship.origin} → <strong className="text-editorial-dark not-italic">{ship.destination}</strong>
                       </div>
 
@@ -566,7 +566,7 @@ export default function AdminShipments() {
                         <span className="inline-flex items-center px-2 py-0.5 border border-zinc-200 bg-zinc-50 rounded-sm text-[9px] uppercase tracking-widest font-bold">
                           {ship.currentStatus}
                         </span>
-                        <span className="text-[10px] font-serif text-editorial-muted bg-zinc-100 px-1.5 py-0.5 rounded-sm">
+                        <span className="text-[10px] font-sans text-editorial-muted bg-zinc-100 px-1.5 py-0.5 rounded-sm">
                           {ship.events?.length || 0} Events
                         </span>
                       </div>
@@ -586,7 +586,7 @@ export default function AdminShipments() {
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-editorial-dark">
                 <div>
                   <span className="text-[10px] uppercase tracking-widest text-editorial-accent font-bold block mb-1">New Entry</span>
-                  <h2 className="text-3xl font-serif font-bold">Register New Shipment</h2>
+                  <h2 className="text-3xl font-sans font-bold">Register New Shipment</h2>
                 </div>
                 <button 
                   onClick={() => setIsCreating(false)}
@@ -724,7 +724,7 @@ export default function AdminShipments() {
                     <input 
                       name="cargoUnits"
                       placeholder="e.g. 2 x 200L Barrels, or 1 x Toyota RAV4" 
-                      className="w-full border border-editorial-dark py-3 px-4 bg-editorial-bg/20 focus:ring-0 focus:border-editorial-dark font-serif" 
+                      className="w-full border border-editorial-dark py-3 px-4 bg-editorial-bg/20 focus:ring-0 focus:border-editorial-dark font-sans" 
                     />
                   </div>
 
@@ -735,7 +735,7 @@ export default function AdminShipments() {
                       required 
                       rows={3} 
                       placeholder="e.g. 2 x 200L Plastic Drums containing clothes, household goods and non-perishable groceries."
-                      className="w-full border border-editorial-dark py-3 px-4 bg-editorial-bg/20 focus:ring-0 focus:border-editorial-dark resize-none font-serif text-sm"
+                      className="w-full border border-editorial-dark py-3 px-4 bg-editorial-bg/20 focus:ring-0 focus:border-editorial-dark resize-none font-sans text-sm"
                     ></textarea>
                   </div>
                 </div>
@@ -763,8 +763,8 @@ export default function AdminShipments() {
                         </span>
                       )}
                     </div>
-                    <h2 className="text-3xl lg:text-4xl font-serif font-bold tracking-tight">{selectedShipment.id}</h2>
-                    <p className="text-editorial-text font-serif text-base mt-1">
+                    <h2 className="text-3xl lg:text-4xl font-sans font-bold tracking-tight">{selectedShipment.id}</h2>
+                    <p className="text-editorial-text font-sans text-base mt-1">
                       {selectedShipment.cargoType} • {selectedShipment.description}
                     </p>
                   </div>
@@ -834,7 +834,7 @@ export default function AdminShipments() {
                   <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-dark/20">
                     <div>
                       <span className="text-[10px] uppercase tracking-widest text-editorial-accent font-bold block mb-1">Event Dispatcher</span>
-                      <h3 className="font-serif font-bold text-2xl">Add Tracking Milestone</h3>
+                      <h3 className="font-sans font-bold text-2xl">Add Tracking Milestone</h3>
                     </div>
                     <button
                       type="button"
@@ -900,7 +900,7 @@ export default function AdminShipments() {
                         required
                         rows={3} 
                         placeholder="Detailed cargo update visible to customers..."
-                        className="w-full border border-editorial-dark py-2.5 px-3 bg-editorial-bg/20 text-xs focus:ring-0 focus:border-editorial-dark resize-none font-serif leading-relaxed"
+                        className="w-full border border-editorial-dark py-2.5 px-3 bg-editorial-bg/20 text-xs focus:ring-0 focus:border-editorial-dark resize-none font-sans leading-relaxed"
                       ></textarea>
                     </div>
 
@@ -930,7 +930,7 @@ export default function AdminShipments() {
                 {/* Tracking History Timeline */}
                 <div className="bg-white border border-editorial-dark p-6 lg:p-8 shadow-sm">
                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-editorial-dark/20">
-                    <h3 className="font-serif font-bold text-2xl">Milestone History</h3>
+                    <h3 className="font-sans font-bold text-2xl">Milestone History</h3>
                     <span className="text-[10px] uppercase tracking-widest text-editorial-muted font-bold">
                       {selectedShipment.events?.length || 0} Recorded
                     </span>
@@ -944,8 +944,8 @@ export default function AdminShipments() {
             /* EMPTY STATE */
             <div className="flex-1 flex flex-col items-center justify-center text-editorial-muted p-12">
               <Truck className="w-16 h-16 mb-4 opacity-20 text-editorial-dark" />
-              <h3 className="font-serif font-bold text-2xl text-editorial-dark mb-2">No Shipment Selected</h3>
-              <p className="font-serif text-sm max-w-sm text-center text-editorial-text mb-6">
+              <h3 className="font-sans font-bold text-2xl text-editorial-dark mb-2">No Shipment Selected</h3>
+              <p className="font-sans text-sm max-w-sm text-center text-editorial-text mb-6">
                 Choose a shipment from the list on the left to review its events, or select multiple shipments to post a group update.
               </p>
               <button
@@ -971,8 +971,8 @@ export default function AdminShipments() {
               <div className="flex items-center gap-3">
                 <Layers className="w-5 h-5 text-editorial-accent" />
                 <div>
-                  <h3 className="font-serif font-bold text-xl">Group Tracking Update</h3>
-                  <p className="text-xs text-zinc-300 font-serif">
+                  <h3 className="font-sans font-bold text-xl">Group Tracking Update</h3>
+                  <p className="text-xs text-zinc-300 font-sans">
                     Updating <strong className="text-white">{selectedIds.length}</strong> selected shipments simultaneously
                   </p>
                 </div>
@@ -993,7 +993,7 @@ export default function AdminShipments() {
                   <span className="text-[10px] uppercase tracking-widest text-editorial-dark font-bold flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-editorial-accent" /> Choose Pre-Set Template
                   </span>
-                  <span className="text-[10px] text-editorial-muted font-serif">Auto-fills all fields</span>
+                  <span className="text-[10px] text-editorial-muted font-sans">Auto-fills all fields</span>
                 </div>
                 <select
                   onChange={(e) => {
@@ -1049,7 +1049,7 @@ export default function AdminShipments() {
                   required
                   rows={3}
                   placeholder="Enter message for customers..."
-                  className="w-full border border-editorial-dark py-2.5 px-3 text-xs bg-editorial-bg/20 resize-none font-serif"
+                  className="w-full border border-editorial-dark py-2.5 px-3 text-xs bg-editorial-bg/20 resize-none font-sans"
                 ></textarea>
               </div>
 
@@ -1099,8 +1099,8 @@ export default function AdminShipments() {
               <div className="flex items-center gap-3">
                 <BookOpen className="w-5 h-5 text-editorial-accent" />
                 <div>
-                  <h3 className="font-serif font-bold text-xl">Tracking Template Library</h3>
-                  <p className="text-xs text-zinc-300 font-serif">
+                  <h3 className="font-sans font-bold text-xl">Tracking Template Library</h3>
+                  <p className="text-xs text-zinc-300 font-sans">
                     Persisted in Firestore Data Store • {templates.length} Active Templates
                   </p>
                 </div>
@@ -1126,7 +1126,7 @@ export default function AdminShipments() {
               {isCreatingTemplate ? (
                 /* NEW TEMPLATE FORM */
                 <div className="max-w-xl mx-auto p-6 bg-editorial-bg border border-editorial-dark">
-                  <h4 className="font-serif font-bold text-xl mb-6">Create Custom Tracking Template</h4>
+                  <h4 className="font-sans font-bold text-xl mb-6">Create Custom Tracking Template</h4>
                   <form onSubmit={handleCreateNewTemplate} className="space-y-4">
                     <div>
                       <label className="block text-[10px] uppercase tracking-widest font-bold mb-1">Template Title</label>
@@ -1175,7 +1175,7 @@ export default function AdminShipments() {
                         required 
                         rows={3} 
                         placeholder="Standard template message displayed to customers..."
-                        className="w-full border border-editorial-dark py-2 px-3 text-xs bg-white resize-none font-serif"
+                        className="w-full border border-editorial-dark py-2 px-3 text-xs bg-white resize-none font-sans"
                       ></textarea>
                     </div>
 
@@ -1225,13 +1225,13 @@ export default function AdminShipments() {
                           </span>
                         </div>
 
-                        <h4 className="font-serif font-bold text-base text-editorial-dark mb-1">{tpl.title}</h4>
+                        <h4 className="font-sans font-bold text-base text-editorial-dark mb-1">{tpl.title}</h4>
                         {tpl.location && (
                           <p className="text-xs text-editorial-muted flex items-center gap-1.5 mb-2 font-mono">
                             <MapPin className="w-3 h-3" /> {tpl.location}
                           </p>
                         )}
-                        <p className="text-xs text-editorial-text font-serif leading-relaxed mb-4">
+                        <p className="text-xs text-editorial-text font-sans leading-relaxed mb-4">
                           {tpl.description}
                         </p>
                       </div>

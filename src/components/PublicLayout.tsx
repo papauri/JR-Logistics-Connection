@@ -76,7 +76,7 @@ export default function PublicLayout() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 shrink-0 group">
               <div className="flex flex-col">
-                <span className="text-lg sm:text-2xl font-serif font-bold tracking-tight leading-none text-editorial-dark">
+                <span className="text-lg sm:text-2xl font-sans font-bold tracking-tight leading-none text-editorial-dark">
                   {settings?.companyName || 'JR Logistics Connection'}
                 </span>
                 <span className="text-[9px] uppercase tracking-[0.25em] text-editorial-muted font-bold mt-1">
@@ -227,9 +227,9 @@ export default function PublicLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center mb-6">
-              <span className="text-2xl font-serif font-bold tracking-tighter">{settings?.companyName || 'JR Logistics Connection'}</span>
+              <span className="text-2xl font-sans font-bold tracking-tighter">{settings?.companyName || 'JR Logistics Connection'}</span>
             </Link>
-            <p className="text-editorial-text font-serif text-lg max-w-sm leading-relaxed mb-6">
+            <p className="text-editorial-text font-sans text-lg max-w-sm leading-relaxed mb-6">
               {settings?.seoDescription || 'Delivering your cargo with care and precision. Specializing in secure, reliable transport from Ireland to destinations across Africa.'}
             </p>
             {settings && (
@@ -280,7 +280,7 @@ export default function PublicLayout() {
             <span><strong className="mr-2">Status:</strong> Operational</span>
             {settings?.address && <span><strong className="mr-2">Location:</strong> {settings.address}</span>}
           </div>
-          <div className="text-[10px] font-serif mt-4 md:mt-0">
+          <div className="text-[10px] font-sans mt-4 md:mt-0">
             &copy; {new Date().getFullYear()} {settings?.tradingName || settings?.companyName || 'JR Logistics Connection'}. All rights reserved.
           </div>
         </div>
