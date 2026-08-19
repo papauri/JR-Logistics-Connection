@@ -15,6 +15,7 @@ export interface FreightMainCategory {
   label: string;
   iconName: 'Package' | 'Car' | 'Scale' | 'Layers' | 'Container';
   shortDesc: string;
+  applicableAddons?: string[];
   options: FreightSubOption[];
 }
 
@@ -24,6 +25,7 @@ export const FREIGHT_MAIN_CATEGORIES: FreightMainCategory[] = [
     label: 'Boxes, Drums & Barrels',
     iconName: 'Package',
     shortDesc: 'Standard cartons, luggage bags, and 200L shipping barrels',
+    applicableAddons: ['dublinCollection', 'marineInsurance', 'customsDocumentation'],
     options: [
       {
         id: 'box_std_20kg',
@@ -87,6 +89,7 @@ export const FREIGHT_MAIN_CATEGORIES: FreightMainCategory[] = [
     label: 'Cars & Motor Vehicles',
     iconName: 'Car',
     shortDesc: 'Saloon cars, SUVs, 4x4s, pickups, commercial vans & bikes',
+    applicableAddons: ['marineInsurance', 'customsDocumentation', 'vehicleTowing'],
     options: [
       {
         id: 'veh_saloon_sedan',
@@ -155,6 +158,7 @@ export const FREIGHT_MAIN_CATEGORIES: FreightMainCategory[] = [
     label: 'By Weight (Per KG Rate)',
     iconName: 'Scale',
     shortDesc: 'Loose cartons, clothes, dry goods, electronics & commercial cargo',
+    applicableAddons: ['dublinCollection', 'marineInsurance', 'customsDocumentation'],
     options: [
       {
         id: 'kg_personal_clothes',
@@ -203,6 +207,7 @@ export const FREIGHT_MAIN_CATEGORIES: FreightMainCategory[] = [
     label: 'Pallets & Wooden Crates',
     iconName: 'Layers',
     shortDesc: 'Commercial skid loads, shrink-wrapped freight & timber crates',
+    applicableAddons: ['dublinCollection', 'marineInsurance', 'customsDocumentation'],
     options: [
       {
         id: 'pallet_euro',
@@ -241,6 +246,7 @@ export const FREIGHT_MAIN_CATEGORIES: FreightMainCategory[] = [
     label: 'Full & Shared Container (FCL / LCL)',
     iconName: 'Container',
     shortDesc: '20ft / 40ft dedicated ocean shipping containers or shared CBM space',
+    applicableAddons: ['marineInsurance', 'customsDocumentation', 'containerHaulage'],
     options: [
       {
         id: 'fcl_20ft',
@@ -298,5 +304,19 @@ export const SERVICE_ADDONS = {
     rateUsd: 50,
     rateMwk: 83000,
     description: 'Export customs filing, manifest registration, and official consignee release paperwork'
+  },
+  vehicleTowing: {
+    name: 'Vehicle Pick up / Towing',
+    rateEur: 150,
+    rateUsd: 165,
+    rateMwk: 277500,
+    description: 'Specialized vehicle recovery or pick-up service directly from your driveway'
+  },
+  containerHaulage: {
+    name: 'Container Terminal Haulage',
+    rateEur: 350,
+    rateUsd: 385,
+    rateMwk: 647500,
+    description: 'Haulage of container from loading site to departure terminal'
   }
 };

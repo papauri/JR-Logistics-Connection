@@ -264,8 +264,8 @@ export default function AdminRequests() {
           <span className="text-[10px] uppercase tracking-[0.25em] text-editorial-accent font-bold block mb-1">
             Commercial & Pricing Operations
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">Quotes & Invoices.</h1>
-          <p className="text-editorial-text font-serif text-sm mt-1">
+          <h1 className="text-3xl sm:text-4xl font-sans font-bold tracking-tight">Quotes & Invoices.</h1>
+          <p className="text-editorial-text font-sans text-sm mt-1">
             Manage rate requests, issue pro-forma invoices, track payment settlements, and convert confirmed quotes into freight shipments.
           </p>
         </div>
@@ -337,7 +337,7 @@ export default function AdminRequests() {
                 <Loader2 className="w-6 h-6 animate-spin text-editorial-accent" />
               </div>
             ) : filteredRequests.length === 0 ? (
-              <div className="text-center p-12 text-editorial-muted text-sm font-serif italic">
+              <div className="text-center p-12 text-editorial-muted text-sm font-sans">
                 No quote enquiries matching criteria.
               </div>
             ) : (
@@ -355,13 +355,13 @@ export default function AdminRequests() {
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-mono font-bold text-xs text-editorial-dark tracking-wider">{req.reference}</span>
-                      <span className="text-[10px] text-editorial-muted font-serif">
+                      <span className="text-[10px] text-editorial-muted font-sans">
                         {format(req.createdAt, 'MMM d, HH:mm')}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className="font-serif font-bold text-sm text-editorial-dark truncate">{req.customerName}</h4>
+                      <h4 className="font-sans font-bold text-sm text-editorial-dark truncate">{req.customerName}</h4>
                       {req.quotedAmount ? (
                         <span className="font-mono font-bold text-xs text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 rounded-sm">
                           {formatCurrency(req.quotedAmount, req.currency || 'EUR')}
@@ -373,7 +373,7 @@ export default function AdminRequests() {
                       )}
                     </div>
 
-                    <p className="text-xs text-editorial-text font-serif italic truncate">
+                    <p className="text-xs text-editorial-text font-sans truncate">
                       {req.pickupLocation} → <strong>{req.destination}</strong> • {req.cargoType}
                     </p>
 
@@ -411,8 +411,8 @@ export default function AdminRequests() {
                         Logged: {format(selectedRequest.createdAt, 'MMMM d, yyyy - HH:mm')}
                       </span>
                     </div>
-                    <h2 className="text-3xl font-serif font-bold tracking-tight">{selectedRequest.reference}</h2>
-                    <p className="text-xs text-editorial-text font-serif mt-1">
+                    <h2 className="text-3xl font-sans font-bold tracking-tight">{selectedRequest.reference}</h2>
+                    <p className="text-xs text-editorial-text font-sans mt-1">
                       Client: <strong className="text-editorial-dark">{selectedRequest.customerName}</strong> ({selectedRequest.email})
                     </p>
                   </div>
@@ -451,7 +451,7 @@ export default function AdminRequests() {
                   <div className="mt-6 p-4 bg-editorial-bg border border-editorial-dark flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h4 className="text-xs uppercase tracking-widest font-bold text-editorial-dark">Convert Quote to Freight Cargo</h4>
-                      <p className="text-xs text-editorial-text font-serif mt-0.5">
+                      <p className="text-xs text-editorial-text font-sans mt-0.5">
                         Initialize an active tracked consignment (`JRLC-...`) with origin, destination, and customer contacts pre-filled.
                       </p>
                     </div>
@@ -472,7 +472,7 @@ export default function AdminRequests() {
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-dark/10">
                   <div className="flex items-center gap-2">
                     <Receipt className="w-4 h-4 text-editorial-accent" />
-                    <h3 className="font-serif font-bold text-xl">Pricing, Quotation & Invoice</h3>
+                    <h3 className="font-sans font-bold text-xl">Pricing, Quotation & Invoice</h3>
                   </div>
                   <button
                     onClick={() => setIsEditingFinancials(!isEditingFinancials)}
@@ -560,7 +560,7 @@ export default function AdminRequests() {
                         placeholder="e.g. Rate includes Dublin warehouse packing, ocean freight to Beira, and overland transport to Lilongwe depot."
                         value={quoteNotes}
                         onChange={e => setQuoteNotes(e.target.value)}
-                        className="w-full border border-editorial-dark py-2 px-3 text-xs bg-white resize-none font-serif"
+                        className="w-full border border-editorial-dark py-2 px-3 text-xs bg-white resize-none font-sans"
                       />
                     </div>
 
@@ -623,7 +623,7 @@ export default function AdminRequests() {
                     <span className="text-[10px] text-editorial-muted uppercase tracking-widest font-bold block">
                       JR Logistics Connection Official Document Generator
                     </span>
-                    <p className="text-xs text-editorial-text font-serif italic">
+                    <p className="text-xs text-editorial-text font-sans">
                       Generate a formatted A4 One-Page Quotation, Pro-Forma or Commercial Invoice with company logo, bank details and WhatsApp/PDF export.
                     </p>
                   </div>
@@ -641,7 +641,7 @@ export default function AdminRequests() {
               {/* Enquiry Route & Specifications */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white border border-editorial-dark p-6 shadow-sm">
-                  <h3 className="font-serif font-bold text-lg mb-4 text-editorial-dark">Route & Pickup Details</h3>
+                  <h3 className="font-sans font-bold text-lg mb-4 text-editorial-dark">Route & Pickup Details</h3>
                   <div className="space-y-3">
                     <div>
                       <span className="text-[9px] uppercase tracking-widest text-editorial-muted font-bold block">Pickup / Collection</span>
@@ -660,7 +660,7 @@ export default function AdminRequests() {
                 </div>
 
                 <div className="bg-white border border-editorial-dark p-6 shadow-sm">
-                  <h3 className="font-serif font-bold text-lg mb-4 text-editorial-dark">Cargo Specification</h3>
+                  <h3 className="font-sans font-bold text-lg mb-4 text-editorial-dark">Cargo Specification</h3>
                   <div className="space-y-3">
                     <div>
                       <span className="text-[9px] uppercase tracking-widest text-editorial-muted font-bold block">Category & Quantity</span>
@@ -668,7 +668,7 @@ export default function AdminRequests() {
                     </div>
                     <div>
                       <span className="text-[9px] uppercase tracking-widest text-editorial-muted font-bold block">Description</span>
-                      <p className="text-xs font-serif text-editorial-text mt-0.5">{selectedRequest.cargoDescription || 'None'}</p>
+                      <p className="text-xs font-sans text-editorial-text mt-0.5">{selectedRequest.cargoDescription || 'None'}</p>
                     </div>
                   </div>
                 </div>
@@ -676,15 +676,20 @@ export default function AdminRequests() {
 
               {/* AI Strategic Logistics Assistant */}
               <div className="bg-white border border-editorial-dark p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-serif font-bold text-lg flex items-center gap-2 text-editorial-dark">
-                    <Sparkles className="w-4 h-4 text-editorial-accent" />
-                    AI Pricing & Customs Tariff Advisory
-                  </h3>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4 border-b border-editorial-dark/10 pb-4">
+                  <div>
+                    <h3 className="font-sans font-bold text-lg flex items-center gap-2 text-editorial-dark">
+                      <Sparkles className="w-4 h-4 text-editorial-accent" />
+                      AI Pricing & Customs Tariff Advisory
+                    </h3>
+                    <p className="text-xs text-editorial-text mt-1 max-w-lg">
+                      Generate an automated logistics analysis based on the cargo description above. This will estimate freight charges, outline customs duties in Malawi, and draft a professional email reply for you to send to the customer.
+                    </p>
+                  </div>
                   <button
                     onClick={handleAIAnalyze}
                     disabled={aiLoading}
-                    className="px-3.5 py-1.5 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors flex items-center gap-2 disabled:opacity-50"
+                    className="px-3.5 py-2 shrink-0 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
                     {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <BrainCircuit className="w-3.5 h-3.5" />}
                     Analyze & Draft Rate Quote
@@ -693,7 +698,7 @@ export default function AdminRequests() {
 
                 {aiResponse && (
                   <div className="mt-4 p-5 bg-editorial-bg border border-editorial-dark">
-                    <pre className="whitespace-pre-wrap font-serif text-xs text-editorial-dark leading-relaxed">{aiResponse}</pre>
+                    <pre className="whitespace-pre-wrap font-sans text-xs text-editorial-dark leading-relaxed">{aiResponse}</pre>
                   </div>
                 )}
               </div>
@@ -702,8 +707,8 @@ export default function AdminRequests() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-editorial-muted p-12">
               <Inbox className="w-12 h-12 opacity-30 mb-3 text-editorial-dark" />
-              <h3 className="font-serif font-bold italic text-xl text-editorial-dark">Select a Quote</h3>
-              <p className="font-serif italic text-xs text-editorial-text mt-1">
+              <h3 className="font-sans font-bold text-xl text-editorial-dark">Select a Quote</h3>
+              <p className="font-sans text-xs text-editorial-text mt-1">
                 Choose a quote enquiry from the left to calculate rates, issue invoices, or convert to a shipment.
               </p>
             </div>

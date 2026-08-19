@@ -37,6 +37,26 @@ export const DEFAULT_SERVICE_ADDONS: Record<string, ServiceAddonConfig> = {
     rateUsd: 50,
     rateMwk: 83000,
     calculationType: 'flat'
+  },
+  vehicleTowing: {
+    id: 'vehicleTowing',
+    name: 'Vehicle Pick up / Towing',
+    description: 'Specialized vehicle recovery or pick-up service directly from your driveway',
+    enabled: true,
+    rateEur: 150,
+    rateUsd: 165,
+    rateMwk: 277500,
+    calculationType: 'flat'
+  },
+  containerHaulage: {
+    id: 'containerHaulage',
+    name: 'Container Terminal Haulage',
+    description: 'Haulage of container from loading site to departure terminal',
+    enabled: true,
+    rateEur: 350,
+    rateUsd: 385,
+    rateMwk: 647500,
+    calculationType: 'flat'
   }
 };
 

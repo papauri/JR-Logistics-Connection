@@ -787,6 +787,32 @@ export default function AdminFreightPricingManager() {
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
+              
+              <div className="md:col-span-3 pt-3 border-t border-editorial-dark/10">
+                <label className="block text-[10px] uppercase tracking-widest font-bold mb-2">Applicable Services & Add-ons for this Category</label>
+                <div className="flex flex-wrap gap-3">
+                  {Object.entries(draftPricing.addons).filter(([_, addon]) => addon.enabled).map(([addonKey, addon]) => {
+                    const isSelected = currentCategory.applicableAddons?.includes(addonKey) ?? true; // Default true if undefined
+                    return (
+                      <label key={addonKey} className="flex items-center gap-1.5 cursor-pointer text-xs">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => {
+                            const current = currentCategory.applicableAddons || Object.keys(draftPricing.addons);
+                            const next = e.target.checked 
+                              ? [...current, addonKey] 
+                              : current.filter(k => k !== addonKey);
+                            handleUpdateCategoryMeta('applicableAddons', next);
+                          }}
+                          className="w-3.5 h-3.5 text-editorial-dark border-editorial-dark focus:ring-0"
+                        />
+                        {addon.name}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             {/* Sub-Items List / Pricing Table */}

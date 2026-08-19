@@ -93,6 +93,37 @@
         "seoKeywords": { "type": "string" }
       }
     },
+    "FAQ": {
+      "title": "FAQ",
+      "description": "Frequently asked questions displayed on the website.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "category": { "type": "string" },
+        "published": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["question", "answer", "published", "displayOrder"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer reviews and testimonials.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "author": { "type": "string" },
+        "location": { "type": "string" },
+        "text": { "type": "string" },
+        "rating": { "type": "number" },
+        "published": { "type": "boolean" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["author", "text", "published", "createdAt"]
+    },
     "TrackingTemplate": {
       "title": "TrackingTemplate",
       "description": "Pre-configured milestone update templates for logistics dispatchers.",

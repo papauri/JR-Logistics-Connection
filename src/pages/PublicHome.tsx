@@ -30,6 +30,12 @@ const defaultSettings: SiteSettings = {
     { text: "Excellent service for our commercial equipment. The collection from our warehouse was seamless, and the tracking system is top-notch.", author: "David K.", location: "Galway to Mzuzu" },
     { text: "Highly recommend! The team is professional, friendly, and they genuinely care about making sure your cargo arrives safely.", author: "Grace L.", location: "Dublin to Zomba" }
   ],
+  faqs: [
+    { id: '1', question: 'How long does shipping to Malawi usually take?', answer: 'Shipping typically takes 6 to 8 weeks depending on vessel schedules and port clearance at destination.', published: true },
+    { id: '2', question: 'Do you offer door-to-door collection?', answer: 'Yes, we offer collection from any location in Dublin and most areas in Ireland for an additional fee.', published: true },
+    { id: '3', question: 'Are customs duties included in the quote?', answer: 'The quotes provided cover freight charges. Destination customs duties and taxes are payable by the receiver unless stated otherwise.', published: true },
+    { id: '4', question: 'Can I track my cargo?', answer: 'Yes, once your cargo is loaded and departs, we provide a tracking number you can use on our website.', published: true }
+  ],
   updatedAt: Date.now()
 };
 
@@ -223,7 +229,7 @@ export default function PublicHome() {
           <h2 className="text-5xl font-serif font-bold tracking-tight leading-tight">Trusted by<br/>Families &<br/>Businesses.</h2>
         </div>
         <div className="flex-1 grid sm:grid-cols-2">
-          {settings.reviews.slice(0, 4).map((review, idx) => (
+          {settings.reviews.filter(r => r.published !== false).slice(0, 4).map((review, idx) => (
             <div key={idx} className={`p-10 lg:p-12 border-editorial-dark ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
               <div className="flex gap-1 text-editorial-accent mb-6">
                 {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
@@ -237,6 +243,29 @@ export default function PublicHome() {
           ))}
         </div>
       </section>
+
+      {/* FAQs */}
+      {settings.faqs && settings.faqs.filter(f => f.published !== false).length > 0 && (
+        <section className="border-b border-editorial-dark flex flex-col md:flex-row">
+          <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-editorial-dark p-12 lg:p-16 flex flex-col justify-center">
+            <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Information</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight">Common<br/>Questions</h2>
+            <p className="mt-6 text-editorial-text font-serif leading-relaxed">Everything you need to know about our shipping and logistics services.</p>
+          </div>
+          <div className="flex-1 grid sm:grid-cols-2">
+            {settings.faqs.filter(f => f.published !== false).map((faq, idx) => (
+              <div key={faq.id || idx} className={`p-10 lg:p-12 border-editorial-dark hover:bg-white transition-colors ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
+                <h3 className="text-lg font-serif font-bold mb-4 text-editorial-dark">
+                  {faq.question}
+                </h3>
+                <p className="text-editorial-text text-sm leading-relaxed">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Contact CTA Section */}
       <section className="py-24 px-6 text-center bg-editorial-bg">

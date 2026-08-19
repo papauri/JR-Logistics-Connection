@@ -13,6 +13,7 @@ export interface Review {
   author: string;
   location: string;
   text: string;
+  published?: boolean;
 }
 
 export interface ShippingCategory {
@@ -52,6 +53,13 @@ export interface FreightPricingConfig {
   updatedBy?: string;
 }
 
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  published: boolean;
+}
+
 export interface SiteSettings {
   companyName: string;
   tradingName: string;
@@ -68,6 +76,7 @@ export interface SiteSettings {
   logoUrl?: string;
   galleryImages: string[];
   reviews: Review[];
+  faqs?: FAQ[];
   shippingCategories?: ShippingCategory[];
   freightPricing?: FreightPricingConfig;
   seoTitle?: string;
@@ -90,6 +99,7 @@ export interface CustomerRequest {
   cargoDescription: string;
   quantity: string;
   collectionRequired: boolean;
+  selectedAddons?: Record<string, boolean>;
   preferredDate?: string;
   message?: string;
   status: RequestStatus;

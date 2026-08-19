@@ -37,15 +37,12 @@ Analyze this request and answer the admin's query. Use your advanced reasoning t
       // using the v2 SDK structure (models/gemini-3.1-pro-preview doesn't exist? Wait, instruction says: "You MUST use the gemini-3.1-pro-preview model and set thinkingLevel to ThinkingLevel.HIGH. Do not set maxOutputTokens.")
       // wait, what is the exact string? 'gemini-3.1-pro-preview' or 'models/gemini-3.1-pro-preview'? We can just pass 'gemini-3.1-pro-preview'.
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
+        model: 'gemini-3.7-flash',
         contents: [
           { role: 'user', parts: [{ text: userPrompt }] }
         ],
         config: {
-          systemInstruction: systemPrompt,
-          thinkingConfig: {
-            thinkingBudget: 1024,
-          }
+          systemInstruction: systemPrompt
         }
       });
       // Actually, instruction says: "set thinkingLevel to ThinkingLevel.HIGH" -> wait, I should import ThinkingLevel? The new SDK might not export ThinkingLevel directly, let's just pass "HIGH".

@@ -22,7 +22,9 @@ const requestSchema = z.object({
   quantity: z.string().min(1, 'Quantity is required'),
   weightKg: z.string().optional(),
   cargoDescription: z.string().min(5, 'Please provide cargo details or description'),
-  collectionRequired: z.boolean(),
+  collectionRequired: z.boolean().optional(),
+  selectedAddons: z.record(z.string(), z.boolean()).optional(),
+  goodsValueEur: z.number().optional(),
   preferredDate: z.string().optional(),
   message: z.string().optional(),
 });
@@ -41,7 +43,9 @@ export default function RequestQuote() {
   const initialSubOption = searchParams.get('cargoSubOption') || '';
   const initialQty = searchParams.get('quantity') || '1 item/barrel';
   const initialDesc = searchParams.get('description') || '';
-  const initialCollection = searchParams.get('collection') === 'yes';
+  
+  // Try to parse selectedAddons from query params if coming from Calculator
+  // (We'd need to modify Calculator to pass this, or just rely on default selection)
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useHookForm<RequestFormValues>({
     resolver: zodResolver(requestSchema),
@@ -52,20 +56,33 @@ export default function RequestQuote() {
       cargoSubOption: initialSubOption,
       quantity: initialQty,
       cargoDescription: initialDesc,
-      collectionRequired: initialCollection,
+      collectionRequired: false,
+      selectedAddons: {},
+      goodsValueEur: 500
     }
   });
 
   const selectedCategory = watch('cargoCategory');
   const selectedSubOption = watch('cargoSubOption');
-  const collectionRequired = watch('collectionRequired');
-  const quantityValue = watch('quantity');
+  const selectedAddons = watch('selectedAddons') || {};
+  const goodsValueEur = watch('goodsValueEur') || 500;
 
   // Match active main category configuration from live pricing
   const activeMainCat = useMemo(() => {
     if (!categories || categories.length === 0) return null;
     return categories.find(c => c.label === selectedCategory || c.id === selectedCategory) || categories[0];
   }, [categories, selectedCategory]);
+
+  // Determine which addons are applicable to this category
+  const activeAddonList = useMemo(() => {
+    return Object.entries(addons || {}).filter(([addonKey, config]) => {
+      if (!config.enabled) return false;
+      if (activeMainCat?.applicableAddons) {
+        return activeMainCat.applicableAddons.includes(addonKey);
+      }
+      return true;
+    });
+  }, [addons, activeMainCat]);
 
   // When active category changes, if sub-option is not in list, pick first
   useEffect(() => {
@@ -90,11 +107,21 @@ export default function RequestQuote() {
     if (!activeSubOption) return 0;
     const baseRate = activeSubOption.rateEur || 0;
     let total = baseRate;
-    if (collectionRequired && addons?.dublinCollection?.enabled) {
-      total += addons.dublinCollection.rateEur;
-    }
+    
+    // Calculate selected addons
+    Object.entries(selectedAddons).forEach(([addonKey, isSelected]) => {
+      if (isSelected && addons?.[addonKey]?.enabled) {
+        const config = addons[addonKey];
+        if (config.calculationType === 'percentage') {
+          total += Math.max(config.minRateEur || 40, goodsValueEur * (config.percentage || 0.035));
+        } else {
+          total += config.rateEur || 0;
+        }
+      }
+    });
+
     return total;
-  }, [activeSubOption, collectionRequired, addons]);
+  }, [activeSubOption, selectedAddons, addons, goodsValueEur]);
 
   const onSubmit = async (data: RequestFormValues) => {
     setSubmitting(true);
@@ -112,11 +139,13 @@ export default function RequestQuote() {
         cargoType: formattedCargoType,
         cargoDescription: data.cargoDescription,
         quantity: data.quantity,
-        collectionRequired: data.collectionRequired,
+        collectionRequired: !!data.selectedAddons?.['dublinCollection'],
+        selectedAddons: data.selectedAddons,
         preferredDate: data.preferredDate || '',
         message: data.message || '',
         status: 'New',
         currency: '€',
+        quotedAmount: estimatedBallparkEur,
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
@@ -379,45 +408,80 @@ export default function RequestQuote() {
               </div>
             </div>
 
-            {/* SECTION 03: DUBLIN COLLECTION & SCHEDULE */}
-            <div className="p-8 md:p-12 border-b border-editorial-dark bg-editorial-bg/60">
-              <h3 className="text-xl font-serif font-bold mb-6 flex items-center gap-4 text-editorial-dark">
-                <span className="text-[10px] uppercase tracking-widest bg-editorial-dark text-white px-2.5 py-1 font-mono">03</span>
-                Door Collection & Logistics Add-Ons
-              </h3>
+            {/* SECTION 03: LOGISTICS ADD-ONS & SCHEDULE */}
+            {activeAddonList.length > 0 && (
+              <div className="p-8 md:p-12 border-b border-editorial-dark bg-editorial-bg/60">
+                <h3 className="text-xl font-serif font-bold mb-6 flex items-center gap-4 text-editorial-dark">
+                  <span className="text-[10px] uppercase tracking-widest bg-editorial-dark text-white px-2.5 py-1 font-mono">03</span>
+                  Logistics & Service Add-Ons
+                </h3>
 
-              <div className="flex items-start gap-4">
-                <div className="flex items-center h-6 mt-1">
-                  <input 
-                    type="checkbox" 
-                    id="collection" 
-                    {...register('collectionRequired')} 
-                    className="w-5 h-5 rounded-none border-editorial-dark text-editorial-dark focus:ring-0 cursor-pointer" 
-                  />
+                <div className="space-y-6">
+                  {activeAddonList.map(([addonKey, addon]) => {
+                    const isInsurance = addon.calculationType === 'percentage' || addonKey === 'marineInsurance';
+                    const isSelected = selectedAddons[addonKey];
+                    return (
+                      <div key={addonKey} className="flex flex-col gap-3">
+                        <div className="flex items-start gap-4">
+                          <div className="flex items-center h-6 mt-1">
+                            <input 
+                              type="checkbox" 
+                              id={`addon-${addonKey}`} 
+                              {...register(`selectedAddons.${addonKey}`)} 
+                              className="w-5 h-5 rounded-none border-editorial-dark text-editorial-dark focus:ring-0 cursor-pointer" 
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label htmlFor={`addon-${addonKey}`} className="font-bold text-editorial-dark block cursor-pointer text-sm">
+                              {addon.name} 
+                              <span className="text-editorial-accent ml-2">
+                                {isInsurance 
+                                  ? `(From €${addon.minRateEur || 40})` 
+                                  : `(+€${addon.rateEur || 0})`}
+                              </span>
+                            </label>
+                            <p className="text-xs text-editorial-text mt-1 font-serif">
+                              {addon.description}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Special Value Input for Percentage-based Insurance */}
+                        {isInsurance && isSelected && (
+                          <div className="ml-9 p-3 bg-white border border-editorial-dark/20">
+                            <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-dark mb-1">
+                              Estimated Declared Goods Value (€ EUR):
+                            </label>
+                            <div className="flex items-center max-w-xs border border-editorial-dark bg-white">
+                              <span className="px-3 py-1.5 text-xs font-mono font-bold bg-editorial-bg border-r border-editorial-dark">€</span>
+                              <input
+                                type="number"
+                                {...register('goodsValueEur', { valueAsNumber: true })}
+                                className="w-full py-1.5 px-3 font-mono text-xs border-0 focus:ring-0"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-                <div>
-                  <label htmlFor="collection" className="font-bold text-editorial-dark block cursor-pointer text-sm">
-                    I need Dublin Door-to-Door Collection Service (+€50)
-                  </label>
-                  <p className="text-xs text-editorial-text mt-1 font-serif">
-                    Our logistics driver will collect your barrels, boxes, or cargo directly from your Dublin residential or business address.
-                  </p>
-                </div>
+
+                {/* Always show preferred date if dublinCollection or vehicleTowing is selected */}
+                {(selectedAddons['dublinCollection'] || selectedAddons['vehicleTowing']) && (
+                  <div className="mt-8 pt-6 border-t border-editorial-dark/10">
+                    <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-dark mb-2">
+                      Preferred Collection/Pickup Date (Optional)
+                    </label>
+                    <input 
+                      type="date" 
+                      {...register('preferredDate')} 
+                      className="w-full sm:w-auto rounded-none border border-editorial-dark py-2.5 px-3 text-editorial-dark bg-white focus:ring-0 focus:border-editorial-accent text-xs font-mono" 
+                    />
+                  </div>
+                )}
               </div>
-              
-              {collectionRequired && (
-                <div className="mt-6 pt-4 border-t border-editorial-dark/10 pl-9">
-                  <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-dark mb-2">
-                    Preferred Collection Date (Optional)
-                  </label>
-                  <input 
-                    type="date" 
-                    {...register('preferredDate')} 
-                    className="w-full sm:w-auto rounded-none border border-editorial-dark py-2.5 px-3 text-editorial-dark bg-white focus:ring-0 focus:border-editorial-accent text-xs font-mono" 
-                  />
-                </div>
-              )}
-            </div>
+            )}
 
             {/* SECTION 04: SPECIAL INSTRUCTIONS & SUBMISSION */}
             <div className="p-8 md:p-12 border-b border-editorial-dark">

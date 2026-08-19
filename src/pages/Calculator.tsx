@@ -236,8 +236,16 @@ export default function Calculator() {
     );
   }
 
-  // Filter only active add-ons configured in admin
-  const activeAddonList = Object.entries(addons || {}).filter(([_, config]) => config.enabled);
+  // Filter only active add-ons configured in admin AND applicable to current category
+  const activeAddonList = Object.entries(addons || {}).filter(([addonKey, config]) => {
+    if (!config.enabled) return false;
+    // If applicableAddons is defined for the category, check if this addon is included
+    if (currentMainCat.applicableAddons) {
+      return currentMainCat.applicableAddons.includes(addonKey);
+    }
+    // If not defined, default to showing it for backward compatibility
+    return true;
+  });
 
   return (
     <div className="min-h-screen py-12 md:py-16 bg-editorial-bg">

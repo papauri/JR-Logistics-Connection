@@ -27,10 +27,16 @@ const defaultSettings: SiteSettings = {
     'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800'
   ],
   reviews: [
-    { text: "JR Logistics made moving my car to Malawi completely painless. They handled all the paperwork and kept me updated at every stage.", author: "Michael T.", location: "Dublin to Lilongwe" },
-    { text: "I've been sending barrels to my family for years, but this is the most reliable service I've found. Fast, secure, and great communication.", author: "Sarah M.", location: "Cork to Blantyre" },
-    { text: "Excellent service for our commercial equipment. The collection from our warehouse was seamless, and the tracking system is top-notch.", author: "David K.", location: "Galway to Mzuzu" },
-    { text: "Highly recommend! The team is professional, friendly, and they genuinely care about making sure your cargo arrives safely.", author: "Grace L.", location: "Dublin to Zomba" }
+    { text: "JR Logistics made moving my car to Malawi completely painless. They handled all the paperwork and kept me updated at every stage.", author: "Michael T.", location: "Dublin to Lilongwe", published: true },
+    { text: "I've been sending barrels to my family for years, but this is the most reliable service I've found. Fast, secure, and great communication.", author: "Sarah M.", location: "Cork to Blantyre", published: true },
+    { text: "Excellent service for our commercial equipment. The collection from our warehouse was seamless, and the tracking system is top-notch.", author: "David K.", location: "Galway to Mzuzu", published: true },
+    { text: "Highly recommend! The team is professional, friendly, and they genuinely care about making sure your cargo arrives safely.", author: "Grace L.", location: "Dublin to Zomba", published: true }
+  ],
+  faqs: [
+    { id: '1', question: 'How long does shipping to Malawi usually take?', answer: 'Shipping typically takes 6 to 8 weeks depending on vessel schedules and port clearance at destination.', published: true },
+    { id: '2', question: 'Do you offer door-to-door collection?', answer: 'Yes, we offer collection from any location in Dublin and most areas in Ireland for an additional fee.', published: true },
+    { id: '3', question: 'Are customs duties included in the quote?', answer: 'The quotes provided cover freight charges. Destination customs duties and taxes are payable by the receiver unless stated otherwise.', published: true },
+    { id: '4', question: 'Can I track my cargo?', answer: 'Yes, once your cargo is loaded and departs, we provide a tracking number you can use on our website.', published: true }
   ],
   shippingCategories: [
     { id: '1', name: 'General Goods', pricingType: 'per_kg', rateEur: 5.5, rateUsd: 6.0, rateMwk: 10000 },
@@ -93,11 +99,11 @@ export default function AdminSettings() {
   const handleAddReview = () => {
     setSettings(prev => ({
       ...prev,
-      reviews: [...prev.reviews, { author: '', location: '', text: '' }]
+      reviews: [...prev.reviews, { author: '', location: '', text: '', published: true }]
     }));
   };
 
-  const handleUpdateReview = (index: number, field: keyof Review, value: string) => {
+  const handleUpdateReview = (index: number, field: keyof Review, value: string | boolean) => {
     const updatedReviews = [...settings.reviews];
     updatedReviews[index] = { ...updatedReviews[index], [field]: value };
     setSettings(prev => ({ ...prev, reviews: updatedReviews }));
@@ -107,6 +113,26 @@ export default function AdminSettings() {
     setSettings(prev => ({
       ...prev,
       reviews: prev.reviews.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleAddFaq = () => {
+    setSettings(prev => ({
+      ...prev,
+      faqs: [...(prev.faqs || []), { id: Date.now().toString(), question: '', answer: '', published: true }]
+    }));
+  };
+
+  const handleUpdateFaq = (index: number, field: keyof typeof defaultSettings.faqs[0], value: string | boolean) => {
+    const updatedFaqs = [...(settings.faqs || [])];
+    updatedFaqs[index] = { ...updatedFaqs[index], [field]: value };
+    setSettings(prev => ({ ...prev, faqs: updatedFaqs }));
+  };
+
+  const handleRemoveFaq = (index: number) => {
+    setSettings(prev => ({
+      ...prev,
+      faqs: (prev.faqs || []).filter((_, i) => i !== index)
     }));
   };
 
@@ -326,6 +352,10 @@ export default function AdminSettings() {
                       <button type="button" onClick={() => handleRemoveReview(idx)} className="absolute top-4 right-4 text-zinc-400 hover:text-red-600 transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
+                      <div className="flex items-center gap-2 mb-2">
+                        <input type="checkbox" checked={review.published !== false} onChange={(e) => handleUpdateReview(idx, 'published', e.target.checked)} className="w-4 h-4 text-editorial-dark border-editorial-dark focus:ring-editorial-accent" />
+                        <label className="text-xs font-bold text-editorial-dark uppercase tracking-widest">Published on Website</label>
+                      </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pr-8">
                         <div>
                           <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Customer / Shipper Name</label>
@@ -339,6 +369,36 @@ export default function AdminSettings() {
                       <div>
                         <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Review Statement</label>
                         <textarea value={review.text} onChange={(e) => handleUpdateReview(idx, 'text', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-serif bg-white resize-none"></textarea>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-4 border-b border-editorial-dark/10 pb-2">
+                  <h3 className="text-xs uppercase tracking-widest font-bold text-editorial-dark">Frequently Asked Questions (FAQ)</h3>
+                  <button type="button" onClick={handleAddFaq} className="text-[10px] uppercase tracking-widest font-bold text-white bg-editorial-dark px-3 py-1.5 flex items-center gap-1 hover:bg-editorial-accent transition-colors">
+                    <Plus className="w-3 h-3" /> Add FAQ
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {(settings.faqs || []).map((faq, idx) => (
+                    <div key={idx} className="p-4 border border-editorial-dark relative bg-white space-y-3">
+                      <button type="button" onClick={() => handleRemoveFaq(idx)} className="absolute top-4 right-4 text-zinc-400 hover:text-red-600 transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      <div className="flex items-center gap-2 mb-2">
+                        <input type="checkbox" checked={faq.published !== false} onChange={(e) => handleUpdateFaq(idx, 'published', e.target.checked)} className="w-4 h-4 text-editorial-dark border-editorial-dark focus:ring-editorial-accent" />
+                        <label className="text-xs font-bold text-editorial-dark uppercase tracking-widest">Published on Website</label>
+                      </div>
+                      <div className="pr-8">
+                        <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Question</label>
+                        <input value={faq.question} onChange={(e) => handleUpdateFaq(idx, 'question', e.target.value)} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-bold bg-white" placeholder="e.g. How long does shipping take?" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Answer</label>
+                        <textarea value={faq.answer} onChange={(e) => handleUpdateFaq(idx, 'answer', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-serif bg-white resize-none" placeholder="Provide a detailed answer..."></textarea>
                       </div>
                     </div>
                   ))}

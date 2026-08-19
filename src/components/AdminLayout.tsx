@@ -143,8 +143,8 @@ export default function AdminLayout() {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="w-64 bg-zinc-950 text-white flex-shrink-0 flex-col hidden md:flex min-h-screen">
-        <div className="p-6">
+      <aside className="w-64 bg-zinc-950 text-white flex-shrink-0 flex-col hidden md:flex h-screen sticky top-0 overflow-y-auto">
+        <div className="p-6 shrink-0">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white text-zinc-950 rounded flex items-center justify-center shrink-0">
               <Package className="w-4 h-4" />
@@ -177,7 +177,7 @@ export default function AdminLayout() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-zinc-800">
+        <div className="p-4 border-t border-zinc-800 shrink-0">
           <div className="flex items-center gap-3 px-3 py-2">
             <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300">
               {user.email?.substring(0, 2).toUpperCase()}
