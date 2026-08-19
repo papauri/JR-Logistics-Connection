@@ -1,0 +1,6 @@
+{
+  "name": "JR Logistics Connection",
+  "description": "Freight forwarding & logistics management platform for cargo shipping from Ireland to Africa (Malawi), with quote requests, real-time shipment milestone tracking, legal agreements manager, and admin portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

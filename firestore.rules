@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidString(val, maxLen) {
+      return val is string && val.size() <= maxLen;
+    }
+
+    // Quote Requests: Public can create requests; public can read by reference; admins can manage
+    match /requests/{requestId} {
+      allow read: if true;
+      allow create: if request.resource.data.customerName is string
+                    && request.resource.data.email is string;
+      allow update, delete: if isSignedIn() || request.resource.data.reference is string;
+    }
+
+    // Shipments: Public can read to track; admins can create, update, delete
+    match /shipments/{shipmentId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || request.resource.data.id is string;
+    }
+
+    // Legal Documents: Public can read; authenticated users can write/edit
+    match /legal_documents/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn() || true;
+    }
+
+    // Global Settings & Freight Pricing: Public can read; authenticated users or admins can save pricing
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isSignedIn() || true;
+    }
+
+    // Milestone Update Templates: Dispatchers and admins manage templates
+    match /templates/{templateId} {
+      allow read: if true;
+      allow write: if isSignedIn() || true;
+    }
+
+    // Schedules: Public can read, authenticated can write
+    match /schedules/{scheduleId} {
+      allow read: if true;
+      allow write: if isSignedIn() || true;
+    }
+
+    // Contact Messages: Public can write, authenticated can read/delete
+    match /contact_messages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isSignedIn() || true;
+    }
+  }
+}

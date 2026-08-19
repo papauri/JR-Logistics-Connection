@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-editorial-bg: #F9F7F2;
+  --color-editorial-dark: #1A1A1A;
+  --color-editorial-accent: #E03E2D;
+  --color-editorial-text: #4A4A4A;
+  --color-editorial-muted: #888888;
+}
+
+body {
+  background-color: var(--color-editorial-bg);
+  color: var(--color-editorial-dark);
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  #printable-one-page-document {
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    page-break-inside: avoid !important;
+  }
+}

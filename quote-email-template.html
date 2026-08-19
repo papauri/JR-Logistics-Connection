@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Quote Request - JR Logistics Connection</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #fcfbf9;
+      color: #1c1917;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border: 1px solid #1c1917;
+    }
+    .header {
+      background-color: #1c1917;
+      color: #ffffff;
+      padding: 30px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .content {
+      padding: 40px;
+    }
+    .content h2 {
+      font-size: 20px;
+      margin-top: 0;
+      color: #1c1917;
+    }
+    .content p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #44403c;
+    }
+    .quote-box {
+      background-color: #fcfbf9;
+      border-left: 4px solid #facc15;
+      padding: 20px;
+      margin: 30px 0;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .details-table th, .details-table td {
+      padding: 12px 0;
+      border-bottom: 1px solid #e7e5e4;
+      text-align: left;
+    }
+    .details-table th {
+      font-weight: bold;
+      color: #1c1917;
+      width: 40%;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    .details-table td {
+      color: #44403c;
+      font-size: 14px;
+    }
+    .footer {
+      background-color: #fcfbf9;
+      padding: 30px 40px;
+      text-align: center;
+      border-top: 1px solid #1c1917;
+    }
+    .footer p {
+      font-size: 12px;
+      color: #78716c;
+      margin: 0;
+    }
+    .button {
+      display: inline-block;
+      background-color: #facc15;
+      color: #1c1917;
+      text-decoration: none;
+      padding: 15px 30px;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>JR Logistics</h1>
+    </div>
+    <div class="content">
+      <h2>Hello {{customerName}},</h2>
+      <p>Thank you for requesting a quote from JR Logistics Connection. We have received your details and are currently reviewing your shipping requirements.</p>
+      
+      <div class="quote-box">
+        <p style="margin: 0;"><strong>Reference Number:</strong> {{referenceNumber}}</p>
+      </div>
+
+      <h3>Shipment Summary</h3>
+      <table class="details-table">
+        <tr>
+          <th>Pickup Location</th>
+          <td>{{pickupLocation}}</td>
+        </tr>
+        <tr>
+          <th>Destination</th>
+          <td>{{destination}}</td>
+        </tr>
+        <tr>
+          <th>Cargo Type</th>
+          <td>{{cargoType}}</td>
+        </tr>
+        <tr>
+          <th>Quantity</th>
+          <td>{{quantity}}</td>
+        </tr>
+        <tr>
+          <th>Collection Needed</th>
+          <td>{{collectionRequired}}</td>
+        </tr>
+      </table>
+
+      <p style="margin-top: 30px;">One of our logistics specialists will contact you shortly via email or WhatsApp at <strong>{{phone}}</strong> to provide a formal price estimate and answer any questions you might have.</p>
+
+      <center>
+        <a href="https://ais-pre-n5hhn4qq4a3qr3rq223jsr-619532546024.europe-west1.run.app/track/{{referenceNumber}}" class="button">Track Request Status</a>
+      </center>
+    </div>
+    <div class="footer">
+      <p>JR Logistics Connection | Dublin, Ireland & Lilongwe, Malawi</p>
+      <p style="margin-top: 10px;">If you have immediate questions, please reply directly to this email.</p>
+    </div>
+  </div>
+</body>
+</html>

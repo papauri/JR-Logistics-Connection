@@ -1,0 +1,265 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, MapPin, Truck, Package, MessageSquare, Star, Loader2 } from 'lucide-react';
+import { db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import type { SiteSettings } from '../types';
+
+const defaultSettings: SiteSettings = {
+  companyName: 'JR Logistics Connection',
+  tradingName: 'JR Logistics Connection',
+  registrationNumber: '',
+  address: 'Dublin, Ireland',
+  phone: '+353 00 000 0000',
+  email: 'info@jrlogistics.example.com',
+  whatsappNumber: '353000000000',
+  collectionStartingPrice: 50,
+  currency: '€',
+  heroTitle: 'Shipping from Ireland, made simple.',
+  heroSubtitle: 'We collect your goods in Dublin, prepare them for shipment and help get your cargo to destinations across Africa, including Malawi.',
+  aboutText: '',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1586528116311-ad8ed7450951?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800'
+  ],
+  reviews: [
+    { text: "JR Logistics made moving my car to Malawi completely painless. They handled all the paperwork and kept me updated at every stage.", author: "Michael T.", location: "Dublin to Lilongwe" },
+    { text: "I've been sending barrels to my family for years, but this is the most reliable service I've found. Fast, secure, and great communication.", author: "Sarah M.", location: "Cork to Blantyre" },
+    { text: "Excellent service for our commercial equipment. The collection from our warehouse was seamless, and the tracking system is top-notch.", author: "David K.", location: "Galway to Mzuzu" },
+    { text: "Highly recommend! The team is professional, friendly, and they genuinely care about making sure your cargo arrives safely.", author: "Grace L.", location: "Dublin to Zomba" }
+  ],
+  updatedAt: Date.now()
+};
+
+export default function PublicHome() {
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'global');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings({ ...defaultSettings, ...docSnap.data() } as SiteSettings);
+        }
+      } catch (error) {
+        console.error('Failed to fetch settings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center bg-editorial-bg">
+        <Loader2 className="w-8 h-8 animate-spin text-editorial-accent" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-editorial-bg text-editorial-dark">
+      {/* Hero Section */}
+      <section className="border-b border-editorial-dark flex flex-col md:flex-row min-h-[70vh]">
+        <div className="flex-1 p-8 md:p-16 border-r border-editorial-dark flex flex-col justify-between">
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 text-editorial-accent">
+              <div className="w-3 h-3 rounded-full bg-editorial-accent"></div>
+              <span className="text-xs uppercase tracking-widest font-bold">International Logistics</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-sans leading-tight tracking-tight font-extrabold text-zinc-900 whitespace-pre-line">
+              {settings.heroTitle}
+            </h1>
+            <p className="max-w-lg text-lg leading-relaxed text-zinc-600 font-sans mt-6">
+              {settings.heroSubtitle}
+            </p>
+          </div>
+          <div className="mt-12 flex flex-col sm:flex-row gap-6">
+            <Link
+              to="/quote"
+              className="px-8 py-4 bg-editorial-dark text-white text-xs uppercase tracking-widest font-semibold hover:bg-editorial-accent transition-colors flex items-center justify-center gap-2"
+            >
+              Get a Quote
+            </Link>
+            <a
+              href="https://wa.me/353000000000"
+              target="_blank"
+              rel="noreferrer"
+              className="px-8 py-4 bg-transparent border border-editorial-dark text-editorial-dark text-xs uppercase tracking-widest font-semibold hover:bg-white transition-colors flex items-center justify-center gap-2"
+            >
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
+        <div className="w-full md:w-1/3 flex flex-col">
+          <div className="p-12 border-b border-editorial-dark bg-editorial-dark text-white flex-1 flex flex-col justify-center">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-editorial-muted block mb-8">Our Service Guarantee</span>
+            <div className="space-y-10">
+              <div className="relative pl-6 border-l border-editorial-accent">
+                <span className="text-[10px] uppercase tracking-widest block text-editorial-accent mb-1">Route</span>
+                <h3 className="text-lg font-serif">Ireland → Africa</h3>
+                <p className="text-xs text-editorial-muted mt-1">Direct shipping lines.</p>
+              </div>
+              <div className="relative pl-6 border-l border-[#444]">
+                <span className="text-[10px] uppercase tracking-widest block mb-1 text-white">Coverage</span>
+                <h3 className="text-lg font-serif">Dublin Collection</h3>
+                <p className="text-xs text-editorial-muted mt-1">Starting from {settings.currency}{settings.collectionStartingPrice}.</p>
+              </div>
+              <div className="relative pl-6 border-l border-[#444]">
+                <span className="text-[10px] uppercase tracking-widest block mb-1 text-white">Security</span>
+                <h3 className="text-lg font-serif">Real-time Tracking</h3>
+                <p className="text-xs text-editorial-muted mt-1">Know where your cargo is.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Ship */}
+      <section className="border-b border-editorial-dark flex flex-col md:flex-row">
+        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-editorial-dark p-12 flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block font-bold">Standard Cargo Categories</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight">What We<br/>Ship</h2>
+            <p className="mt-6 text-editorial-text font-serif leading-relaxed">From personal boxes and 200L drums to cars and container freight, we handle all cargo with professional care.</p>
+          </div>
+          <div className="mt-8 pt-6 border-t border-editorial-dark/20">
+            <Link
+              to="/calculator"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-black text-editorial-dark hover:text-editorial-accent transition-colors"
+            >
+              Open Instant Shipping Calculator <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+        <div className="flex-1 grid sm:grid-cols-2">
+          {[
+            { title: 'Boxes & 200L Barrels', desc: 'Standard 20kg cartons, 35kg heavy boxes, and 200L shipping drums with door collection.', link: '/calculator' },
+            { title: 'Cars & Motor Vehicles', desc: 'Secure Roll-on/Roll-off & container transport for Saloons, SUVs, 4x4s, and Pickups.', link: '/calculator' },
+            { title: 'By Weight (Per KG)', desc: 'Flexible per-kg rates (€5.50/kg) for personal effects, dry foods, and commercial goods.', link: '/calculator' },
+            { title: 'Pallets & Full Containers', desc: 'Euro pallets, commercial machinery crates, and dedicated 20ft / 40ft FCL shipping.', link: '/calculator' },
+          ].map((item, idx) => (
+            <Link key={item.title} to={item.link} className={`p-10 border-editorial-dark block group hover:bg-white transition-colors ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
+              <div className="w-12 h-12 border border-editorial-dark flex items-center justify-center mb-6 rounded-full relative group-hover:bg-editorial-dark transition-colors">
+                 <div className="absolute inset-1 border border-dashed border-editorial-dark rounded-full"></div>
+                 <Package className="w-4 h-4 text-editorial-dark group-hover:text-editorial-accent transition-colors" />
+              </div>
+              <h3 className="text-xl font-serif font-bold mb-3 group-hover:text-editorial-accent transition-colors flex items-center justify-between">
+                {item.title}
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h3>
+              <p className="text-editorial-text text-sm leading-relaxed">{item.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Collection Service */}
+      <section className="flex flex-col lg:flex-row">
+        <div className="flex-1 p-12 lg:p-16 border-b lg:border-b-0 lg:border-r border-editorial-dark flex flex-col justify-center">
+          <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-4 block">Door-to-Door Convenience</span>
+          <h2 className="text-5xl font-serif font-bold tracking-tight mb-8">
+            Need us to collect it? We can.
+          </h2>
+          <p className="text-lg text-editorial-text font-serif mb-12 max-w-xl leading-relaxed">
+            Save time and hassle. Our Dublin-based collection team can come directly to your home or business, load your goods securely, and bring them to our warehouse for onward shipping.
+          </p>
+          <div className="flex items-end gap-12">
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-[0.3em] opacity-50 mb-2">Starting From</span>
+              <span className="text-6xl font-serif font-bold">{settings.currency}{settings.collectionStartingPrice}</span>
+            </div>
+            <div className="flex-1 h-[1px] bg-editorial-dark mb-4 relative">
+              <div className="absolute top-[-4px] left-[15%] w-2 h-2 bg-editorial-accent rounded-full shadow-[0_0_10px_#E03E2D]"></div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full lg:w-1/3 p-12 flex flex-col bg-white justify-center">
+          <h3 className="text-xl font-serif font-bold mb-8">How It Works</h3>
+          <ul className="space-y-8">
+            {[
+              'Tell us what you are shipping and where you are.',
+              'We provide a combined collection and shipping quote.',
+              'Our team arrives at the scheduled time to collect.',
+              'Track your cargo all the way to its destination.'
+            ].map((step, i) => (
+              <li key={i} className="flex gap-6 items-start relative pl-8">
+                <div className="absolute left-0 top-1 w-4 h-4 border border-editorial-dark flex items-center justify-center text-[8px] font-bold">
+                  {i + 1}
+                </div>
+                <span className="text-editorial-dark text-sm font-medium leading-relaxed">{step}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-12 pt-8 border-t border-editorial-dark">
+            <Link to="/quote" className="text-[10px] uppercase tracking-widest font-bold text-editorial-accent hover:text-editorial-dark transition-colors flex items-center gap-2">
+              Request a collection <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Shipping Gallery */}
+      <section className="border-b border-editorial-dark">
+        <div className="grid grid-cols-2 md:grid-cols-4">
+          {settings.galleryImages.slice(0, 4).map((img, idx) => (
+            <div key={idx} className="aspect-square border-r border-editorial-dark relative overflow-hidden group">
+              <img src={img} alt={`Gallery Image ${idx + 1}`} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+              <div className="absolute inset-0 bg-editorial-dark/10 group-hover:bg-transparent transition-colors"></div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="flex flex-col md:flex-row border-b border-editorial-dark">
+        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-editorial-dark p-12 lg:p-16 flex flex-col justify-center bg-editorial-dark text-white">
+          <span className="text-[10px] uppercase tracking-widest text-editorial-muted mb-4 block">Client Reviews</span>
+          <h2 className="text-5xl font-serif font-bold tracking-tight leading-tight">Trusted by<br/>Families &<br/>Businesses.</h2>
+        </div>
+        <div className="flex-1 grid sm:grid-cols-2">
+          {settings.reviews.slice(0, 4).map((review, idx) => (
+            <div key={idx} className={`p-10 lg:p-12 border-editorial-dark ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
+              <div className="flex gap-1 text-editorial-accent mb-6">
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+              </div>
+              <p className="text-editorial-dark text-lg font-serif mb-8 leading-relaxed">"{review.text}"</p>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-editorial-dark mb-1">{review.author}</p>
+                <p className="text-[10px] uppercase tracking-widest text-editorial-muted">{review.location}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact CTA Section */}
+      <section className="py-24 px-6 text-center bg-editorial-bg">
+        <div className="max-w-3xl mx-auto">
+          <span className="text-[10px] uppercase tracking-widest text-editorial-accent mb-6 block font-bold">Need assistance?</span>
+          <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight mb-8">
+            Let's talk logistics.
+          </h2>
+          <p className="text-lg text-editorial-text font-serif leading-relaxed mb-10 max-w-2xl mx-auto">
+            Our dispatch team is ready to answer your questions, assist with active shipments, and provide customized freight solutions for your specific needs.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link to="/contact" className="px-8 py-4 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors w-full sm:w-auto">
+              Contact Us Online
+            </Link>
+            {settings.phone && (
+              <a href={`tel:${settings.phone}`} className="px-8 py-4 bg-white border border-editorial-dark text-editorial-dark text-xs uppercase tracking-widest font-bold hover:bg-zinc-50 transition-colors w-full sm:w-auto">
+                Call {settings.phone}
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

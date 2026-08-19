@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "CustomerRequest": {
+      "title": "CustomerRequest",
+      "description": "Logistics quote request submitted by customers for freight between Ireland and Africa.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "reference": { "type": "string" },
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "pickupLocation": { "type": "string" },
+        "destination": { "type": "string" },
+        "cargoType": { "type": "string" },
+        "quantity": { "type": "string" },
+        "cargoDescription": { "type": "string" },
+        "collectionRequired": { "type": "boolean" },
+        "preferredDate": { "type": "string" },
+        "status": { "type": "string" },
+        "adminNotes": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["reference", "customerName", "email", "pickupLocation", "destination", "cargoType", "status", "createdAt"]
+    },
+    "Shipment": {
+      "title": "Shipment",
+      "description": "Active cargo consignment tracked across international freight milestones.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "reference": { "type": "string" },
+        "requestReference": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "consigneeName": { "type": "string" },
+        "consigneeEmail": { "type": "string" },
+        "consigneePhone": { "type": "string" },
+        "origin": { "type": "string" },
+        "destination": { "type": "string" },
+        "cargoType": { "type": "string" },
+        "description": { "type": "string" },
+        "currentStatus": { "type": "string" },
+        "eta": { "type": "string" },
+        "events": { "type": "array" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "origin", "destination", "currentStatus", "createdAt"]
+    },
+    "LegalDocument": {
+      "title": "LegalDocument",
+      "description": "Regulatory carriage terms, GDPR privacy policy, and liability documents.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "category": { "type": "string" },
+        "version": { "type": "string" },
+        "lastUpdated": { "type": "string" },
+        "summaryPoints": { "type": "array" },
+        "content": { "type": "string" }
+      },
+      "required": ["id", "title", "content"]
+    },
+    "FreightPricing": {
+      "title": "FreightPricing",
+      "description": "Global freight tariff matrix, category pricing, currency exchange multipliers, and add-on toggles.",
+      "type": "object",
+      "properties": {
+        "categories": { "type": "array" },
+        "addons": { "type": "object" },
+        "currencyRates": { "type": "object" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      }
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global business contact coordinates, branding, and metadata.",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string" },
+        "tradingName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "seoTitle": { "type": "string" },
+        "seoDescription": { "type": "string" },
+        "seoKeywords": { "type": "string" }
+      }
+    },
+    "TrackingTemplate": {
+      "title": "TrackingTemplate",
+      "description": "Pre-configured milestone update templates for logistics dispatchers.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string" },
+        "defaultLocation": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "status", "description"]
+    }
+    "ShipmentSchedule": {
+      "title": "ShipmentSchedule",
+      "description": "Upcoming shipment dates and collection cut-offs.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "destination": { "type": "string" },
+        "shipmentDate": { "type": "string" },
+        "cutoffDate": { "type": "string" },
+        "status": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "destination", "shipmentDate", "cutoffDate", "status"]
+    },
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "Messages from visitors submitted through the contact form.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["name", "email", "message", "status", "createdAt"]
+    }
+  }
+}
