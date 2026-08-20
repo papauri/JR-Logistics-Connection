@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+// Trigger GitHub export for cPanel pipeline
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
