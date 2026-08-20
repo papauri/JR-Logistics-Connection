@@ -55,8 +55,11 @@ const defaultSettings: SiteSettings = {
   },
   vatEnabled: true,
   vatRate: 23,
+  enabledCurrencies: ['EUR', 'USD'],
   updatedAt: Date.now()
 };
+
+import { logActivity } from '../../lib/activityLogger';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState<'pricing' | 'company' | 'content' | 'seo' | 'finance'>('pricing');
@@ -89,6 +92,14 @@ export default function AdminSettings() {
       const dataToSave = { ...settings, updatedAt: Date.now() };
       await setDoc(doc(db, 'settings', 'global'), dataToSave);
       setSettings(dataToSave);
+      
+      await logActivity(
+        'UPDATE_SETTINGS',
+        'global',
+        'settings',
+        `Updated ${activeTab} settings`
+      );
+
       toast.success('Settings saved successfully');
     } catch (error) {
       toast.error('Failed to save settings');
@@ -562,6 +573,40 @@ export default function AdminSettings() {
                   <p className="text-xs text-editorial-text mt-2">Standard IE VAT rate is 23%. This will be applied as a line item on generation.</p>
                 </div>
               )}
+            </div>
+          </div>
+
+          <div className="bg-white border border-editorial-dark shadow-sm">
+            <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">Supported Currencies</h2>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-editorial-text mb-4">Select which currencies should be available for quoting and invoicing.</p>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {['EUR', 'USD', 'GBP', 'ZAR', 'MWK'].map(currency => {
+                  const isEnabled = (settings.enabledCurrencies || ['EUR', 'USD']).includes(currency);
+                  return (
+                    <label key={currency} className="flex items-center gap-3 p-3 border border-editorial-dark/20 cursor-pointer hover:bg-editorial-bg transition-colors">
+                      <input 
+                        type="checkbox" 
+                        checked={isEnabled} 
+                        onChange={(e) => {
+                          const current = settings.enabledCurrencies || ['EUR', 'USD'];
+                          const next = e.target.checked 
+                            ? [...current, currency] 
+                            : current.filter(c => c !== currency);
+                          // Ensure at least one currency is always selected
+                          if (next.length === 0) return;
+                          setSettings(prev => ({ ...prev, enabledCurrencies: next }));
+                        }}
+                        className="w-4 h-4 text-editorial-dark focus:ring-0 border-editorial-dark rounded-none"
+                      />
+                      <span className="text-sm font-bold text-editorial-dark uppercase tracking-widest">{currency}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

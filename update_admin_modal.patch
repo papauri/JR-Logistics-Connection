@@ -1,0 +1,18 @@
+--- src/pages/admin/AdminRequests.tsx
++++ src/pages/admin/AdminRequests.tsx
+@@ -45,6 +45,7 @@
+ 
+   // One-Page Template Modal State
+   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
++  const [templateDocType, setTemplateDocType] = useState<'QUOTATION' | 'COMMERCIAL_INVOICE'>('QUOTATION');
+ 
+   // Quote & Invoice Form State
+   const [isEditingFinancials, setIsEditingFinancials] = useState(false);
+@@ -816,6 +817,7 @@
+       {/* One-Page Official Quote / Invoice Modal */}
+       {isTemplateModalOpen && (
+         <OnePageQuoteInvoiceModal
+           isOpen={isTemplateModalOpen}
++          initialDocType={templateDocType}
+           onClose={() => setIsTemplateModalOpen(false)}
+           initialRequest={selectedRequest}

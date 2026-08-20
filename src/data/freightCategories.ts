@@ -13,7 +13,7 @@ export interface FreightSubOption {
 export interface FreightMainCategory {
   id: string;
   label: string;
-  iconName: 'Package' | 'Car' | 'Scale' | 'Layers' | 'Container';
+  iconName: 'Package' | 'Car' | 'Scale' | 'Layers' | 'Container' | 'Plane';
   shortDesc: string;
   applicableAddons?: string[];
   options: FreightSubOption[];

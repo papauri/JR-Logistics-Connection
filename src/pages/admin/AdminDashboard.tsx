@@ -8,6 +8,8 @@ import type { CustomerRequest, Shipment } from '../../types';
 import toast from 'react-hot-toast';
 import OnePageQuoteInvoiceModal from '../../components/OnePageQuoteInvoiceModal';
 
+import AdminActivityLog from './AdminActivityLog';
+
 export default function AdminDashboard() {
   const [recentRequests, setRecentRequests] = useState<CustomerRequest[]>([]);
   const [recentShipments, setRecentShipments] = useState<Shipment[]>([]);
@@ -215,6 +217,10 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <AdminActivityLog />
       </div>
 
       {/* One-Page Official Quote / Invoice Modal */}

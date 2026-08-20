@@ -27,6 +27,7 @@ import { format } from 'date-fns';
 import type { Shipment, ShipmentEvent, ShipmentStatus, TrackingTemplate } from '../../types';
 import toast from 'react-hot-toast';
 import ShipmentHistory from '../../components/ShipmentHistory';
+import { logActivity } from '../../lib/activityLogger';
 import { 
   getOrSeedTemplates, 
   createTrackingTemplate, 
@@ -213,6 +214,13 @@ export default function AdminShipments() {
       setSelectedShipment(updatedObj);
       setShipments(ships => ships.map(s => s.id === selectedShipment.id ? updatedObj : s));
 
+      await logActivity(
+        'UPDATE_SHIPMENT',
+        selectedShipment.id,
+        'shipment',
+        `Added tracking event: ${eventStatus} - ${newEvent.description}`
+      );
+
       toast.success(`Tracking updated for ${selectedShipment.id}`);
       
       // Clear form
@@ -259,6 +267,13 @@ export default function AdminShipments() {
           events: updatedEvents,
           updatedAt: now
         });
+        
+        await logActivity(
+          'UPDATE_SHIPMENT',
+          ship.id,
+          'shipment',
+          `Bulk updated tracking event: ${bulkStatus} - ${newEvent.description}`
+        );
       }));
 
       // Refresh list
@@ -492,17 +507,15 @@ export default function AdminShipments() {
           {/* List Header */}
           <div className="p-4 bg-editorial-bg border-b border-editorial-dark flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <button 
-                onClick={selectedIds.length === filteredShipments.length ? deselectAll : selectAllFiltered}
-                className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest font-bold text-editorial-dark hover:text-editorial-accent"
-              >
-                {selectedIds.length > 0 && selectedIds.length === filteredShipments.length ? (
-                  <CheckSquare className="w-4 h-4 text-editorial-accent" />
-                ) : (
-                  <Square className="w-4 h-4" />
-                )}
-                <span>Select All ({filteredShipments.length})</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox"
+                  checked={selectedIds.length > 0 && selectedIds.length === filteredShipments.length}
+                  onChange={(e) => e.target.checked ? selectAllFiltered() : deselectAll()}
+                  className="w-4 h-4 rounded-none border-editorial-dark bg-transparent text-editorial-dark focus:ring-editorial-dark cursor-pointer"
+                />
+                <span className="text-[11px] uppercase tracking-widest font-bold text-editorial-dark">Select All ({filteredShipments.length})</span>
+              </div>
             </div>
             <span className="text-[10px] uppercase tracking-widest text-editorial-muted font-bold">
               Showing {filteredShipments.length}
@@ -539,14 +552,15 @@ export default function AdminShipments() {
                   >
                     {/* Checkbox */}
                     <div 
-                      onClick={(e) => toggleSelectShipment(ship.id, e)}
-                      className="pt-1 text-editorial-dark hover:text-editorial-accent cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="pt-1 text-editorial-dark cursor-pointer"
                     >
-                      {isSelected ? (
-                        <CheckSquare className="w-5 h-5 text-editorial-accent" />
-                      ) : (
-                        <Square className="w-5 h-5 text-editorial-muted hover:text-editorial-dark" />
-                      )}
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => toggleSelectShipment(ship.id, e as any)}
+                        className="w-5 h-5 rounded-none border-editorial-dark bg-transparent text-editorial-dark focus:ring-editorial-dark cursor-pointer"
+                      />
                     </div>
 
                     {/* Info */}

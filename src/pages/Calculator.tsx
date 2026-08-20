@@ -20,6 +20,9 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { usePricing } from '../lib/usePricing';
 import type { FreightSubOption } from '../data/freightCategories';
+import type { SiteSettings } from '../types';
+import { db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Calculator() {
   const navigate = useNavigate();
@@ -42,6 +45,23 @@ export default function Calculator() {
     customsDocumentation: false
   });
   const [goodsValueEur, setGoodsValueEur] = useState<number>(500);
+
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'global');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(docSnap.data() as SiteSettings);
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   // Initialize selected category & sub-option once categories load
   useEffect(() => {
@@ -572,19 +592,50 @@ export default function Calculator() {
                 </span>
 
                 {/* Multi-Currency Conversions */}
-                <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/10 text-left">
-                  <div className="p-2.5 bg-white/5 border border-white/10 rounded-xs">
-                    <span className="text-[9px] uppercase tracking-widest text-zinc-400 font-bold block">US Dollar</span>
-                    <span className="text-base font-mono font-bold text-zinc-100">
-                      ${calculations.totalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  <div className="p-2.5 bg-white/5 border border-white/10 rounded-xs">
-                    <span className="text-[9px] uppercase tracking-widest text-zinc-400 font-bold block">Malawi Kwacha</span>
-                    <span className="text-base font-mono font-bold text-editorial-accent">
-                      MK {calculations.totalMwk.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
+                <div className={`grid gap-3 mt-4 pt-4 border-t border-white/10 text-left ${
+                  (settings?.enabledCurrencies || ['EUR', 'USD']).filter(c => c !== 'EUR').length > 1 
+                    ? 'grid-cols-2' 
+                    : 'grid-cols-1'
+                }`}>
+                  {(settings?.enabledCurrencies || ['EUR', 'USD'])
+                    .filter(c => c !== 'EUR')
+                    .map(currency => {
+                      let amount = 0;
+                      let symbol = '';
+                      let label = '';
+                      let colorClass = 'text-zinc-100';
+
+                      if (currency === 'USD') {
+                        amount = calculations.totalUsd;
+                        symbol = '$';
+                        label = 'US Dollar';
+                      } else if (currency === 'MWK') {
+                        amount = calculations.totalMwk;
+                        symbol = 'MK ';
+                        label = 'Malawi Kwacha';
+                        colorClass = 'text-editorial-accent';
+                      } else if (currency === 'GBP') {
+                        amount = calculations.totalEur * (currencyRates?.gbpPerEur || 0.85); 
+                        symbol = '£';
+                        label = 'British Pound';
+                      } else if (currency === 'ZAR') {
+                        amount = calculations.totalEur * (currencyRates?.zarPerEur || 20.0);
+                        symbol = 'R ';
+                        label = 'South African Rand';
+                      }
+
+                      return (
+                        <div key={currency} className="p-2.5 bg-white/5 border border-white/10 rounded-xs">
+                          <span className="text-[9px] uppercase tracking-widest text-zinc-400 font-bold block">{label}</span>
+                          <span className={`text-base font-mono font-bold ${colorClass}`}>
+                            {symbol}{amount.toLocaleString(undefined, { 
+                              minimumFractionDigits: currency === 'MWK' ? 0 : 2, 
+                              maximumFractionDigits: currency === 'MWK' ? 0 : 2 
+                            })}
+                          </span>
+                        </div>
+                      );
+                  })}
                 </div>
               </div>
 

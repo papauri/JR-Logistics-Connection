@@ -808,8 +808,8 @@ export default function TrackShipment() {
                         <span className="text-sm text-editorial-text font-bold">Total Balance</span>
                         <span className="text-xl font-bold font-sans text-editorial-dark">
                           {settings?.vatEnabled 
-                            ? `€${(((shipment as any).price || 850) * (1 + (settings.vatRate || 23) / 100)).toFixed(2)}`
-                            : `€${((shipment as any).price || 850).toFixed(2)}`}
+                            ? `${result?.request?.currency === 'USD' ? '$' : result?.request?.currency === 'GBP' ? '£' : result?.request?.currency === 'ZAR' ? 'R' : result?.request?.currency === 'MWK' ? 'MK' : '€'}${((result?.request?.quotedAmount || 850) * (1 + (settings.vatRate || 23) / 100)).toFixed(2)}`
+                            : `${result?.request?.currency === 'USD' ? '$' : result?.request?.currency === 'GBP' ? '£' : result?.request?.currency === 'ZAR' ? 'R' : result?.request?.currency === 'MWK' ? 'MK' : '€'}${((result?.request?.quotedAmount || 850)).toFixed(2)}`}
                         </span>
                       </div>
                       {settings?.vatEnabled && (

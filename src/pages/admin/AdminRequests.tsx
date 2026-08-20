@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { db } from '../../lib/firebase';
-import { collection, query, orderBy, getDocs, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { 
   Search, 
   Loader2, 
@@ -25,13 +25,31 @@ import {
   X
 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { CustomerRequest, RequestStatus, Shipment } from '../../types';
+import type { CustomerRequest, RequestStatus, Shipment, SiteSettings } from '../../types';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import OnePageQuoteInvoiceModal from '../../components/OnePageQuoteInvoiceModal';
 import { formatCurrency, formatNumber } from '../../lib/utils';
+import { logActivity } from '../../lib/activityLogger';
 
 const STATUSES: RequestStatus[] = ['New', 'Contacted', 'Quoted', 'Invoiced', 'Paid', 'Collection Scheduled', 'Booked', 'Completed', 'Closed', 'Spam'];
+
+const getApplicableStatuses = (currentStatus: RequestStatus): RequestStatus[] => {
+  const base: RequestStatus[] = ['Closed', 'Spam'];
+  switch(currentStatus) {
+    case 'New': return ['New', 'Contacted', 'Quoted', ...base];
+    case 'Contacted': return ['New', 'Contacted', 'Quoted', ...base];
+    case 'Quoted': return ['Contacted', 'Quoted', 'Invoiced', ...base];
+    case 'Invoiced': return ['Quoted', 'Invoiced', 'Paid', ...base];
+    case 'Paid': return ['Invoiced', 'Paid', 'Collection Scheduled', 'Booked', ...base];
+    case 'Collection Scheduled': return ['Paid', 'Collection Scheduled', 'Booked', 'Completed', 'Closed'];
+    case 'Booked': return ['Paid', 'Booked', 'Collection Scheduled', 'Completed', 'Closed'];
+    case 'Completed': return ['Booked', 'Completed', 'Closed'];
+    case 'Closed': return ['New', 'Closed'];
+    case 'Spam': return ['New', 'Spam'];
+    default: return STATUSES;
+  }
+};
 
 export default function AdminRequests() {
   const navigate = useNavigate();
@@ -40,10 +58,12 @@ export default function AdminRequests() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
   const [selectedRequest, setSelectedRequest] = useState<CustomerRequest | null>(null);
 
   // One-Page Template Modal State
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [templateDocType, setTemplateDocType] = useState<'QUOTATION' | 'COMMERCIAL_INVOICE' | 'RECEIPT'>('QUOTATION');
 
   // Quote & Invoice Form State
   const [isEditingFinancials, setIsEditingFinancials] = useState(false);
@@ -60,6 +80,7 @@ export default function AdminRequests() {
 
   // Converting state
   const [converting, setConverting] = useState(false);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -115,6 +136,18 @@ export default function AdminRequests() {
   };
 
   useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'global');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(docSnap.data() as SiteSettings);
+        }
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    };
+    fetchSettings();
     fetchRequests();
   }, []);
 
@@ -128,6 +161,14 @@ export default function AdminRequests() {
       if (selectedRequest?.id === id) {
         setSelectedRequest({ ...selectedRequest, status: newStatus });
       }
+      
+      await logActivity(
+        'UPDATE_DOCUMENT',
+        id,
+        'request',
+        `Changed quote request status to ${newStatus}`
+      );
+
       toast.success(`Quote status updated to "${newStatus}"`);
     } catch (error) {
       toast.error('Failed to update status');
@@ -144,7 +185,7 @@ export default function AdminRequests() {
         invoiceStatus: invoiceStatus as any,
         depositPaid: depositPaid ? parseFloat(depositPaid) : undefined,
         quoteNotes: quoteNotes.trim() || undefined,
-        status: invoiceStatus === 'Paid' ? 'Paid' : quotedAmount ? 'Quoted' : selectedRequest.status,
+        status: invoiceStatus === 'Paid' ? 'Paid' : invoiceNumber?.startsWith('INV') ? 'Invoiced' : quotedAmount ? 'Quoted' : selectedRequest.status,
         updatedAt: Date.now()
       };
 
@@ -154,6 +195,14 @@ export default function AdminRequests() {
       setSelectedRequest(updatedReq);
       setRequests(reqs => reqs.map(r => r.id === selectedRequest.id ? updatedReq : r));
       setIsEditingFinancials(false);
+
+      await logActivity(
+        'UPDATE_FINANCIALS',
+        selectedRequest.id,
+        'request',
+        `Updated financial details (Quoted: ${quotedAmount || 'N/A'}, Status: ${invoiceStatus})`
+      );
+
       toast.success('Quote & Invoice records updated in database');
     } catch (error) {
       console.error(error);
@@ -211,6 +260,13 @@ export default function AdminRequests() {
         linkedShipmentId: trackingId
       });
 
+      await logActivity(
+        'CREATE_SHIPMENT',
+        trackingId,
+        'shipment',
+        `Converted quote request ${selectedRequest.reference} into shipment`
+      );
+
       toast.success(`Converted! Live Cargo Shipment ${trackingId} created.`);
       fetchRequests();
     } catch (err) {
@@ -253,7 +309,14 @@ export default function AdminRequests() {
       (r.invoiceNumber && r.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesStatus = statusFilter === 'ALL' || r.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    
+    let matchesCategory = true;
+    if (categoryFilter === 'UNQUOTED') matchesCategory = ['New', 'Contacted'].includes(r.status) || (r.status === 'Quoted' && (!r.quotedAmount || r.quotedAmount === 0));
+    if (categoryFilter === 'QUOTED') matchesCategory = r.status === 'Quoted' && !!r.quotedAmount && r.quotedAmount > 0;
+    if (categoryFilter === 'INVOICED') matchesCategory = ['Invoiced', 'Paid'].includes(r.status);
+    if (categoryFilter === 'CONVERTED') matchesCategory = ['Booked', 'Collection Scheduled', 'Completed', 'Closed'].includes(r.status);
+
+    return matchesSearch && matchesStatus && matchesCategory;
   });
 
   return (
@@ -331,6 +394,40 @@ export default function AdminRequests() {
             <span className="text-editorial-muted">Sort: Newest</span>
           </div>
 
+          {/* Category Tabs */}
+          <div className="flex bg-white border-b border-editorial-dark overflow-x-auto text-[10px] uppercase tracking-widest font-bold scrollbar-hide">
+            <button 
+              onClick={() => setCategoryFilter('ALL')}
+              className={`flex-1 py-3 px-3 min-w-[70px] text-center border-r border-editorial-dark transition-colors ${categoryFilter === 'ALL' ? 'bg-editorial-dark text-white' : 'hover:bg-editorial-bg text-editorial-muted hover:text-editorial-dark'}`}
+            >
+              All
+            </button>
+            <button 
+              onClick={() => setCategoryFilter('UNQUOTED')}
+              className={`flex-1 py-3 px-3 min-w-[70px] text-center border-r border-editorial-dark transition-colors ${categoryFilter === 'UNQUOTED' ? 'bg-amber-100 text-amber-900' : 'hover:bg-amber-50 text-editorial-muted hover:text-amber-800'}`}
+            >
+              Unquoted
+            </button>
+            <button 
+              onClick={() => setCategoryFilter('QUOTED')}
+              className={`flex-1 py-3 px-3 min-w-[70px] text-center border-r border-editorial-dark transition-colors ${categoryFilter === 'QUOTED' ? 'bg-blue-100 text-blue-900' : 'hover:bg-blue-50 text-editorial-muted hover:text-blue-800'}`}
+            >
+              Quotes
+            </button>
+            <button 
+              onClick={() => setCategoryFilter('INVOICED')}
+              className={`flex-1 py-3 px-3 min-w-[70px] text-center border-r border-editorial-dark transition-colors ${categoryFilter === 'INVOICED' ? 'bg-purple-100 text-purple-900' : 'hover:bg-purple-50 text-editorial-muted hover:text-purple-800'}`}
+            >
+              Invoices
+            </button>
+            <button 
+              onClick={() => setCategoryFilter('CONVERTED')}
+              className={`flex-1 py-3 px-3 min-w-[70px] text-center transition-colors ${categoryFilter === 'CONVERTED' ? 'bg-emerald-100 text-emerald-900' : 'hover:bg-emerald-50 text-editorial-muted hover:text-emerald-800'}`}
+            >
+              Converted
+            </button>
+          </div>
+
           <div className="overflow-y-auto flex-1 p-3 bg-zinc-50 max-h-[700px] space-y-3">
             {loading ? (
               <div className="flex justify-center p-12 text-editorial-muted">
@@ -366,11 +463,7 @@ export default function AdminRequests() {
                         <span className="font-mono font-bold text-xs text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 rounded-sm">
                           {formatCurrency(req.quotedAmount, req.currency || 'EUR')}
                         </span>
-                      ) : (
-                        <span className="text-[9px] uppercase font-bold text-editorial-muted bg-zinc-100 px-1.5 py-0.5 rounded-sm">
-                          Unquoted
-                        </span>
-                      )}
+                      ) : null}
                     </div>
 
                     <p className="text-xs text-editorial-text font-sans truncate">
@@ -378,7 +471,13 @@ export default function AdminRequests() {
                     </p>
 
                     <div className="flex items-center justify-between pt-1 text-[9px] uppercase font-bold tracking-widest">
-                      <span className="px-2 py-0.5 border border-zinc-200 bg-zinc-50 rounded-sm">
+                      <span className={`px-2 py-0.5 border rounded-sm ${
+                        ['New', 'Contacted'].includes(req.status) ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                        req.status === 'Quoted' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                        req.status === 'Invoiced' ? 'bg-purple-50 border-purple-200 text-purple-700' :
+                        ['Paid', 'Booked', 'Collection Scheduled', 'Completed'].includes(req.status) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                        'bg-zinc-50 border-zinc-200 text-zinc-600'
+                      }`}>
                         {req.status}
                       </span>
                       {req.linkedShipmentId && (
@@ -425,7 +524,7 @@ export default function AdminRequests() {
                       onChange={(e) => handleStatusChange(selectedRequest.id!, e.target.value as RequestStatus)}
                       className="bg-white border border-editorial-dark py-1.5 px-3 text-xs uppercase font-bold tracking-wider"
                     >
-                      {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                      {getApplicableStatuses(selectedRequest.status).map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
@@ -450,15 +549,21 @@ export default function AdminRequests() {
                 ) : (
                   <div className="mt-6 p-4 bg-editorial-bg border border-editorial-dark flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                      <h4 className="text-xs uppercase tracking-widest font-bold text-editorial-dark">Convert Quote to Freight Cargo</h4>
+                      <h4 className="text-xs uppercase tracking-widest font-bold text-editorial-dark">Generate Freight Consignment</h4>
                       <p className="text-xs text-editorial-text font-sans mt-0.5">
-                        Initialize an active tracked consignment (`JRLC-...`) with origin, destination, and customer contacts pre-filled.
+                        {['Paid', 'Booked', 'Collection Scheduled', 'Completed'].includes(selectedRequest.status)
+                          ? 'Payment secured. Initialize an active tracked consignment (`JRLC-...`) with origin, destination, and customer contacts pre-filled.'
+                          : 'Real-world logistics lock: The enquiry must be officially Invoiced and marked as Paid before cargo can be generated.'}
                       </p>
                     </div>
                     <button
                       onClick={handleConvertToShipment}
-                      disabled={converting}
-                      className="px-5 py-2.5 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors flex items-center gap-2 shrink-0 self-start sm:self-auto"
+                      disabled={converting || !['Paid', 'Booked', 'Collection Scheduled', 'Completed'].includes(selectedRequest.status)}
+                      className={`px-5 py-2.5 text-xs uppercase tracking-widest font-bold transition-colors flex items-center gap-2 shrink-0 self-start sm:self-auto ${
+                        !['Paid', 'Booked', 'Collection Scheduled', 'Completed'].includes(selectedRequest.status)
+                          ? 'bg-zinc-200 text-zinc-500 cursor-not-allowed'
+                          : 'bg-editorial-dark text-white hover:bg-editorial-accent'
+                      }`}
                     >
                       {converting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Truck className="w-3.5 h-3.5" />}
                       Generate Shipment
@@ -472,7 +577,7 @@ export default function AdminRequests() {
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-dark/10">
                   <div className="flex items-center gap-2">
                     <Receipt className="w-4 h-4 text-editorial-accent" />
-                    <h3 className="font-sans font-bold text-xl">Pricing, Quotation & Invoice</h3>
+                    <h3 className="font-sans font-bold text-xl">Commercial Workflow</h3>
                   </div>
                   <button
                     onClick={() => setIsEditingFinancials(!isEditingFinancials)}
@@ -480,6 +585,87 @@ export default function AdminRequests() {
                   >
                     {isEditingFinancials ? 'Cancel Edit' : 'Edit Financials'}
                   </button>
+                </div>
+
+                {/* Workflow Status Tracker */}
+                <div className="mb-8 p-4 bg-editorial-bg border border-editorial-dark/20 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-editorial-accent" />
+                  <h4 className="text-[10px] uppercase tracking-widest font-bold text-editorial-dark mb-4">Recommended Next Steps</h4>
+                  
+                  <div className="flex flex-col gap-4">
+                    {['New', 'Contacted'].includes(selectedRequest.status) && (
+                      <div className="flex items-start gap-3 bg-white p-3 border border-editorial-dark/10">
+                        <div className="w-6 h-6 rounded-full bg-editorial-dark text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</div>
+                        <div className="flex-1">
+                          <span className="font-bold text-sm text-editorial-dark block">Issue an Official Quote</span>
+                          <p className="text-xs text-editorial-text mt-1">Fill in the pricing details and generate a <strong>QUOTATION</strong> to send to the client.</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTemplateDocType('QUOTATION');
+                              setIsTemplateModalOpen(true);
+                            }}
+                            className="mt-3 px-4 py-2 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors flex items-center gap-2"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            Generate Quote
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {selectedRequest.status === 'Quoted' && (
+                      <div className="flex items-start gap-3 bg-white p-3 border border-editorial-dark/10">
+                        <div className="w-6 h-6 rounded-full bg-editorial-dark text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</div>
+                        <div className="flex-1">
+                          <span className="font-bold text-sm text-editorial-dark block">Client Accepted? Generate Invoice</span>
+                          <p className="text-xs text-editorial-text mt-1">If the client accepts the quote, generate a <strong>COMMERCIAL INVOICE</strong> to bill them.</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTemplateDocType('COMMERCIAL_INVOICE');
+                              setIsTemplateModalOpen(true);
+                            }}
+                            className="mt-3 px-4 py-2 bg-editorial-accent text-editorial-dark text-xs uppercase tracking-widest font-bold hover:bg-white border border-editorial-accent hover:border-editorial-dark transition-colors flex items-center gap-2"
+                          >
+                            <Receipt className="w-3.5 h-3.5" />
+                            Generate Invoice
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedRequest.status === 'Invoiced' && (
+                      <div className="flex items-start gap-3 bg-white p-3 border border-editorial-dark/10">
+                        <div className="w-6 h-6 rounded-full bg-editorial-dark text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</div>
+                        <div className="flex-1">
+                          <span className="font-bold text-sm text-editorial-dark block">Await Payment & Convert</span>
+                          <p className="text-xs text-editorial-text mt-1">Once payment (or deposit) is secured, mark the financials as <strong>Paid</strong> or use the "Generate Shipment" button above to track the cargo.</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTemplateDocType('RECEIPT');
+                              setIsTemplateModalOpen(true);
+                            }}
+                            className="mt-3 px-4 py-2 bg-editorial-bg border border-editorial-dark text-editorial-dark text-xs uppercase tracking-widest font-bold hover:bg-editorial-dark hover:text-white transition-colors flex items-center gap-2"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            Generate Receipt
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {['Paid', 'Booked', 'Collection Scheduled', 'Completed', 'Closed'].includes(selectedRequest.status) && (
+                      <div className="flex items-start gap-3 bg-emerald-50 p-3 border border-emerald-200">
+                        <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</div>
+                        <div>
+                          <span className="font-bold text-sm text-emerald-800 block">Financials Settled</span>
+                          <p className="text-xs text-emerald-700/80 mt-1">The invoice is paid and the request has moved into fulfillment operations.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {isEditingFinancials ? (
@@ -505,11 +691,15 @@ export default function AdminRequests() {
                           onChange={e => setCurrency(e.target.value)}
                           className="w-full border border-editorial-dark py-2 px-3 text-xs bg-white font-bold"
                         >
-                          <option value="EUR">EUR (€)</option>
-                          <option value="USD">USD ($)</option>
-                          <option value="GBP">GBP (£)</option>
-                          <option value="ZAR">ZAR (R)</option>
-                          <option value="MWK">MWK (Kwacha)</option>
+                          {(settings?.enabledCurrencies || ['EUR', 'USD']).map(cur => (
+                            <option key={cur} value={cur}>
+                              {cur === 'EUR' ? 'EUR (€)' : 
+                               cur === 'USD' ? 'USD ($)' : 
+                               cur === 'GBP' ? 'GBP (£)' : 
+                               cur === 'ZAR' ? 'ZAR (R)' : 
+                               'MWK (Kwacha)'}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
@@ -619,22 +809,25 @@ export default function AdminRequests() {
                 )}
 
                 {/* Action button to open full one-page template */}
-                <div className="mt-5 pt-4 border-t border-editorial-dark/10 flex flex-wrap items-center justify-between gap-3">
+                <div className="mt-5 pt-4 border-t border-editorial-dark/10 flex flex-wrap items-center justify-between gap-3 opacity-60 hover:opacity-100 transition-opacity">
                   <div>
                     <span className="text-[10px] text-editorial-muted uppercase tracking-widest font-bold block">
-                      JR Logistics Connection Official Document Generator
+                      Freeform Document Generator
                     </span>
-                    <p className="text-xs text-editorial-text font-sans">
-                      Generate a formatted A4 One-Page Quotation, Pro-Forma or Commercial Invoice with company logo, bank details and WhatsApp/PDF export.
+                    <p className="text-[11px] text-editorial-text font-sans">
+                      Need a different document type? Open the blank generator template.
                     </p>
                   </div>
                   <button
                     type="button"
-                    onClick={() => setIsTemplateModalOpen(true)}
-                    className="px-4 py-2.5 bg-editorial-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors flex items-center gap-2"
+                    onClick={() => {
+                      setTemplateDocType('QUOTATION');
+                      setIsTemplateModalOpen(true);
+                    }}
+                    className="px-3 py-1.5 border border-editorial-dark text-editorial-dark text-[10px] uppercase tracking-widest font-bold hover:bg-editorial-dark hover:text-white transition-colors flex items-center gap-2"
                   >
-                    <Printer className="w-4 h-4" />
-                    Open One-Page Template (PDF / WhatsApp)
+                    <Printer className="w-3 h-3" />
+                    Open Generator
                   </button>
                 </div>
               </div>
@@ -722,6 +915,7 @@ export default function AdminRequests() {
       {isTemplateModalOpen && (
         <OnePageQuoteInvoiceModal
           isOpen={isTemplateModalOpen}
+          initialDocType={templateDocType}
           onClose={() => setIsTemplateModalOpen(false)}
           initialRequest={selectedRequest}
           onSaved={() => {

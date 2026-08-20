@@ -7,52 +7,53 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isValidString(val, maxLen) {
-      return val is string && val.size() <= maxLen;
-    }
-
-    // Quote Requests: Public can create requests; public can read by reference; admins can manage
+    // Quote Requests
     match /requests/{requestId} {
       allow read: if true;
-      allow create: if request.resource.data.customerName is string
-                    && request.resource.data.email is string;
-      allow update, delete: if isSignedIn() || request.resource.data.reference is string;
+      allow create: if true;
+      allow update, delete: if isSignedIn();
     }
 
-    // Shipments: Public can read to track; admins can create, update, delete
+    // Shipments
     match /shipments/{shipmentId} {
       allow read: if true;
-      allow create, update, delete: if isSignedIn() || request.resource.data.id is string;
+      allow create, update, delete: if isSignedIn();
     }
 
-    // Legal Documents: Public can read; authenticated users can write/edit
+    // Legal Documents
     match /legal_documents/{docId} {
       allow read: if true;
-      allow write: if isSignedIn() || true;
+      allow write: if isSignedIn();
     }
 
-    // Global Settings & Freight Pricing: Public can read; authenticated users or admins can save pricing
+    // Global Settings & Freight Pricing
     match /settings/{settingId} {
       allow read: if true;
-      allow write: if isSignedIn() || true;
+      allow write: if isSignedIn();
     }
 
-    // Milestone Update Templates: Dispatchers and admins manage templates
+    // Milestone Update Templates
     match /templates/{templateId} {
       allow read: if true;
-      allow write: if isSignedIn() || true;
+      allow write: if isSignedIn();
     }
 
-    // Schedules: Public can read, authenticated can write
+    // Schedules
     match /schedules/{scheduleId} {
       allow read: if true;
-      allow write: if isSignedIn() || true;
+      allow write: if isSignedIn();
     }
 
-    // Contact Messages: Public can write, authenticated can read/delete
+    // Contact Messages
     match /contact_messages/{messageId} {
       allow create: if true;
-      allow read, update, delete: if isSignedIn() || true;
+      allow read, update, delete: if isSignedIn();
+    }
+
+    // Activity Logs
+    match /activity_logs/{logId} {
+      allow read: if true;
+      allow write: if isSignedIn();
     }
   }
 }

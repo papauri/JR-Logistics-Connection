@@ -17,6 +17,9 @@ export const SAMPLE_REQUESTS: CustomerRequest[] = [
     preferredDate: '2026-03-05',
     message: 'Please collect from my house in Dublin 15 on Saturday morning.',
     status: 'Quoted',
+    quotedAmount: 350.00,
+    currency: 'EUR',
+    quoteNotes: 'Rate includes Dublin doorstep collection (€50) and ocean freight to Beira.',
     internalNotes: 'Quoted €300 for 2x Barrels plus €50 Dublin doorstep collection. Customer confirmed on WhatsApp.',
     createdAt: Date.now() - 86400000 * 3, // 3 days ago
     updatedAt: Date.now() - 86400000 * 1,
@@ -35,6 +38,12 @@ export const SAMPLE_REQUESTS: CustomerRequest[] = [
     preferredDate: '2026-03-10',
     message: 'Will deliver vehicle directly to your Dublin port terminal after deregistration.',
     status: 'Collection Scheduled',
+    quotedAmount: 1850.00,
+    currency: 'EUR',
+    invoiceNumber: 'INV-2026-002',
+    invoiceStatus: 'Paid',
+    depositPaid: 1850.00,
+    linkedShipmentId: 'JRLC-2026-MW109IE',
     internalNotes: 'Deregistration certificate checked. RORO booking reserved for Dublin to Durban with car carrier transshipment to Blantyre.',
     createdAt: Date.now() - 86400000 * 5, // 5 days ago
     updatedAt: Date.now() - 86400000 * 2,

@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Search, Filter, Download, FileText, UploadCloud, Folder, File, Trash2, Eye, Truck, User, HardDrive, FilePlus, X, ChevronDown, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { logActivity } from '../../lib/activityLogger';
+
 // Mock data for documents logically tied to shipments and clients
 const mockDocs = [
-  { id: 'DOC-001', name: 'Bill of Lading - SHP-88392.pdf', type: 'Customs', relatedTo: 'SHP-88392', entityType: 'shipment', client: 'Malawi Traders Ltd', date: '2024-08-15', size: '2.4 MB', uploadedBy: 'Admin' },
-  { id: 'DOC-002', name: 'V5C Logbook - Toyota Hilux.pdf', type: 'Vehicle', relatedTo: 'SHP-88393', entityType: 'shipment', client: 'James Phiri', date: '2024-08-18', size: '1.1 MB', uploadedBy: 'Client Portal' },
-  { id: 'DOC-003', name: 'Commercial Invoice - INV-003.pdf', type: 'Finance', relatedTo: 'INV-2024-003', entityType: 'invoice', client: 'Automotive MW', date: '2024-07-20', size: '0.8 MB', uploadedBy: 'Admin' },
-  { id: 'DOC-004', name: 'Passport Copy - S. Banda.jpeg', type: 'Identification', relatedTo: 'CLI-092', entityType: 'client', client: 'Sarah Banda', date: '2024-08-19', size: '3.5 MB', uploadedBy: 'Client Portal' },
-  { id: 'DOC-005', name: 'Packing List - Container 40ft.pdf', type: 'Logistics', relatedTo: 'SHP-88401', entityType: 'shipment', client: 'Global Importers', date: '2024-08-10', size: '1.2 MB', uploadedBy: 'Admin' },
+  { id: 'DOC-001', name: 'Bill of Lading - SHP-88392.pdf', type: 'Customs', relatedTo: 'SHP-88392', entityType: 'shipment', client: 'Malawi Traders Ltd', date: '2024-08-15', size: '2.4 MB', uploadedBy: 'Admin', status: 'Verified' },
+  { id: 'DOC-002', name: 'V5C Logbook - Toyota Hilux.pdf', type: 'Vehicle', relatedTo: 'SHP-88393', entityType: 'shipment', client: 'James Phiri', date: '2024-08-18', size: '1.1 MB', uploadedBy: 'Client Portal', status: 'Pending' },
+  { id: 'DOC-003', name: 'Commercial Invoice - INV-003.pdf', type: 'Finance', relatedTo: 'INV-2024-003', entityType: 'invoice', client: 'Automotive MW', date: '2024-07-20', size: '0.8 MB', uploadedBy: 'Admin', status: 'Verified' },
+  { id: 'DOC-004', name: 'Passport Copy - S. Banda.jpeg', type: 'Identification', relatedTo: 'CLI-092', entityType: 'client', client: 'Sarah Banda', date: '2024-08-19', size: '3.5 MB', uploadedBy: 'Client Portal', status: 'Pending' },
+  { id: 'DOC-005', name: 'Packing List - Container 40ft.pdf', type: 'Logistics', relatedTo: 'SHP-88401', entityType: 'shipment', client: 'Global Importers', date: '2024-08-10', size: '1.2 MB', uploadedBy: 'Admin', status: 'Verified' },
 ];
 
 const mockEntities = [
@@ -24,6 +26,9 @@ const mockEntities = [
 
 export default function AdminDocuments() {
   const [documents, setDocuments] = useState(mockDocs);
+  const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
+  const [isBulkStatusModalOpen, setIsBulkStatusModalOpen] = useState(false);
+  const [bulkStatus, setBulkStatus] = useState('Verified');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -79,6 +84,34 @@ export default function AdminDocuments() {
     }
   };
 
+  const toggleSelectDoc = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedDocs(prev => prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]);
+  };
+
+  const selectAllFiltered = () => {
+    setSelectedDocs(filteredDocs.map(d => d.id));
+  };
+
+  const deselectAll = () => {
+    setSelectedDocs([]);
+  };
+
+  const handleBulkStatusUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedDocs.length === 0) return;
+    setDocuments(docs => docs.map(d => selectedDocs.includes(d.id) ? { ...d, status: bulkStatus } : d));
+    
+    // Log the activity
+    await Promise.all(selectedDocs.map(id => 
+      logActivity('UPDATE_DOCUMENT', id, 'document', `Bulk updated document status to ${bulkStatus}`)
+    ));
+
+    toast.success(`Successfully updated ${selectedDocs.length} documents to "${bulkStatus}"`);
+    setIsBulkStatusModalOpen(false);
+    setSelectedDocs([]);
+  };
+
   const selectEntity = (entity: typeof mockEntities[0]) => {
     setUploadEntitySearch(entity.id);
     setUploadEntityType(entity.type);
@@ -107,10 +140,11 @@ export default function AdminDocuments() {
       client: matchedEntity.client,
       date: new Date().toISOString().split('T')[0],
       size: `${(Math.random() * 4 + 0.1).toFixed(1)} MB`,
-      uploadedBy: 'Admin'
+      uploadedBy: 'Admin',
+      status: 'Active'
     };
 
-    setDocuments([newDoc, ...documents]);
+    setDocuments([newDoc as any, ...documents]);
     
     // Reset form
     setUploadType('');
@@ -205,8 +239,51 @@ export default function AdminDocuments() {
             </div>
           </div>
 
+          {/* Floating Bulk Action Bar */}
+          {selectedDocs.length > 0 && (
+            <div className="bg-editorial-dark text-white p-4 border border-editorial-dark flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 shadow-lg animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-editorial-accent text-editorial-dark flex items-center justify-center font-bold text-xs">
+                  {selectedDocs.length}
+                </div>
+                <div>
+                  <h3 className="font-sans font-bold text-sm">Documents Selected</h3>
+                  <p className="text-[10px] uppercase tracking-widest text-zinc-400">Bulk action mode active</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button 
+                  onClick={() => setIsBulkStatusModalOpen(true)}
+                  className="bg-editorial-accent text-editorial-dark px-5 py-2 text-xs uppercase tracking-widest font-bold hover:bg-white transition-colors flex items-center gap-2"
+                >
+                  <Filter className="w-4 h-4" /> Update Status
+                </button>
+                <button
+                  onClick={deselectAll}
+                  className="text-zinc-400 hover:text-white p-2"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Documents List (Grouped) */}
           <div className="space-y-4">
+            
+            {/* List Header with Bulk Actions */}
+            <div className="p-4 bg-editorial-bg border border-zinc-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox"
+                  checked={selectedDocs.length > 0 && selectedDocs.length === filteredDocs.length}
+                  onChange={(e) => e.target.checked ? selectAllFiltered() : deselectAll()}
+                  className="w-4 h-4 rounded-none border-editorial-dark bg-transparent text-editorial-dark focus:ring-editorial-dark cursor-pointer"
+                />
+                <span className="text-[11px] uppercase tracking-widest font-bold text-editorial-dark">Select All ({filteredDocs.length})</span>
+              </div>
+            </div>
+
             {Object.keys(groupedDocs).length > 0 ? (
               Object.values(groupedDocs).map(group => (
                 <div key={group.entityId} className="bg-white border border-zinc-200">
@@ -246,6 +323,14 @@ export default function AdminDocuments() {
                         {group.docs.map(doc => (
                           <div key={doc.id} className="bg-white border border-zinc-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div className="flex items-start gap-4">
+                              <div className="pt-1">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedDocs.includes(doc.id)}
+                                  onChange={(e) => toggleSelectDoc(doc.id, e as any)}
+                                  className="w-4 h-4 rounded-none border-editorial-dark bg-transparent text-editorial-dark focus:ring-editorial-dark cursor-pointer"
+                                />
+                              </div>
                               <div className="p-2 bg-zinc-50 text-zinc-500 rounded-sm">
                                 {doc.name.endsWith('.pdf') ? <FileText className="w-4 h-4" /> : <File className="w-4 h-4" />}
                               </div>
@@ -253,6 +338,14 @@ export default function AdminDocuments() {
                                 <h4 className="font-bold text-sm text-editorial-dark">{doc.name}</h4>
                                 <div className="flex items-center gap-3 text-xs text-zinc-500 mt-1">
                                   <span>{doc.type}</span>
+                                  <span>•</span>
+                                  <span className={`font-bold px-1.5 py-0.5 rounded-sm text-[10px] uppercase tracking-widest ${
+                                    doc.status === 'Verified' ? 'bg-green-100 text-green-700' :
+                                    doc.status === 'Rejected' ? 'bg-red-100 text-red-700' :
+                                    'bg-zinc-100 text-zinc-700'
+                                  }`}>
+                                    {doc.status}
+                                  </span>
                                   <span>•</span>
                                   <span>{doc.size}</span>
                                   <span>•</span>
@@ -418,6 +511,45 @@ export default function AdminDocuments() {
                   className="bg-editorial-dark text-white px-6 py-2 text-sm font-bold hover:bg-zinc-800 transition-colors"
                 >
                   Upload & Link
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Status Update Modal */}
+      {isBulkStatusModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-editorial-dark w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="p-5 bg-editorial-dark text-white flex items-center justify-between">
+              <h3 className="font-sans font-bold">Update Document Status</h3>
+              <button onClick={() => setIsBulkStatusModalOpen(false)} className="text-zinc-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleBulkStatusUpdate} className="p-6 space-y-6">
+              <p className="text-sm text-zinc-600">
+                You are updating the status for <strong className="text-editorial-dark">{selectedDocs.length}</strong> selected documents.
+              </p>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-bold mb-2 text-editorial-dark">New Status</label>
+                <select 
+                  value={bulkStatus}
+                  onChange={(e) => setBulkStatus(e.target.value)}
+                  className="w-full border border-editorial-dark py-2.5 px-3 bg-white text-sm focus:outline-none"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Verified">Verified</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="pt-4 flex justify-end gap-3">
+                <button type="button" onClick={() => setIsBulkStatusModalOpen(false)} className="px-4 py-2 text-sm font-bold text-zinc-600 hover:text-zinc-900 border border-transparent">
+                  Cancel
+                </button>
+                <button type="submit" className="bg-editorial-accent text-editorial-dark px-6 py-2 text-sm uppercase tracking-widest font-bold hover:bg-zinc-200 border border-editorial-dark">
+                  Apply Update
                 </button>
               </div>
             </form>

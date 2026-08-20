@@ -1,0 +1,62 @@
+--- src/pages/admin/AdminRequests.tsx
++++ src/pages/admin/AdminRequests.tsx
+@@ -511,6 +511,72 @@
+                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-dark/10">
+                   <div className="flex items-center gap-2">
+                     <Receipt className="w-4 h-4 text-editorial-accent" />
+-                    <h3 className="font-sans font-bold text-xl">Pricing, Quotation & Invoice</h3>
++                    <h3 className="font-sans font-bold text-xl">Commercial Workflow</h3>
+                   </div>
+                   <button
+@@ -519,6 +585,53 @@
+                 </div>
+ 
++                {/* Workflow Status Tracker */}
++                <div className="mb-8 p-4 bg-editorial-bg border border-editorial-dark/20 relative overflow-hidden">
++                  <div className="absolute top-0 left-0 w-1 h-full bg-editorial-accent" />
++                  <h4 className="text-xs uppercase tracking-widest font-bold text-editorial-dark mb-4">Recommended Next Steps</h4>
++                  
++                  <div className="flex flex-col gap-3">
++                    {['New', 'Contacted'].includes(selectedRequest.status) && (
++                      <div className="flex items-start gap-3">
++                        <div className="w-6 h-6 rounded-full bg-editorial-dark text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
++                        <div>
++                          <span className="font-bold text-sm text-editorial-dark block">Issue an Official Quote</span>
++                          <p className="text-xs text-editorial-text mt-0.5">Click "Open One-Page Template" below, price the cargo, and send a QUOTATION to the client via WhatsApp/Email.</p>
++                        </div>
++                      </div>
++                    )}
++                    
++                    {selectedRequest.status === 'Quoted' && (
++                      <div className="flex items-start gap-3">
++                        <div className="w-6 h-6 rounded-full bg-editorial-dark text-white flex items-center justify-center font-bold text-xs shrink-0">2</div>
++                        <div>
++                          <span className="font-bold text-sm text-editorial-dark block">Client Accepted? Generate Invoice</span>
++                          <p className="text-xs text-editorial-text mt-0.5">If the client accepts the quote, open the template again and switch to "COMMERCIAL INVOICE" to bill them.</p>
++                        </div>
++                      </div>
++                    )}
++
++                    {selectedRequest.status === 'Invoiced' && (
++                      <div className="flex items-start gap-3">
++                        <div className="w-6 h-6 rounded-full bg-editorial-dark text-white flex items-center justify-center font-bold text-xs shrink-0">3</div>
++                        <div>
++                          <span className="font-bold text-sm text-editorial-dark block">Await Payment & Convert to Shipment</span>
++                          <p className="text-xs text-editorial-text mt-0.5">Once payment is secured, mark as Paid and use the "Generate Shipment" button above to track the physical cargo.</p>
++                        </div>
++                      </div>
++                    )}
++                    
++                    {['Paid', 'Booked', 'Collection Scheduled', 'Completed', 'Closed'].includes(selectedRequest.status) && (
++                      <div className="flex items-start gap-3">
++                        <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0">✓</div>
++                        <div>
++                          <span className="font-bold text-sm text-emerald-800 block">Financials Settled</span>
++                          <p className="text-xs text-editorial-text mt-0.5">The invoice is paid and the request has moved into fulfillment operations.</p>
++                        </div>
++                      </div>
++                    )}
++                  </div>
++                </div>
++
+                 {isEditingFinancials ? (

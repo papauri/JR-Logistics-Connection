@@ -689,6 +689,48 @@ export default function AdminFreightPricingManager() {
             </div>
             <span className="text-[10px] text-editorial-muted font-sans">Standard rate: ~1,850 MWK</span>
           </div>
+
+          <div className="p-4 border border-editorial-dark bg-white">
+            <label className="block text-[10px] uppercase tracking-widest font-bold mb-1">GBP Rate per 1 EUR</label>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold font-mono">£</span>
+              <input
+                type="number"
+                step="0.01"
+                value={draftPricing.currencyRates.gbpPerEur || 0.85}
+                onChange={(e) => {
+                  setDraftPricing(prev => ({
+                    ...prev,
+                    currencyRates: { ...prev.currencyRates, gbpPerEur: parseFloat(e.target.value) || 0.85 }
+                  }));
+                  markChanged();
+                }}
+                className="w-full border border-editorial-dark py-1.5 px-2 text-sm font-mono font-bold bg-white"
+              />
+            </div>
+            <span className="text-[10px] text-editorial-muted font-sans">Standard rate: ~0.85 GBP</span>
+          </div>
+
+          <div className="p-4 border border-editorial-dark bg-white">
+            <label className="block text-[10px] uppercase tracking-widest font-bold mb-1">ZAR Rate per 1 EUR</label>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold font-mono">R</span>
+              <input
+                type="number"
+                step="0.1"
+                value={draftPricing.currencyRates.zarPerEur || 20.0}
+                onChange={(e) => {
+                  setDraftPricing(prev => ({
+                    ...prev,
+                    currencyRates: { ...prev.currencyRates, zarPerEur: parseFloat(e.target.value) || 20.0 }
+                  }));
+                  markChanged();
+                }}
+                className="w-full border border-editorial-dark py-1.5 px-2 text-sm font-mono font-bold bg-white"
+              />
+            </div>
+            <span className="text-[10px] text-editorial-muted font-sans">Standard rate: ~20.0 ZAR</span>
+          </div>
         </div>
       </div>
 

@@ -31,6 +31,7 @@ import toast from 'react-hot-toast';
 import { usePricing } from '../lib/usePricing';
 import { getDoc } from 'firebase/firestore';
 import type { SiteSettings } from '../types';
+import { logActivity } from '../lib/activityLogger';
 
 export interface InvoiceLineItem {
   id: string;
@@ -50,6 +51,7 @@ interface OnePageQuoteInvoiceModalProps {
   initialClientEmail?: string;
   initialClientName?: string;
   initialClientPhone?: string;
+  initialDocType?: DocumentType;
   onSaved?: () => void;
 }
 
@@ -61,10 +63,11 @@ export default function OnePageQuoteInvoiceModal({
   initialClientEmail,
   initialClientName,
   initialClientPhone,
+  initialDocType = 'QUOTATION',
   onSaved
 }: OnePageQuoteInvoiceModalProps) {
   const { categories, addons, currencyRates } = usePricing();
-  const [docType, setDocType] = useState<DocumentType>('QUOTATION');
+  const [docType, setDocType] = useState<DocumentType>(initialDocType);
   const [docNumber, setDocNumber] = useState('');
   const [issueDate, setIssueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [validUntil, setValidUntil] = useState(format(new Date(Date.now() + 14 * 86400000), 'yyyy-MM-dd'));
@@ -241,7 +244,7 @@ export default function OnePageQuoteInvoiceModal({
           invoiceStatus: paymentStatus === 'Paid' ? 'Paid' : depositPaid > 0 ? 'Partially Paid' : 'Issued',
           depositPaid,
           quoteNotes: notes,
-          status: paymentStatus === 'Paid' ? 'Paid' : 'Quoted',
+          status: paymentStatus === 'Paid' ? 'Paid' : (docType === 'COMMERCIAL_INVOICE' || docType === 'PROFORMA_INVOICE' || docType === 'RECEIPT') ? 'Invoiced' : 'Quoted',
           updatedAt: Date.now()
         });
       }
@@ -277,6 +280,13 @@ export default function OnePageQuoteInvoiceModal({
         createdAt: Date.now(),
         updatedAt: Date.now()
       });
+
+      await logActivity(
+        'UPDATE_FINANCIALS',
+        invoiceId,
+        'document',
+        `Generated ${docType} ${docNumber} for ${customerName} (${totalAmount} ${currency})`
+      );
 
       toast.success(`${docType === 'QUOTATION' ? 'Quotation' : 'Invoice'} saved to Firestore database!`);
       if (onSaved) onSaved();
@@ -478,11 +488,15 @@ export default function OnePageQuoteInvoiceModal({
                     onChange={e => setCurrency(e.target.value)}
                     className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-bold bg-white"
                   >
-                    <option value="EUR">EUR (€)</option>
-                    <option value="USD">USD ($)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="ZAR">ZAR (R)</option>
-                    <option value="MWK">MWK (Kwacha)</option>
+                    {(settings?.enabledCurrencies || ['EUR', 'USD']).map(cur => (
+                      <option key={cur} value={cur}>
+                        {cur === 'EUR' ? 'EUR (€)' : 
+                         cur === 'USD' ? 'USD ($)' : 
+                         cur === 'GBP' ? 'GBP (£)' : 
+                         cur === 'ZAR' ? 'ZAR (R)' : 
+                         'MWK (Kwacha)'}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>

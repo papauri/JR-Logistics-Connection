@@ -2,6 +2,17 @@ import { z } from 'zod';
 
 export type UserRole = 'ADMIN';
 
+export interface ActivityLog {
+  id: string;
+  actionType: 'UPDATE_SHIPMENT' | 'UPDATE_FINANCIALS' | 'UPDATE_SETTINGS' | 'UPDATE_DOCUMENT' | 'CREATE_SHIPMENT' | 'DELETE_SHIPMENT' | 'OTHER';
+  entityId: string;
+  entityType: 'shipment' | 'request' | 'settings' | 'document' | 'other';
+  description: string;
+  userId: string;
+  userName: string;
+  timestamp: number;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -49,6 +60,8 @@ export interface FreightPricingConfig {
   currencyRates: {
     usdPerEur: number;
     mwkPerEur: number;
+    gbpPerEur?: number;
+    zarPerEur?: number;
   };
   updatedAt: number;
   updatedBy?: string;
@@ -91,6 +104,7 @@ export interface SiteSettings {
   };
   vatEnabled?: boolean;
   vatRate?: number;
+  enabledCurrencies?: string[];
   updatedAt: number;
 }
 
