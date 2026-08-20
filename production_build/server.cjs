@@ -71,7 +71,7 @@ Analyze this request and answer the admin's query. Use your advanced reasoning t
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = import_path.default.join(process.cwd(), "dist");
+    const distPath = import_path.default.join(process.cwd(), "production_build");
     app.use(import_express.default.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(import_path.default.join(distPath, "index.html"));

@@ -8,6 +8,6 @@ process.on('uncaughtException', (err) => {
 });
 
 // Start the server
-import('./dist/server.cjs').catch(err => {
+import('./production_build/server.cjs').catch(err => {
     console.error("Startup Failed:", err);
 });
