@@ -256,6 +256,26 @@ export default function AdminSettings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">System Status</h2>
+            </div>
+            <div className="p-6">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={settings.isUnderConstruction || false} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, isUnderConstruction: e.target.checked }))}
+                  className="w-5 h-5 text-editorial-dark focus:ring-0 border-editorial-dark rounded-none"
+                />
+                <div>
+                  <span className="block text-sm font-bold text-editorial-dark uppercase tracking-widest">Maintenance Mode (Under Construction)</span>
+                  <span className="block text-xs text-editorial-text mt-1">If enabled, the public website will show an 'Under Construction' page. Admins can still access this dashboard.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div className="bg-white border border-editorial-dark shadow-sm">
+            <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
               <h2 className="font-sans font-bold text-lg text-editorial-dark">Company Information & Contact Coordinates</h2>
             </div>
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">

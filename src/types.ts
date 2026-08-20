@@ -105,6 +105,7 @@ export interface SiteSettings {
   vatEnabled?: boolean;
   vatRate?: number;
   enabledCurrencies?: string[];
+  isUnderConstruction?: boolean;
   updatedAt: number;
 }
 
