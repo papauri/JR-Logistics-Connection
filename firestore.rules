@@ -33,7 +33,7 @@ service cloud.firestore {
     }
 
     // Milestone Update Templates
-    match /templates/{templateId} {
+    match /tracking_templates/{templateId} {
       allow read: if true;
       allow write: if isSignedIn();
     }
