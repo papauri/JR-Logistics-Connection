@@ -9,8 +9,7 @@
     "start": "node production_build/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf production_build server.js",
-    "lint": "tsc --noEmit",
-    "postinstall": "npm run build"
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
