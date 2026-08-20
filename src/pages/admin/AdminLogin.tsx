@@ -1,34 +1,45 @@
 import { useState } from 'react';
-import type { FormEvent, ChangeEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Package, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('johnpaulchirwa@gmail.com');
-  const [password, setPassword] = useState('password123');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
   const from = location.state?.from?.pathname || '/admin';
 
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) return;
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: 'johnpaulchirwa@gmail.com',
+      password: 'password123',
+    },
+  });
 
+  const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
       toast.success('Login successful');
       navigate(from, { replace: true });
     } catch (error: any) {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
         try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
           await setDoc(doc(db, 'users', userCredential.user.uid), {
             email: userCredential.user.email,
             role: 'ADMIN',
@@ -69,20 +80,24 @@ export default function AdminLogin() {
             Password: password123<br/>
             <span className="text-xs opacity-80 mt-1 block">(Account will be auto-created if it doesn't exist)</span>
           </div>
-          <form className="space-y-6" onSubmit={handleLogin}>
+
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label className="block text-sm font-medium text-zinc-900">
                 Email address
               </label>
               <div className="mt-2">
                 <input
+                  {...register('email')}
                   type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-lg border-0 py-2 text-zinc-900 shadow-sm ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-zinc-900 sm:text-sm sm:leading-6 px-3"
+                  className={`block w-full rounded-lg border-0 py-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 px-3 ${
+                    errors.email 
+                      ? 'ring-red-300 focus:ring-red-500 text-red-900 placeholder:text-red-300' 
+                      : 'ring-zinc-300 focus:ring-zinc-900 text-zinc-900 placeholder:text-zinc-400'
+                  }`}
                   placeholder="admin@example.com"
                 />
+                {errors.email && <p className="mt-1.5 text-xs text-red-600">{errors.email.message}</p>}
               </div>
             </div>
 
@@ -92,13 +107,16 @@ export default function AdminLogin() {
               </label>
               <div className="mt-2">
                 <input
+                  {...register('password')}
                   type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-lg border-0 py-2 text-zinc-900 shadow-sm ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-zinc-900 sm:text-sm sm:leading-6 px-3"
+                  className={`block w-full rounded-lg border-0 py-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 px-3 ${
+                    errors.password 
+                      ? 'ring-red-300 focus:ring-red-500 text-red-900 placeholder:text-red-300' 
+                      : 'ring-zinc-300 focus:ring-zinc-900 text-zinc-900 placeholder:text-zinc-400'
+                  }`}
                   placeholder="••••••••"
                 />
+                {errors.password && <p className="mt-1.5 text-xs text-red-600">{errors.password.message}</p>}
               </div>
             </div>
 

@@ -1,17 +1,33 @@
 import { useState, useEffect } from 'react';
-import type { FormEvent } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, getDocs, doc, setDoc, deleteDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import type { ShipmentSchedule } from '../../types';
 import toast from 'react-hot-toast';
 import { Loader2, Plus, Calendar, MapPin, Trash2, Edit3, X, Save, Clock, Truck } from 'lucide-react';
 import { format } from 'date-fns';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const scheduleSchema = z.object({
+  destination: z.string().min(2, "Destination is required"),
+  shipmentDate: z.string().min(1, "Shipment Date is required"),
+  cutoffDate: z.string().min(1, "Cut-off Date is required"),
+  status: z.enum(['Active', 'Completed', 'Cancelled']),
+  notes: z.string().optional(),
+});
+
+type ScheduleFormData = z.infer<typeof scheduleSchema>;
 
 export default function AdminSchedules() {
   const [schedules, setSchedules] = useState<ShipmentSchedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<ShipmentSchedule | null>(null);
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<ScheduleFormData>({
+    resolver: zodResolver(scheduleSchema),
+  });
 
   const fetchSchedules = async () => {
     setLoading(true);
@@ -36,20 +52,17 @@ export default function AdminSchedules() {
     fetchSchedules();
   }, []);
 
-  const handleSave = async (e: FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    
+  const handleSave = async (data: ScheduleFormData) => {
     const id = editingSchedule?.id || doc(collection(db, 'schedules')).id;
     const now = Date.now();
 
     const scheduleData: ShipmentSchedule = {
       id,
-      destination: formData.get('destination') as string,
-      shipmentDate: formData.get('shipmentDate') as string,
-      cutoffDate: formData.get('cutoffDate') as string,
-      status: formData.get('status') as any,
-      notes: formData.get('notes') as string || '',
+      destination: data.destination,
+      shipmentDate: data.shipmentDate,
+      cutoffDate: data.cutoffDate,
+      status: data.status,
+      notes: data.notes || '',
       createdAt: editingSchedule?.createdAt || now,
       updatedAt: now,
     };
@@ -58,6 +71,7 @@ export default function AdminSchedules() {
       await setDoc(doc(db, 'schedules', id), scheduleData);
       toast.success(editingSchedule ? 'Schedule updated' : 'Schedule added');
       setIsModalOpen(false);
+      reset();
       fetchSchedules();
     } catch (error) {
       console.error('Error saving schedule:', error);
@@ -79,8 +93,26 @@ export default function AdminSchedules() {
 
   const openEditModal = (schedule?: ShipmentSchedule) => {
     setEditingSchedule(schedule || null);
+    if (schedule) {
+      reset({
+        destination: schedule.destination,
+        shipmentDate: schedule.shipmentDate,
+        cutoffDate: schedule.cutoffDate,
+        status: schedule.status,
+        notes: schedule.notes,
+      });
+    } else {
+      reset({
+        destination: '',
+        shipmentDate: '',
+        cutoffDate: '',
+        status: 'Active',
+        notes: '',
+      });
+    }
     setIsModalOpen(true);
   };
+
 
   if (loading && schedules.length === 0) {
     return (
@@ -179,61 +211,57 @@ export default function AdminSchedules() {
               </button>
             </div>
             
-            <form onSubmit={handleSave} className="p-6 space-y-5">
+            <form onSubmit={handleSubmit(handleSave)} className="p-6 space-y-5">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">Destination</label>
                 <input
-                  name="destination"
+                  {...register('destination')}
                   type="text"
-                  required
-                  defaultValue={editingSchedule?.destination || ''}
                   placeholder="e.g., Malawi (Lilongwe & Blantyre)"
                   className="w-full rounded-none border-zinc-300 text-sm focus:border-editorial-dark focus:ring-0"
                 />
+                {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination.message}</p>}
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">Shipment Date</label>
                   <input
-                    name="shipmentDate"
+                    {...register('shipmentDate')}
                     type="date"
-                    required
-                    defaultValue={editingSchedule?.shipmentDate || ''}
                     className="w-full rounded-none border-zinc-300 text-sm focus:border-editorial-dark focus:ring-0"
                   />
+                  {errors.shipmentDate && <p className="text-red-500 text-xs mt-1">{errors.shipmentDate.message}</p>}
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">Cut-off Date</label>
                   <input
-                    name="cutoffDate"
+                    {...register('cutoffDate')}
                     type="date"
-                    required
-                    defaultValue={editingSchedule?.cutoffDate || ''}
                     className="w-full rounded-none border-zinc-300 text-sm focus:border-editorial-dark focus:ring-0"
                   />
+                  {errors.cutoffDate && <p className="text-red-500 text-xs mt-1">{errors.cutoffDate.message}</p>}
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">Status</label>
                 <select
-                  name="status"
-                  defaultValue={editingSchedule?.status || 'Active'}
+                  {...register('status')}
                   className="w-full rounded-none border-zinc-300 text-sm focus:border-editorial-dark focus:ring-0"
                 >
                   <option value="Active">Active (Upcoming)</option>
                   <option value="Completed">Completed</option>
                   <option value="Cancelled">Cancelled</option>
                 </select>
+                {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status.message}</p>}
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">Notes (Optional)</label>
                 <textarea
-                  name="notes"
+                  {...register('notes')}
                   rows={2}
-                  defaultValue={editingSchedule?.notes || ''}
                   placeholder="e.g., Expect slight delays due to port congestion"
                   className="w-full rounded-none border-zinc-300 text-sm focus:border-editorial-dark focus:ring-0"
                 />

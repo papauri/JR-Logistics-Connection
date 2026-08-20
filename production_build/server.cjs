@@ -30,7 +30,7 @@ var import_dotenv = __toESM(require("dotenv"), 1);
 import_dotenv.default.config();
 async function startServer() {
   const app = (0, import_express.default)();
-  const PORT = process.env.PORT || 3e3;
+  const PORT = Number(process.env.PORT || 3e3);
   app.use(import_express.default.json());
   app.post("/api/ai/analyze-request", async (req, res) => {
     try {

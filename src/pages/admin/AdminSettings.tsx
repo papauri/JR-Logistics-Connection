@@ -39,6 +39,14 @@ const defaultSettings: SiteSettings = {
     { id: '3', question: 'Are customs duties included in the quote?', answer: 'The quotes provided cover freight charges. Destination customs duties and taxes are payable by the receiver unless stated otherwise.', published: true },
     { id: '4', question: 'Can I track my cargo?', answer: 'Yes, once your cargo is loaded and departs, we provide a tracking number you can use on our website.', published: true }
   ],
+  homepageCategories: [
+    { title: 'Boxes & 200L Barrels', desc: 'Standard 20kg cartons, 35kg heavy boxes, and 200L shipping drums with door collection.', link: '/calculator' },
+    { title: 'Cars & Motor Vehicles', desc: 'Secure Roll-on/Roll-off & container transport for Saloons, SUVs, 4x4s, and Pickups.', link: '/calculator' },
+    { title: 'By Weight (Per KG)', desc: 'Flexible per-kg rates (€5.50/kg) for personal effects, dry foods, and commercial goods.', link: '/calculator' },
+    { title: 'Pallets & Containers', desc: 'Euro pallets, commercial machinery crates, and dedicated 20ft / 40ft FCL shipping.', link: '/calculator' },
+    { title: 'Express Air Freight', desc: 'Fast, direct air cargo straight into Kamuzu (LLW) or Chileka (Blantyre) airports.', link: '/calculator' },
+    { title: 'Documents & Electronics', desc: 'Secure, priority air courier for urgent passports, documents, and high-value laptops.', link: '/calculator' }
+  ],
   shippingCategories: [
     { id: '1', name: 'General Goods', pricingType: 'per_kg', rateEur: 5.5, rateUsd: 6.0, rateMwk: 10000 },
     { id: '2', name: 'Electronics', pricingType: 'per_kg', rateEur: 8.0, rateUsd: 9.0, rateMwk: 15000 },
@@ -162,6 +170,26 @@ export default function AdminSettings() {
     setSettings(prev => ({ ...prev, galleryImages: updatedImages }));
   };
 
+  const handleAddHomepageCategory = () => {
+    setSettings(prev => ({
+      ...prev,
+      homepageCategories: [...(prev.homepageCategories || []), { title: '', desc: '', link: '/calculator' }]
+    }));
+  };
+
+  const handleUpdateHomepageCategory = (index: number, field: string, value: string) => {
+    const updated = [...(settings.homepageCategories || [])];
+    updated[index] = { ...updated[index], [field]: value };
+    setSettings(prev => ({ ...prev, homepageCategories: updated }));
+  };
+
+  const handleRemoveHomepageCategory = (index: number) => {
+    setSettings(prev => ({
+      ...prev,
+      homepageCategories: (prev.homepageCategories || []).filter((_, i) => i !== index)
+    }));
+  };
+
   if (loading) {
     return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-zinc-400" /></div>;
   }
@@ -263,9 +291,9 @@ export default function AdminSettings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
-              <h2 className="font-sans font-bold text-lg text-editorial-dark">System Status</h2>
+              <h2 className="font-sans font-bold text-lg text-editorial-dark">System Status & Maintenance Page</h2>
             </div>
-            <div className="p-6">
+            <div className="p-6 space-y-6">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input 
                   type="checkbox" 
@@ -278,6 +306,31 @@ export default function AdminSettings() {
                   <span className="block text-xs text-editorial-text mt-1">If enabled, the public website will show an 'Under Construction' page. Admins can still access this dashboard.</span>
                 </div>
               </label>
+
+              {settings.isUnderConstruction && (
+                <div className="grid grid-cols-1 gap-6 pt-4 border-t border-editorial-dark/10">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-2">Maintenance Page Title</label>
+                    <input 
+                      type="text" 
+                      value={settings.maintenanceTitle || ''} 
+                      onChange={(e) => setSettings(prev => ({ ...prev, maintenanceTitle: e.target.value }))}
+                      placeholder="e.g. We're Upgrading Our Logistics Experience"
+                      className="w-full border border-editorial-dark py-2.5 px-3 text-sm font-sans focus:border-editorial-accent focus:ring-0" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-2">Maintenance Page Message</label>
+                    <textarea 
+                      value={settings.maintenanceMessage || ''} 
+                      onChange={(e) => setSettings(prev => ({ ...prev, maintenanceMessage: e.target.value }))}
+                      rows={3}
+                      placeholder="e.g. JR Logistics Connection is building a seamless, next-generation tracking and booking platform..."
+                      className="w-full border border-editorial-dark py-2.5 px-3 text-sm font-sans focus:border-editorial-accent focus:ring-0 resize-none" 
+                    ></textarea>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex justify-end">
@@ -415,6 +468,38 @@ export default function AdminSettings() {
                           className="w-full border border-editorial-dark py-1 px-2 text-xs bg-white font-mono" 
                           placeholder="https://..."
                         />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-4 border-b border-editorial-dark/10 pb-2">
+                  <h3 className="text-xs uppercase tracking-widest font-bold text-editorial-dark">Homepage Cargo Categories</h3>
+                  <button type="button" onClick={handleAddHomepageCategory} className="text-[10px] uppercase tracking-widest font-bold text-white bg-editorial-dark px-3 py-1.5 flex items-center gap-1 hover:bg-editorial-accent transition-colors">
+                    <Plus className="w-3 h-3" /> Add Category
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {(settings.homepageCategories || []).map((cat, idx) => (
+                    <div key={idx} className="p-4 border border-editorial-dark relative bg-white space-y-3">
+                      <button type="button" onClick={() => handleRemoveHomepageCategory(idx)} className="absolute top-4 right-4 text-zinc-400 hover:text-red-600 transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pr-8">
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Category Title</label>
+                          <input value={cat.title} onChange={(e) => handleUpdateHomepageCategory(idx, 'title', e.target.value)} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-bold bg-white" placeholder="e.g. Boxes & 200L Barrels" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Link URL</label>
+                          <input value={cat.link} onChange={(e) => handleUpdateHomepageCategory(idx, 'link', e.target.value)} className="w-full border border-editorial-dark py-1.5 px-2 text-xs bg-white" placeholder="e.g. /calculator" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-muted mb-1">Description</label>
+                        <textarea value={cat.desc} onChange={(e) => handleUpdateHomepageCategory(idx, 'desc', e.target.value)} rows={2} className="w-full border border-editorial-dark py-1.5 px-2 text-xs font-sans bg-white resize-none" placeholder="Description..."></textarea>
                       </div>
                     </div>
                   ))}

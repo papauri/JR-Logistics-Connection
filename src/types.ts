@@ -91,6 +91,7 @@ export interface SiteSettings {
   galleryImages: string[];
   reviews: Review[];
   faqs?: FAQ[];
+  homepageCategories?: { title: string; desc: string; link: string }[];
   shippingCategories?: ShippingCategory[];
   freightPricing?: FreightPricingConfig;
   seoTitle?: string;
@@ -106,6 +107,8 @@ export interface SiteSettings {
   vatRate?: number;
   enabledCurrencies?: string[];
   isUnderConstruction?: boolean;
+  maintenanceTitle?: string;
+  maintenanceMessage?: string;
   updatedAt: number;
 }
 

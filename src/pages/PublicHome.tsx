@@ -37,6 +37,14 @@ const defaultSettings: SiteSettings = {
     { id: '3', question: 'Are customs duties included in the quote?', answer: 'The quotes provided cover freight charges. Destination customs duties and taxes are payable by the receiver unless stated otherwise.', published: true },
     { id: '4', question: 'Can I track my cargo?', answer: 'Yes, once your cargo is loaded and departs, we provide a tracking number you can use on our website.', published: true }
   ],
+  homepageCategories: [
+    { title: 'Boxes & 200L Barrels', desc: 'Standard 20kg cartons, 35kg heavy boxes, and 200L shipping drums with door collection.', link: '/calculator' },
+    { title: 'Cars & Motor Vehicles', desc: 'Secure Roll-on/Roll-off & container transport for Saloons, SUVs, 4x4s, and Pickups.', link: '/calculator' },
+    { title: 'By Weight (Per KG)', desc: 'Flexible per-kg rates (€5.50/kg) for personal effects, dry foods, and commercial goods.', link: '/calculator' },
+    { title: 'Pallets & Containers', desc: 'Euro pallets, commercial machinery crates, and dedicated 20ft / 40ft FCL shipping.', link: '/calculator' },
+    { title: 'Express Air Freight', desc: 'Fast, direct air cargo straight into Kamuzu (LLW) or Chileka (Blantyre) airports.', link: '/calculator' },
+    { title: 'Documents & Electronics', desc: 'Secure, priority air courier for urgent passports, documents, and high-value laptops.', link: '/calculator' }
+  ],
   bankDetails: {
     bankName: 'Bank of Ireland',
     accountName: 'JR Logistics Connection Ltd',
@@ -179,15 +187,8 @@ export default function PublicHome() {
           </div>
         </div>
         <div className="flex-1 grid sm:grid-cols-2">
-          {[
-            { title: 'Boxes & 200L Barrels', desc: 'Standard 20kg cartons, 35kg heavy boxes, and 200L shipping drums with door collection.', link: '/calculator' },
-            { title: 'Cars & Motor Vehicles', desc: 'Secure Roll-on/Roll-off & container transport for Saloons, SUVs, 4x4s, and Pickups.', link: '/calculator' },
-            { title: 'By Weight (Per KG)', desc: 'Flexible per-kg rates (€5.50/kg) for personal effects, dry foods, and commercial goods.', link: '/calculator' },
-            { title: 'Pallets & Containers', desc: 'Euro pallets, commercial machinery crates, and dedicated 20ft / 40ft FCL shipping.', link: '/calculator' },
-            { title: 'Express Air Freight', desc: 'Fast, direct air cargo straight into Kamuzu (LLW) or Chileka (Blantyre) airports.', link: '/calculator' },
-            { title: 'Documents & Electronics', desc: 'Secure, priority air courier for urgent passports, documents, and high-value laptops.', link: '/calculator' }
-          ].map((item, idx) => (
-            <Link key={item.title} to={item.link} className={`p-10 border-editorial-dark block group hover:bg-white transition-colors ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
+          {(settings.homepageCategories || defaultSettings.homepageCategories || []).map((item, idx) => (
+            <Link key={idx} to={item.link} className={`p-10 border-editorial-dark block group hover:bg-white transition-colors ${idx % 2 !== 0 ? 'sm:border-l' : ''} ${idx > 1 ? 'border-t' : 'border-t sm:border-t-0'}`}>
               <div className="w-12 h-12 border border-editorial-dark flex items-center justify-center mb-6 rounded-full relative group-hover:bg-editorial-dark transition-colors"> 
                  <div className="absolute inset-1 border border-dashed border-editorial-dark rounded-full"></div>
                  <Package className="w-4 h-4 text-editorial-dark group-hover:text-editorial-accent transition-colors" />
