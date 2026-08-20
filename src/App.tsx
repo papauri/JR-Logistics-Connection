@@ -31,6 +31,8 @@ import PublicLayout from './components/PublicLayout';
 import AdminLayout from './components/AdminLayout';
 import ScrollToTop from './components/ScrollToTop';
 
+import { CookieConsent } from './components/CookieConsent';
+
 import { seedSampleData } from './data/seedSampleData';
 import { getOrSeedLegalDocuments } from './data/defaultLegalDocs';
 
@@ -106,6 +108,7 @@ export default function App() {
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
+      <CookieConsent />
       <Toaster position="top-right" />
     </BrowserRouter>
   );

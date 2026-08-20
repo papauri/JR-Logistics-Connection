@@ -10,6 +10,7 @@ import { CheckCircle2, Loader2, ArrowRight, Package, Car, Scale, Layers, Contain
 import type { CustomerRequest } from '../types';
 import { useSearchParams } from 'react-router-dom';
 import { usePricing } from '../lib/usePricing';
+import { MathCaptcha } from '../components/MathCaptcha';
 
 const requestSchema = z.object({
   customerName: z.string().min(2, 'Name is required'),
@@ -36,6 +37,7 @@ export default function RequestQuote() {
   const { categories, addons, loading } = usePricing();
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [captchaValid, setCaptchaValid] = useState(false);
   const [reference, setReference] = useState('');
 
   // Initial category values from query params if coming from Calculator
@@ -486,18 +488,23 @@ export default function RequestQuote() {
             )}
 
             {/* SECTION 04: SPECIAL INSTRUCTIONS & SUBMISSION */}
-            <div className="p-8 md:p-12 border-b border-editorial-dark">
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-dark mb-2">
-                Any Additional Questions or Special Instructions? (Optional)
-              </label>
-              <textarea 
-                {...register('message')} 
-                rows={2} 
-                placeholder="e.g. Need assistance with loading heavy crate, or prefer Lilongwe depot collection."
-                className="w-full rounded-none border border-editorial-dark py-3 px-4 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors resize-none text-sm font-sans"
-              ></textarea>
+            <div className="p-8 md:p-12 border-b border-editorial-dark space-y-8">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-bold text-editorial-dark mb-2">
+                  Any Additional Questions or Special Instructions? (Optional)
+                </label>
+                <textarea 
+                  {...register('message')} 
+                  rows={2} 
+                  placeholder="e.g. Need assistance with loading heavy crate, or prefer Lilongwe depot collection."
+                  className="w-full rounded-none border border-editorial-dark py-3 px-4 text-editorial-dark bg-transparent focus:ring-0 focus:border-editorial-accent transition-colors resize-none text-sm font-sans"
+                ></textarea>
+              </div>
+
+              {/* CAPTCHA SECTION */}
+              <MathCaptcha onValidate={setCaptchaValid} />
               
-              <div className="mt-6 p-4 bg-editorial-bg border border-editorial-dark/10 text-xs font-sans text-editorial-text leading-relaxed">
+              <div className="p-4 bg-editorial-bg border border-editorial-dark/10 text-xs font-sans text-editorial-text leading-relaxed">
                 By submitting this quotation request, you acknowledge our{' '}
                 <a href="/legal/shipping-terms" target="_blank" rel="noopener noreferrer" className="text-editorial-dark font-bold underline hover:text-editorial-accent">
                   Terms of Carriage
@@ -522,8 +529,8 @@ export default function RequestQuote() {
 
               <button
                 type="submit"
-                disabled={submitting}
-                className="px-8 py-4 bg-editorial-accent text-editorial-dark text-xs uppercase tracking-widest font-black hover:bg-white disabled:opacity-50 transition-colors flex items-center justify-center gap-3 shrink-0"
+                disabled={submitting || !captchaValid}
+                className="px-8 py-4 bg-editorial-accent text-editorial-dark text-xs uppercase tracking-widest font-black hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-3 shrink-0"
               >
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Quote Request'}
                 {!submitting && <ArrowRight className="w-4 h-4" />}

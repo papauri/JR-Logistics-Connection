@@ -5,11 +5,13 @@ import { collection, addDoc, doc, getDoc, serverTimestamp } from 'firebase/fires
 import type { SiteSettings } from '../types';
 import toast from 'react-hot-toast';
 import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
+import { MathCaptcha } from '../components/MathCaptcha';
 
 export default function PublicContact() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [captchaValid, setCaptchaValid] = useState(false);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -197,10 +199,12 @@ export default function PublicContact() {
                 ></textarea>
               </div>
 
+              <MathCaptcha onValidate={setCaptchaValid} />
+
               <button
                 type="submit"
-                disabled={sending}
-                className="w-full bg-editorial-dark text-white py-3.5 text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent transition-colors flex items-center justify-center gap-2"
+                disabled={sending || !captchaValid}
+                className="w-full bg-editorial-dark text-white py-3.5 text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {sending ? (
                   <>
