@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import { db } from '../../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { Save, Loader2, Info, Plus, Trash2, Package, Building2, MessageSquare, Search, Tag, Sparkles, Receipt } from 'lucide-react';
+import { Save, Loader2, Info, Plus, Trash2, Package, Building2, MessageSquare, Search, Tag, Sparkles, Receipt, Settings } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { SiteSettings, Review } from '../../types';
 import AdminFreightPricingManager from '../../components/AdminFreightPricingManager';
@@ -62,7 +62,7 @@ const defaultSettings: SiteSettings = {
 import { logActivity } from '../../lib/activityLogger';
 
 export default function AdminSettings() {
-  const [activeTab, setActiveTab] = useState<'pricing' | 'company' | 'content' | 'seo' | 'finance'>('pricing');
+  const [activeTab, setActiveTab] = useState<'system' | 'pricing' | 'company' | 'content' | 'seo' | 'finance'>('system');
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -183,6 +183,18 @@ export default function AdminSettings() {
       <div className="flex border-b border-editorial-dark overflow-x-auto bg-white">
         <button
           type="button"
+          onClick={() => setActiveTab('system')}
+          className={`px-6 py-3 text-xs uppercase font-bold tracking-widest border-r border-editorial-dark flex items-center gap-2 transition-colors whitespace-nowrap ${
+            activeTab === 'system'
+              ? 'bg-editorial-dark text-white'
+              : 'text-editorial-dark hover:bg-editorial-bg'
+          }`}
+        >
+          <Settings className="w-4 h-4 text-editorial-accent" />
+          <span>System & Maintenance</span>
+        </button>
+        <button
+          type="button"
           onClick={() => setActiveTab('pricing')}
           className={`px-6 py-3 text-xs uppercase font-bold tracking-widest border-r border-editorial-dark flex items-center gap-2 transition-colors ${
             activeTab === 'pricing'
@@ -246,13 +258,8 @@ export default function AdminSettings() {
         </button>
       </div>
 
-      {/* TAB 1: FREIGHT PRICING & ADD-ONS MANAGER */}
-      {activeTab === 'pricing' && (
-        <AdminFreightPricingManager />
-      )}
-
-      {/* TAB 2: COMPANY & CONTACT */}
-      {activeTab === 'company' && (
+      {/* TAB 0: SYSTEM & MAINTENANCE */}
+      {activeTab === 'system' && (
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
@@ -273,7 +280,27 @@ export default function AdminSettings() {
               </label>
             </div>
           </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={saving}
+              className="bg-editorial-dark text-white px-6 py-3 text-xs uppercase tracking-widest font-bold hover:bg-editorial-accent disabled:opacity-50 transition-colors flex items-center gap-2"
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {saving ? 'Saving System Settings...' : 'Save System Settings'}
+            </button>
+          </div>
+        </form>
+      )}
 
+      {/* TAB 1: FREIGHT PRICING & ADD-ONS MANAGER */}
+      {activeTab === 'pricing' && (
+        <AdminFreightPricingManager />
+      )}
+
+      {/* TAB 2: COMPANY & CONTACT */}
+      {activeTab === 'company' && (
+        <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white border border-editorial-dark shadow-sm">
             <div className="px-6 py-4 border-b border-editorial-dark bg-editorial-bg/30">
               <h2 className="font-sans font-bold text-lg text-editorial-dark">Company Information & Contact Coordinates</h2>
